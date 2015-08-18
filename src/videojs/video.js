@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 5.0.0-rc.51 <http://videojs.com/>
+ * Video.js 5.0.0-rc.52 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -15313,7 +15313,7 @@ function createEl() {
     // add the attribute "role". My guess is because it's not a valid attribute in some namespaces, although
     // browsers handle the attribute just fine. The W3C allows for aria- * attributes to be used in pre-HTML5 docs.
     // http://www.w3.org/TR/wai-aria-primer/#ariahtml. Using setAttribute gets around this problem.
-    if (propName.indexOf('aria-') !== -1 || propName === 'role') {
+    if (propName.indexOf('aria-') !== -1 || propName === 'role' || propName === 'type') {
       el.setAttribute(propName, val);
     } else {
       el[propName] = val;
@@ -16579,7 +16579,7 @@ setup.autoSetupTimeout(1, videojs);
  *
  * @type {String}
  */
-videojs.VERSION = '5.0.0-rc.51';
+videojs.VERSION = '5.0.0-rc.52';
 
 /**
  * The global options object. These are the settings that take effect
