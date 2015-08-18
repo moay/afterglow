@@ -29,16 +29,12 @@
 @volume-high-icon: "\e006";
 @fullscreen-enter-icon: "\e000";
 @fullscreen-exit-icon: "\e00b";
-@square-icon: "\e009";
 @spinner-icon: "\e00a";
-@spinner2-icon: "\e00d";
-@spinner3-icon: "\e01e";
-@spinner4-icon: "\e01f";
 @subtitles-icon: "\e00c";
 @captions-icon: "\e008";
-@chapters-icon: "\e00c";
-@share-icon: "\e00e";
-@cog-icon: "\e600";
+// @chapters-icon: "\e00c";
+// @share-icon: "\e00e";
+// @cog-icon: "\e600";
 
 // Font for texts and times
 @font-face {
@@ -671,7 +667,7 @@
 	}
 
 	.vjs-loading-spinner:before {
-		content: @spinner3-icon;
+		content: @spinner-icon;
 		font-family: VideoJS;
 
 		position: absolute;
@@ -794,10 +790,12 @@
 		content: @captions-icon;
 	}
 
-	/* Chapters Button */
-	.vjs-chapters-button:before {
-		content: @chapters-icon;
-	}
+	/* Chapters Button 
+		Will maybe be added later
+	*/
+	// .vjs-chapters-button:before {
+	// 	content: @chapters-icon;
+	// }
 
 	.vjs-chapters-button.vjs-menu-button .vjs-menu .vjs-menu-content {
 		width: 24em;
