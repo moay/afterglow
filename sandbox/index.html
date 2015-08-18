@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>afterglow development sandbox</title>
+	
+	<!-- STYLES -->
+	<link rel="stylesheet" type="text/css" href="../src/videojs/video-js.css">
+	<link rel="stylesheet/less" type="text/css" href="../src/videojs/theme/afterglow/vjs-afterglow.less">
+
+	<!-- SCRIPTS -->
+	<script src="js/less.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../src/dollardom/dollardom.min.js"></script>
+	<script type="text/javascript" src="../src/videojs/video.js"></script>
+	<!-- <script type="text/javascript" src="../src/videojs/plugins/vjs.vimeo.js"></script> -->
+	<script type="text/javascript" src="../src/videojs/plugins/Youtube.js"></script>
+	<script type="text/javascript" src="../src/afterglow.js"></script>
+
+</head>
+<body>
+	<h1>This is just a sandbox for development.</h1>
+
+	<!-- YOUTUBE TEST -->
+	<h2>Youtube video</h2>
+	<video id="video1" class="afterglow" width="640" height="360" data-youtube-id="d9jdS1wI7kQ" data-autoresize="fit" preload="none"></video>
+
+	<!-- LOCAL TEST -->
+	<h2>Local video with poster</h2>
+	<video id="video2" class="afterglow" width="640" height="360" poster="video/Snapshots/Sail-Away.jpg" data-autoresize="fit" preload="none">
+		<source src="video/MP4/Sail-Away.mp4" type="video/mp4" />
+		<source src="video/WEBM/Sail-Away.webm" type="video/webm" />
+	</video>
+</body>
+</html>
