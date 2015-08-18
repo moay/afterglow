@@ -275,8 +275,12 @@
 		cursor: pointer;
 		float: right;
 		font-size:13px;
-		position:absolute;
-		right:20px;
+
+		order:8;
+		-webkit-box-ordinal-group: 8;
+		-moz-box-ordinal-group: 8;
+		-webkit-order: 8;
+		-ms-flex-order: 8;
 
 		&:before{
 			content: @volume-high-icon;
@@ -511,6 +515,11 @@
 		float:right;
 		text-align:right;
 		margin-right:20px;
+		order:9;
+		-webkit-box-ordinal-group: 9;
+		-moz-box-ordinal-group: 9;
+		-webkit-order: 9;
+		-ms-flex-order: 9;
 	}
 	/* Remaining time is in the HTML, but not included in afterglow design */
 	.vjs-remaining-time { display: none; float: right; }
