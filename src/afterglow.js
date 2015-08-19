@@ -40,6 +40,9 @@ afterglow = {
 
 		});
 
+		// Apply the styles that might be needed by the skin
+		this.applySkinStyles(player);
+
 		// Push the player to the accessible ones
 		this.players.push(player);
 	},
@@ -66,8 +69,16 @@ afterglow = {
 	preparePlayer : function(videoel){
 		// Add some classes
 		$dom.addClass(videoel, 'video-js');
-		$dom.addClass(videoel, 'vjs-afterglow-skin');
 		$dom.addClass(videoel, 'afterglow');
+
+		// Set the skin
+		var skin = 'afterglow';
+		if(videoel.getAttribute('data-skin') !== null)
+		{
+			skin = videoel.getAttribute('data-skin');
+		}
+		videoel.skin = skin;
+		$dom.addClass(videoel, 'vjs-'+skin+'-skin');
 
 		// Remove sublime stuff
 		$dom.removeClass(videoel, 'sublime');
@@ -128,7 +139,7 @@ afterglow = {
 		// Prepare Youtube and Vimeo playback
 		if(videoel.getAttribute('data-youtube-id') !== null && videoel.getAttribute('data-youtube-id') !== '')
 		{
-			options.src= 'https://youtu.be/'+videoel.getAttribute('data-youtube-id');
+			options.url= 'https://youtu.be/'+videoel.getAttribute('data-youtube-id');
 			options.techOrder = ['youtube', 'html5', 'flash'];
 		}
 		if(videoel.getAttribute('data-vimeo-id') !== null && videoel.getAttribute('data-vimeo-id') !== '')
@@ -137,7 +148,44 @@ afterglow = {
 			options.techOrder = ['vimeo', 'html5', 'flash'];
 		}
 
+		// Get the skin buttons that are needed
+		options.children = this.getSkinControls(videoel.skin);
+
 		return options;
+	},
+
+	getSkinControls : function(skin){
+		// If there will be other skins to know, they will be added here. For now, we just output the 'afterglow' skin children
+		var children = {
+			controlBar: {
+				children: [
+					{
+						name: 'playToggle'
+					},
+					{
+						name: 'currentTimeDisplay'
+					},
+					{
+						name: 'durationDisplay'
+					},
+					{
+						name: 'progressControl'
+					},
+					{
+						name: 'volumeMenuButton',
+						volumeBar: {
+							vertical: false
+						}
+					}
+				]
+			}
+		};
+		return children;
+	},
+
+	applySkinStyles : function(player){
+		// If there will be other skins to know, they will be added here. For now, we just output the 'afterglow' skin children
+		player.addChild('fullscreenToggle');
 	},
 
 	/**

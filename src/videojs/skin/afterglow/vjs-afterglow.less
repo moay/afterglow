@@ -15,9 +15,6 @@
 @slider-background-color: #fff;
 @slider-background-alpha: 0.1; // 1.0 = 100% opacity, 0.0 = 0% opacity
 
-@big-play-width: 4em;
-@big-play-height: 2.6em;
-
 /* SKIN */
 
 // Icon font character values
@@ -58,6 +55,11 @@
 
 .vjs-afterglow-skin {
 	color: @main-font-color;
+
+	video{
+		// To make the fading of the poster work
+		background-color:#000;
+	}
 
 	/* Slider - used for Volume bar and Seek bar */
 	.vjs-slider {
@@ -204,13 +206,15 @@
 			width: 100%;
 			height: 100%;
 			text-align: center;
-			text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+			opacity:.9;
+			text-shadow:0 0 0 rgba(255,255,255,0);
 		}
 
 		/* Replacement for focus outline */
 		&:focus:before,
 		&:hover:before {
-			text-shadow: 0em 0em 1em rgba(255, 255, 255, 1);
+			text-shadow: 0 0 5px rgba(255, 255, 255, .6);
+			opacity:1;
 		}
 
 		&:focus {
@@ -275,12 +279,9 @@
 		cursor: pointer;
 		float: right;
 		font-size:13px;
+		width: auto;
+		padding-left:20px;
 
-		order:8;
-		-webkit-box-ordinal-group: 8;
-		-moz-box-ordinal-group: 8;
-		-webkit-order: 8;
-		-ms-flex-order: 8;
 
 		&:before{
 			content: @volume-high-icon;
@@ -300,7 +301,6 @@
 	}
 
 	.vjs-volume-control {
-		width: 5em;
 		float: right;
 	}
 	
@@ -507,19 +507,16 @@
 		font-weight: 100;
 		line-height: 22px;
 		display:block;
+		width:auto;
 	}
 	.vjs-current-time{
-		left:7px;
+		margin-left:30px;
 	}
 	.vjs-duration {
 		float:right;
 		text-align:right;
-		margin-right:20px;
-		order:9;
-		-webkit-box-ordinal-group: 9;
-		-moz-box-ordinal-group: 9;
-		-webkit-order: 9;
-		-ms-flex-order: 9;
+		margin-right:30px;
+		padding-left:20px;
 	}
 	/* Remaining time is in the HTML, but not included in afterglow design */
 	.vjs-remaining-time { display: none; float: right; }
@@ -529,16 +526,49 @@
 	--------------------------------------------------------------------------------
 	*/
 	.vjs-fullscreen-control {
-		width: 3.8em;
+		width: 20px;
+		height:30px;
+		text-align:right;
+		line-height:13px;
+		font-size:13px;
 		cursor: pointer;
-		float: right;
+		position: absolute;
+		top:16px;
+		right:26px;
+		display: none;
+		opacity:0;
 
 		&:before {
 			content: @fullscreen-enter-icon;
 		}
+
+		&:hover{
+			opacity:1;
+		}
 	}
 	&.vjs-fullscreen .vjs-fullscreen-control:before {
 		content: @fullscreen-exit-icon;
+	}
+
+	/* Show the control bar only once the video has started playing */
+	&.vjs-has-started .vjs-fullscreen-control {
+		display: block;
+		/* Visibility needed to make sure things hide in older browsers too. */
+		visibility: visible;
+		opacity: 0.9;
+
+		@trans: visibility 0.1s, opacity 0.1s; // Var needed because of comma
+		.transition(@trans);
+	}
+
+	/* Hide the control bar when the video is playing and the user is inactive  */
+	&.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-fullscreen-control {
+		display: block;
+		visibility: hidden;
+		opacity: 0;
+
+		@trans: visibility 1.0s, opacity 1.0s;
+		.transition(@trans);
 	}
 
 	/* Big Play Button (play button at start)
@@ -551,15 +581,18 @@
 		display: block;
 		z-index: 2;
 		position: absolute;
-		width: @big-play-width;
-		height: @big-play-height;
+		width: 80px;
+		height: 80px;
 		text-align: center;
 		vertical-align: middle;
 		cursor: pointer;
 		opacity: 1;
-
-		/* Need a slightly gray bg so it can be seen on black backgrounds *///
-		.background-color-with-alpha(#fff, 1);
+		top:50%;
+		left:50%;
+		margin-left:-25px;
+		margin-top:-25px;
+		border:none;
+		background:transparent;
 
 		.transition(all 0.4s);
 	}
@@ -581,12 +614,9 @@
 	&:hover .vjs-big-play-button,
 	.vjs-big-play-button:focus {
 		outline: 0;
-		border-color: #fff;
-		/* IE8 needs a non-glow hover state *///
-		background-color: rgb(80, 80, 80);
-		background-color: rgba(50, 50, 50, 0.75);
+		border:none;
+		background:transparent;
 
-		.box-shadow(0 0 3em #fff);
 		.transition(all 0s);
 	}
 
@@ -595,8 +625,11 @@
 		font-family: 'afterglow-icon';
 		/* In order to center the play icon vertically we need to set the line height
 		to the same as the button height */
-		line-height: @big-play-height;
-		text-shadow: 0.05em 0.05em 0.1em #000;
+		line-height: 80px;
+		font-size:80px;
+		/* Fallback for non rgba browsers */
+		text-shadow: 0 0 5px #000;
+		text-shadow: 0 0 5px rgba(0,0,0,0.6);
 		text-align: center /* Needed for IE8 */;
 
 		position: absolute;
@@ -849,10 +882,30 @@
 		width:100%;
 		height:auto;
 
-		.vjs-tech{
+		&.vjs-has-started .vjs-tech{
 			padding-top:0 !important;
 		}
 	}
+
+	/* Poster Styles */
+	.vjs-poster {
+		/* Cross browser opacity */
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+		-moz-opacity: 0.8;
+		-khtml-opacity: 0.8;
+		opacity: 0.8;
+
+		.transition(all 0.2s);
+	}
+
+	&:hover .vjs-poster{
+		/* Cross browser opacity */
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+		-moz-opacity: 1;
+		-khtml-opacity: 1;
+		opacity: 1;
+	}
+
 }
 
 
@@ -949,13 +1002,16 @@ body.vjs-full-window {
 	right: 0;
 	bottom: 0;
 	left: 0;
+	width: 100%;
+
+	.transition(all 0.2s);
 }
+
 .vjs-poster img {
 	display: block;
 	margin: 0 auto;
 	max-height: 100%;
 	padding: 0;
-	width: 100%;
 }
 
 /* Hide the poster after the video has started playing */
