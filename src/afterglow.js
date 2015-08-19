@@ -98,6 +98,11 @@ afterglow = {
 			videoel.removeAttribute('width');
 			videoel.removeAttribute('height');
 		}
+
+		// Apply youtube class
+		if(videoel.getAttribute('data-youtube-id') !== null && videoel.getAttribute('data-youtube-id') !== ''){
+			$dom.addClass(videoel,'vjs-youtube');
+		}
 		
 	},
 
@@ -146,7 +151,10 @@ afterglow = {
 		// Prepare Youtube and Vimeo playback
 		if(videoel.getAttribute('data-youtube-id') !== null && videoel.getAttribute('data-youtube-id') !== '')
 		{
-			options.url= 'https://youtu.be/'+videoel.getAttribute('data-youtube-id');
+			options.sources = [{
+				"type": "video/youtube",
+				"src": 'https://www.youtube.com/watch?v='+videoel.getAttribute('data-youtube-id')
+			}];
 			options.techOrder = ['youtube', 'html5', 'flash'];
 		}
 		if(videoel.getAttribute('data-vimeo-id') !== null && videoel.getAttribute('data-vimeo-id') !== '')
@@ -180,9 +188,7 @@ afterglow = {
 				},
 				{
 					name: 'volumeMenuButton',
-					volumeBar: {
-						vertical: false
-					}
+					inline:true
 				}
 				]
 			}
@@ -214,8 +220,7 @@ afterglow = {
 	 */
 	 configureVideoJS: function(){
 		// Disable tracking
-		window.HELP_IMPROVE_VIDEOJS = false;
-	}
+		window.HELP_IMPROVE_VIDEOJS = false;	}
 }
 
 // Initiate all players

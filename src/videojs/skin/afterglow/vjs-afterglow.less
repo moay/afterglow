@@ -280,7 +280,7 @@
 		float: right;
 		font-size:13px;
 		width: auto;
-		padding-left:20px;
+		padding-left:32px;
 
 
 		&:before{
@@ -304,42 +304,47 @@
 		float: right;
 	}
 	
-	.vjs-volume-bar {
-		width: 5em;
-		height: 0.6em;
-		margin: 1.1em auto 0;
+	.vjs-volume-bar,
+	.vjs-volume-bar.vjs-slider-horizontal {
+		width: 60px;
+		height: 5px;
+		margin: 0;
+		background-color:rgba(255,255,255,0.3);
+		border-radius: 5px;
+
+		.vjs-volume-handle {
+			width: 0px;
+			height: 0px;
+			/* Assumes volume starts at 1.0. If you change the size of the
+				handle relative to the volume bar, you'll need to update this value
+				too. 
+			*/
+			left: 100%;
+
+			&:before {
+				display:none;
+			}
+		}
+
+		.vjs-volume-level{
+			height:4px;
+			border-radius:4px;
+
+			&:before{
+				display:none;
+			}
+		}
 	}
 
 	.vjs-volume-level {
 		position: absolute;
 		top: 0;
 		left: 0;
-		height: 0.5em;
+		height: 4px;
 		/* assuming volume starts at 1.0 */
 		width: 100%;
-
-		background: @slider-bar-color
-		url(@slider-bar-pattern)
-		-50% 0 repeat;
-	}
-	
-	.vjs-volume-bar .vjs-volume-handle {
-		width: 0.5em;
-		height: 0.5em;
-		/* Assumes volume starts at 1.0. If you change the size of the
-			handle relative to the volume bar, you'll need to update this value
-			too. 
-		*/
-		left: 4.5em;
-
-		&:before {
-			font-size: 0.9em;
-			top: -0.2em;
-			left: -0.2em;
-
-			width: 1em;
-			height: 1em;
-		}
+		background-color:#fff;
+		border-radius:4px;
 	}
 
 	/* The volume menu button is like menu buttons (captions/subtitles) but works
@@ -348,23 +353,53 @@
 		display:none to hide the slider menu by afterglow, and instead setting the
 		width and height to zero. 
 	*/
-	.vjs-volume-menu-button .vjs-menu {
+	.vjs-volume-menu-button .vjs-menu,
+	.vjs-volume-menu-button.vjs-volume-menu-button-horizontal .vjs-menu {
 		display: block;
 		width: 0;
-		height: 0;
+		height:10px;
 		border-top-color: transparent;
+		position:relative;
+		padding-left:0px;
+		top: 17px;
+		left:20px;
 	
 		.vjs-menu-content {
-			height: 0;
-			width: 0;
+			height: 10px;
+			width: 0px;
+			float:right;
+			box-shadow:none;
+			background:transparent;
+			position:relative;
+			bottom:auto;
 		}
 	}
 
-	.vjs-volume-menu-button:hover .vjs-menu .vjs-menu-content,
-	.vjs-volume-menu-button .vjs-menu.vjs-lock-showing .vjs-menu-content {
-		height: 2.9em;
-		width: 10em;
+	.vjs-volume-menu-button:hover .vjs-menu,
+	.vjs-volume-menu-button.vjs-volume-menu-button-horizontal:hover .vjs-menu{
+		width: 90px;
+
+		.vjs-menu-content {
+			height: 10px;
+			width: 60px;
+			left:-30px;
+			bottom:0;
+			box-shadow:none;
+		}
 	}
+	
+	.vjs-menu-button-popup .vjs-menu{
+		position:relative;
+		float:right;
+	}
+
+	.vjs-menu-button-inline{
+		width:auto;
+		&:hover{
+			width:auto;
+		}
+	}
+
 
 	/* Progress
 	--------------------------------------------------------------------------------
@@ -589,8 +624,8 @@
 		opacity: 1;
 		top:50%;
 		left:50%;
-		margin-left:-25px;
-		margin-top:-25px;
+		margin-left:-40px;
+		margin-top:-40px;
 		border:none;
 		background:transparent;
 
@@ -776,31 +811,27 @@
 
 	.vjs-menu {
 		display: none;
-		position: absolute;
-		bottom: 0;
-		left: 0em; /* (Width of vjs-menu - width of button) / 2 */
-		width: 0em;
-		height: 0em;
-		margin-bottom: 3em;
-
-		border-left: 2em solid transparent;
-		border-right: 2em solid transparent;
-
-		border-top: 1.55em solid rgb(0, 0, 0); /* Same width top as ul bottom */
-		border-top-color: rgba(7, 40, 50, 0.5); /* Same as ul background */
+		position: relative;
+		bottom: auto;
+		left: auto; /* (Width of vjs-menu - width of button) / 2 */
+		width: 0;
+		height: 0;
+		margin-bottom: 0;
 	}
 
 	/* Button Pop-up Menu */
 	.vjs-menu-button .vjs-menu .vjs-menu-content {
 		display: block;
-		padding: 0; margin: 0;
-		position: absolute;
-		width: 10em;
-		bottom: 1.5em; /* Same bottom as vjs-menu border-top */
+		padding: 0;
+		padding-left:20px 
+		margin: 0;
+		position: relative;
+		width: 100px;
+		bottom: auto; /* Same bottom as vjs-menu border-top */
 		max-height: 15em;
 		overflow: auto;
 
-		left: -5em; /* Width of menu - width of button / 2 */
+		left: auto; /* Width of menu - width of button / 2 */
 
 		.background-color-with-alpha(@control-bg-color, @control-bg-alpha);
 		.box-shadow(-0.2em -0.2em 0.3em rgba(255, 255, 255, 0.2));
@@ -877,6 +908,10 @@
 	.vjs-captions-button:hover .vjs-control-content:before {
 		.box-shadow(0 0 1em rgba(255, 255, 255, 1));
 	}
+	
+	.vjs-tech:focus{
+		outline:none;
+	}
 
 	&.vjs-responsive{
 		width:100%;
@@ -904,6 +939,14 @@
 		-moz-opacity: 1;
 		-khtml-opacity: 1;
 		opacity: 1;
+	}
+	
+	// make youtube player fullscreen
+	&.vjs-youtube > div:first-child{
+		position:absolute !important;
+		margin:0;
+		height:100%;
+		top:0;
 	}
 
 }
