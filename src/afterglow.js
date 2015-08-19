@@ -3,13 +3,13 @@ afterglow = {
 	 * Will hold the players in order to make them accessible
 	 * @type Object
 	 */
-	players : [],
+	 players : [],
 
 	/**
 	 * Initiate all players that were found and need to be initiated
 	 * @return void
 	 */
-	init : function(){
+	 init : function(){
 		// Run some preparations
 		this.configureVideoJS();
 
@@ -25,7 +25,7 @@ afterglow = {
 	 * @param  domelement  videoel  The video element which should be converted
 	 * @return void
 	 */
-	initPlayer : function(videoel){
+	 initPlayer : function(videoel){
 		// Make sure to not double-initiate a player - means, we'll destroy if for sure.
 		this.destroyPlayer(videoel.getAttribute('id'));
 
@@ -38,10 +38,17 @@ afterglow = {
 		// initiate videojs and do some post initiation stuff
 		var player = videojs(videoel, options, function(){
 
-		});
+		}).ready(function(){
+			// Apply the styles that might be needed by the skin
+			afterglow.applySkinStyles(player);
 
-		// Apply the styles that might be needed by the skin
-		this.applySkinStyles(player);
+			// Enable hotkeys
+			this.hotkeys({
+				enableFullscreen: false,
+				enableNumbers: false
+			});
+		})
+
 
 		// Push the player to the accessible ones
 		this.players.push(player);
@@ -52,21 +59,21 @@ afterglow = {
 	 * @param  {string} playerid  The player's id
 	 * @return void
 	 */
-	destroyPlayer : function(playerid){
-		for (var i = this.players.length - 1; i >= 0; i--) {
-			if(this.players[i].id === playerid){
-				this.players[i].destroy();
-				this.players.splice(i,1);
-			}
-		};
-	},
+	 destroyPlayer : function(playerid){
+	 	for (var i = this.players.length - 1; i >= 0; i--) {
+	 		if(this.players[i].id === playerid){
+	 			this.players[i].destroy();
+	 			this.players.splice(i,1);
+	 		}
+	 	};
+	 },
 
 	/**
 	 * Prepare a video element for further use with videojs
 	 * @param  domelement  videoel  The video element which should be prepared
 	 * @return void
 	 */
-	preparePlayer : function(videoel){
+	 preparePlayer : function(videoel){
 		// Add some classes
 		$dom.addClass(videoel, 'video-js');
 		$dom.addClass(videoel, 'afterglow');
@@ -99,7 +106,7 @@ afterglow = {
 	 * @param  domelement  videoel  The video element which should be prepared
 	 * @return {Object} The options object for videojs
 	 */
-	getPlayerOptions : function(videoel){
+	 getPlayerOptions : function(videoel){
 		// Prepare some options based on the elements attributes
 		// Preloading
 		if(videoel.getAttribute('data-preload') !== null){
@@ -159,24 +166,24 @@ afterglow = {
 		var children = {
 			controlBar: {
 				children: [
-					{
-						name: 'playToggle'
-					},
-					{
-						name: 'currentTimeDisplay'
-					},
-					{
-						name: 'durationDisplay'
-					},
-					{
-						name: 'progressControl'
-					},
-					{
-						name: 'volumeMenuButton',
-						volumeBar: {
-							vertical: false
-						}
+				{
+					name: 'playToggle'
+				},
+				{
+					name: 'currentTimeDisplay'
+				},
+				{
+					name: 'durationDisplay'
+				},
+				{
+					name: 'progressControl'
+				},
+				{
+					name: 'volumeMenuButton',
+					volumeBar: {
+						vertical: false
 					}
+				}
 				]
 			}
 		};
@@ -193,19 +200,19 @@ afterglow = {
 	 * @param  string The player's id
 	 * @return boolean false or object if found
 	 */
-	getPlayer : function (playerid){
-		for (var i = this.players.length - 1; i >= 0; i--) {
-			if(this.players[i].id === playerid)
-				return this.players[i];
-		};
-		return false;
-	},
+	 getPlayer : function (playerid){
+	 	for (var i = this.players.length - 1; i >= 0; i--) {
+	 		if(this.players[i].id === playerid)
+	 			return this.players[i];
+	 	};
+	 	return false;
+	 },
 
 	/**
 	 * Run some configurations on video.js to make it work for us
 	 * @return void
 	 */
-	configureVideoJS: function(){
+	 configureVideoJS: function(){
 		// Disable tracking
 		window.HELP_IMPROVE_VIDEOJS = false;
 	}
