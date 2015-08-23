@@ -1,7 +1,7 @@
 {
   "name": "afterglow",
   "description": "An easy to integrate HTML5 video player based on video.js.",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "maintainers": [
     {
       "name": "moay",
@@ -28,6 +28,7 @@
     "gulp-bump": "~0.3.1",
     "gulp-filter": "~3.0.1",
     "gulp-git": "~1.2.4",
-    "gulp-tag-version": "~1.3.0"
+    "gulp-tag-version": "~1.3.0",
+    "gulp-header": "~1.5.0"
   }
 }
