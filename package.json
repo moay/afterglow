@@ -1,7 +1,7 @@
 {
   "name": "afterglow",
   "description": "An easy to integrate HTML5 video player based on video.js.",
-  "version": "0.0.15",
+  "version": "0.0.24",
   "maintainers": [
     {
       "name": "moay",
