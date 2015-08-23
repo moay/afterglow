@@ -47,5 +47,5 @@ gulp.task('build', function(){
     .pipe(gulp.dest("./dist/"));
 });
 
-// Get release taks
+// Get release tasks
 require('gulp-release-tasks')(gulp);
