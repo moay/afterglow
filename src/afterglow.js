@@ -80,10 +80,11 @@ afterglow = {
 
 		// Set the skin
 		var skin = 'afterglow';
-		if(videoel.getAttribute('data-skin') !== null)
-		{
-			skin = videoel.getAttribute('data-skin');
-		}
+		// WILL BE ADDED LATER
+		// if(videoel.getAttribute('data-skin') !== null)
+		// {
+		// 	skin = videoel.getAttribute('data-skin');
+		// }
 		videoel.skin = skin;
 		$dom.addClass(videoel, 'vjs-'+skin+'-skin');
 
@@ -155,7 +156,10 @@ afterglow = {
 				"type": "video/youtube",
 				"src": 'https://www.youtube.com/watch?v='+videoel.getAttribute('data-youtube-id')
 			}];
-			options.techOrder = ['youtube', 'html5', 'flash'];
+			options.youtube = {
+				showinfo : 0
+			};
+			options.techOrder = ['youtube'];
 		}
 		if(videoel.getAttribute('data-vimeo-id') !== null && videoel.getAttribute('data-vimeo-id') !== '')
 		{

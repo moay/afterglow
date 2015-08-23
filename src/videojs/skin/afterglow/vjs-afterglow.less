@@ -123,6 +123,10 @@
 		font-family: 'Open Sans';
 		color:rgba(255,255,255,0.9);
 
+		@media(max-width:768px){
+			bottom:10px;
+		}
+
 		.background-color-with-alpha(@control-bg-color, @control-bg-alpha);
 
 		.div{
@@ -131,6 +135,14 @@
 			&:hover{
 				opacity:1;
 			}
+		}
+	}
+
+	&.vjs-youtube{
+		.vjs-control-bar{
+			width:auto;
+			left:100px;
+			right:100px;
 		}
 	}
 
@@ -245,6 +257,12 @@
 			content: @play-icon;
 			margin-left:1px;
 		}
+
+		@media(max-width:768px){
+			font-size:12px;
+			line-height:12px;
+			top:-3px;
+		}
 	}
 
 	&.vjs-playing .vjs-play-control:before {
@@ -282,6 +300,9 @@
 		width: auto;
 		padding-left:32px;
 
+		@media(max-width:768px){
+			font-size:11px;
+		}
 
 		&:before{
 			content: @volume-high-icon;
@@ -312,6 +333,10 @@
 		margin: 0;
 		background-color:rgba(255,255,255,0.3);
 		border-radius: 5px;
+
+		@media(max-width:768px){
+			width:40px;
+		}
 
 		.vjs-volume-handle {
 			width: 0px;
@@ -364,6 +389,11 @@
 		padding-left:0px;
 		top: 17px;
 		left:20px;
+
+		@media(max-width:768px){
+			left:10px;
+			top:15px;
+		}
 	
 		.vjs-menu-content {
 			height: 10px;
@@ -380,12 +410,21 @@
 	.vjs-volume-menu-button.vjs-volume-menu-button-horizontal:hover .vjs-menu{
 		width: 90px;
 
+		@media(max-width:768px){
+			width:60px;
+		}	
+
 		.vjs-menu-content {
 			height: 10px;
 			width: 60px;
 			left:-30px;
 			bottom:0;
 			box-shadow:none;
+
+			@media(max-width:768px){
+				width:40px;
+				left:-20px;
+			}
 		}
 	}
 	
@@ -544,9 +583,18 @@
 		line-height: 22px;
 		display:block;
 		width:auto;
+
+		@media(max-width:768px){
+			font-size:17px;
+			line-height:17px;
+		}
 	}
 	.vjs-current-time{
 		margin-left:30px;
+
+		@media(max-width:768px){
+			margin-left:20px;
+		}
 	}
 	.vjs-duration {
 		float:right;
@@ -573,6 +621,11 @@
 		right:26px;
 		display: none;
 		opacity:0;
+
+		@media(max-width:768px){
+			font-size:11px;
+			line-height:11px;
+		}
 
 		&:before {
 			content: @fullscreen-enter-icon;
