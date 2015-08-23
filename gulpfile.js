@@ -3,6 +3,13 @@
 var plugins = require('gulp-load-plugins')();
 var gulp = require('gulp');
 var tag_version = require('gulp-tag-version');
+var pkg = require('./package.json');
+var banner = ['/**',
+  ' * <%= pkg.name %> - <%= pkg.description %>',
+  ' * @link <%= pkg.homepage %>',
+  ' * @license <%= pkg.license %>',
+  ' */',
+  ''].join('\n');
 
 gulp.task('build', function(){
 	// Loading LESS files 
@@ -43,6 +50,8 @@ gulp.task('build', function(){
 	
 	// Minify the JavaScript 
 	.pipe(plugins.uglifyjs())
+
+	.pipe(plugins.header(banner, { pkg : pkg } ))
 	
 	// Finally write it to our destination (./dist/afterglow.min.js) 
 	.pipe(gulp.dest("./dist/"));
@@ -57,7 +66,6 @@ function inc(importance) {
         .pipe(gulp.dest('./'))
         // commit the changed version number 
         .pipe(plugins.git.commit('bumps package version'))
- 
         // read only one file to get the version number 
         .pipe(plugins.filter('package.json'))
         // **tag it in the repository** 
