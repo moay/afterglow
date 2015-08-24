@@ -8,6 +8,8 @@ var banner = ['/**',
   ' * <%= pkg.name %> - <%= pkg.description %>',
   ' * @link <%= pkg.homepage %>',
   ' * @license <%= pkg.license %>',
+  ' * ',
+  ' * <%= pkg.name %> includes some scripts provided under different licenses by their authors. Please see the project sources via <%= pkg.homepage %> in order to learn which projects are included and how you may use them.',
   ' */',
   ''].join('\n');
 
