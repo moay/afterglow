@@ -16,7 +16,8 @@ var banner = ['/**',
 gulp.task('build', function(){
 	// Loading LESS files 
 	return gulp.src([
-		"./src/videojs/skin/afterglow/vjs-afterglow.less"
+		"./src/videojs/skin/afterglow/vjs-afterglow.less",
+		"./src/lightbox/afterglow-lightbox.less"
 		])
 
 	// Convert LESS files to CSS 
