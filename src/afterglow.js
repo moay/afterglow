@@ -78,6 +78,14 @@ afterglow = {
 		var playerel = $dom.get(playerid)[0];
 		$dom.addClass(playerel, "afterglow-lightboxplayer");
 
+		// Prepare the element
+		if(playerel.hasAttribute("poster")){
+			playerel.removeAttribute("poster");
+		}
+		if(playerel.hasAttribute("data-poster")){
+			playerel.removeAttribute("data-poster");
+		}
+
 		linkel.onclick = function(e){
 			// Prevent the click event, IE8 compatible
 			e = e ? e : window.event;
@@ -111,15 +119,15 @@ afterglow = {
 		var playerid = playerel.getAttribute("id");
 
 		// Prepare the lightbox element
-		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
+		var wrapper = $dom.create("div.afterglow-lightbox-wrapper.hidden");
 		var cover = $dom.create("div.cover");
 		wrapper.appendChild(cover);
 		document.body.appendChild(wrapper);
 
 		// Prepare the player element add push it to the lightbox holder
 		var lightbox = $dom.create("div.afterglow-lightbox");
-		lightbox.appendChild(playerel);
 		wrapper.appendChild(lightbox);
+		lightbox.appendChild(playerel);
 
 		// initiate the player and launch it
 		afterglow.initPlayer(playerel);
