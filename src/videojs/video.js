@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 5.0.0-rc.60 <http://videojs.com/>
+ * Video.js 5.0.0-rc.62 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -16280,7 +16280,7 @@ setup.autoSetupTimeout(1, videojs);
  *
  * @type {String}
  */
-videojs.VERSION = '5.0.0-rc.60';
+videojs.VERSION = '5.0.0-rc.62';
 
 /**
  * The global options object. These are the settings that take effect

@@ -37,6 +37,7 @@ gulp.task('build', function(){
 	// Add all the javascript files in the correct order
 	.pipe(plugins.addSrc.append([
 		'./src/dollardom/dollardom.min.js',
+		'./src/lib/afterglow-lib.js',
 		'./src/videojs/video.js',
 		]))
 	.pipe(plugins.addSrc.append([
