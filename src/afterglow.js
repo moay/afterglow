@@ -33,19 +33,14 @@ afterglow = {
 	 * @return void
 	 */
 	initPlayer : function(videoel){
-		// Make sure to not double-initiate a player - means, we'll destroy if for sure.
-		this.destroyPlayer(videoel.getAttribute('id'));
-
 		// Prepare the player element for videojs
 		this.preparePlayer(videoel);
 
 		// Get the options object for videojs
-		var options = this.getPlayerOptions(videoel)
+		var options = this.getPlayerOptions(videoel);
 
 		// initiate videojs and do some post initiation stuff
-		var player = videojs(videoel, options, function(){
-
-		}).ready(function(){
+		var player = videojs(videoel, options).ready(function(){
 			// Apply the styles that might be needed by the skin
 			afterglow.applySkinStyles(player);
 
@@ -58,6 +53,16 @@ afterglow = {
 
 		// Push the player to the accessible ones
 		this.players.push(player);
+	},
+
+	/**
+	 * Re-initiate a player by its ID
+	 * @param  {string}  playerid  The id of the video element which should be converted
+	 * @return void
+	 */
+	reInitPlayer : function(playerid){
+		var player = $dom.get("video#"+playerid)[0];
+		this.initPlayer(player);
 	},
 
 	/**
@@ -83,38 +88,65 @@ afterglow = {
 		};
 	},
 
-	launchLightbox : function(playerel){
-		var playerid = playerel.getAttribute('id');
+	/**
+	 * Re-initiate a player lightbox by its player ID
+	 * @param  {string}  playerid  The id of the video element which should be converted
+	 * @return void
+	 */
+	reInitLightboxPlayer : function(playerid){
+		var lightboxplayers = $dom.get("a.afterglow, a.sublime");
+		for (var i = 0; i < lightboxplayers.length; i++){
+			if(lightboxplayers[i].getAttribute('href') === '#'+playerid){
+				this.initLightboxPlayer(lightboxplayers[i]);
+			}
+		}
+	},
 
-		// Destroy the player, just in case...
-		afterglow.destroyPlayer(playerid);
+	/**
+	 * Launches a lightbox containing the player and plays it
+	 * @param  {domelement} playerel  the video element to launch
+	 * @return void
+	 */
+	launchLightbox : function(playerel){
+		var playerid = playerel.getAttribute("id");
 
 		// Prepare the lightbox element
 		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
-		wrapper.appendChild($dom.create("div.cover"));
+		var cover = $dom.create("div.cover");
+		wrapper.appendChild(cover);
+		document.body.appendChild(wrapper);
 
 		// Prepare the player element add push it to the lightbox holder
 		var lightbox = $dom.create("div.afterglow-lightbox");
 		lightbox.appendChild(playerel);
 		wrapper.appendChild(lightbox);
 
-		// Set some defaults
-		playerel.setAttribute("autoplay", "false");
-		playerel.setAttribute("data-autoplay","false");
-
-		// append the lightbox to the DOM
-		document.body.appendChild(wrapper);
-
 		// initiate the player and launch it
 		afterglow.initPlayer(playerel);
+		afterglow.getPlayer(playerid).play();
 
 		// resize the lightbox and make it autoresize
 		afterglow.resizeLightbox();
-		window.onresize = function(){
-			afterglow.resizeLightbox();
-		}
+		addEventHandler(window,'resize',function(){ afterglow.resizeLightbox(); });
+
+		// bind the closing event
+		addEventHandler(cover,'click',function(){ afterglow.closeLightbox(); });
+
+		// bind the escape key
+		addEventHandler(window,'keyup',function(e){
+			// Fallback for IE8
+			e = e ? e : window.event;
+			if(e.keyCode == 27)
+			{
+				afterglow.closeLightbox();
+			}
+		});
 	},
 
+	/**
+	 * Resize the lightbox according to the media ratio
+	 * @return void
+	 */
 	resizeLightbox : function(){
 		// Get window width && height
 		var width = window.innerWidth
@@ -124,41 +156,74 @@ afterglow = {
 		|| document.documentElement.clientHeight
 		|| document.body.clientHeight;
 
-		// prepare the elements
+		// prepare the wrapper
 		var wrapper = $dom.get("div.afterglow-lightbox-wrapper")[0];
-		var playerel = $dom.get("div.afterglow-lightbox-wrapper video")[0];
-		$dom.style(wrapper,{"width":width, "height":height});
-		
-// NOT WORKING YET
 
-		// Get the player proportion
-		// var proportion = playerel.getAttribute('height') / playerel.getAttribute('width');
+		// Do if it exists
+		if(wrapper != undefined){
+			var playerel = $dom.get("div.afterglow-lightbox-wrapper video")[0];
+			$dom.style(wrapper,{"width":width, "height":height});
+			
+			var ratio = playerel.getAttribute("data-ratio");
 
-		// console.log(proportion);
-		// // Window is wide enough
-		// if(height/width > proportion)
-		// {
-		// 	console.log('true');
-		// }
-		// else{
-		// 	console.log('false');
-		// }
+			// Window is wide enough
+			if(height/width > ratio)
+			{
+				var playerwidth = width * .90;
+				var playerheight = playerwidth * ratio;
+			}
+			else{
+				var playerheight = height * .92;
+				var playerwidth = playerheight / ratio;
+			}
+			var playeroffsettop = ( height - playerheight ) / 2;
+			var playeroffsetleft = ( width - playerwidth ) / 2;
 
+			// Apply the height and width
+			$dom.style(playerel.parentNode.parentNode, {
+				"height": playerheight + "px",
+				"width": playerwidth + "px",
+				"top": playeroffsettop + "px",
+				"left": playeroffsetleft + "px" 
+			});
+		}
 	},
 
 	/**
-	 * Should destroy a player instance if it exists
-	 * @param  {string} playerid  The player's id
+	 * Closes the lightbox and resets the lightbox player so that it can be reopened
 	 * @return void
 	 */
-	destroyPlayer : function(playerid){
-	 	for (var i = this.players.length - 1; i >= 0; i--) {
-	 		if(this.players[i].id === playerid){
-	 			this.players[i].destroy();
-	 			this.players.splice(i,1);
-	 		}
-	 	};
-	 },
+	closeLightbox : function(){
+		// Get the needed elements
+		var wrapper = $dom.get("div.afterglow-lightbox-wrapper")[0];
+		
+		// Do if the wrapper exists
+		if(wrapper != undefined){
+			var playerel = $dom.get("div.afterglow-lightbox-wrapper video")[0];
+			var playerid = playerel.parentNode.getAttribute("id");
+
+			// Stop the player
+			afterglow.getPlayer(playerid).pause().exitFullscreen();
+
+			// Create a clone which can be added to the dom after deleting the old one.
+			var ratio = playerel.getAttribute("data-ratio");
+			var rawvideoel = playerel.cloneNode(true);
+
+			// destroy the player
+			afterglow.destroyPlayer(playerid);
+
+			// remove the lightbox
+			wrapper.parentNode.removeChild(wrapper);
+
+			// add the raw one
+			document.body.appendChild(rawvideoel);
+			rawvideoel.setAttribute("class","afterglow-lightboxplayer");
+			rawvideoel.setAttribute("id",playerid);
+
+			// Reinitiate the player, else it won't work the next time
+			afterglow.reInitLightboxPlayer(playerid);
+		}
+	},
 
 	/**
 	 * Prepare a video element for further use with videojs
@@ -167,34 +232,44 @@ afterglow = {
 	 */
 	preparePlayer : function(videoel){
 		// Add some classes
-		$dom.addClass(videoel, 'video-js');
-		$dom.addClass(videoel, 'afterglow');
+		$dom.addClass(videoel, "video-js");
+		$dom.addClass(videoel, "afterglow");
 
 		// Set the skin
-		var skin = 'afterglow';
+		var skin = "afterglow";
 		// WILL BE ADDED LATER
-		// if(videoel.getAttribute('data-skin') !== null)
+		// if(videoel.getAttribute("data-skin") !== null)
 		// {
-		// 	skin = videoel.getAttribute('data-skin');
+		// 	skin = videoel.getAttribute("data-skin");
 		// }
 		videoel.skin = skin;
-		$dom.addClass(videoel, 'vjs-'+skin+'-skin');
+		$dom.addClass(videoel, "vjs-"+skin+"-skin");
 
 		// Remove sublime stuff
-		$dom.removeClass(videoel, 'sublime');
+		$dom.removeClass(videoel, "sublime");
 
 		// Apply some stylings
-		if(videoel.getAttribute('data-autoresize') === 'fit' || $dom.hasClass(videoel, 'responsive')){
-			$dom.addClass(videoel, 'vjs-responsive');
-			var proportion = videoel.getAttribute('height') / videoel.getAttribute('width');
-			$dom.style(videoel, 'padding-top', (proportion * 100)+'%');
-			videoel.removeAttribute('width');
-			videoel.removeAttribute('height');
+		if(videoel.getAttribute("data-autoresize") === 'fit' || $dom.hasClass(videoel, "responsive")){
+			$dom.addClass(videoel, "vjs-responsive");
+			if(videoel.getAttribute("data-ratio")){
+				var ratio = videoel.getAttribute("data-ratio");
+			}
+			else if(!videoel.getAttribute("height") || !videoel.getAttribute("width"))
+			{
+				console.error("Please provide witdh and height for your video element.")
+			}
+			else{
+				var ratio = videoel.getAttribute("height") / videoel.getAttribute("width");
+			}
+			$dom.style(videoel, "padding-top", (ratio * 100)+"%");
+			videoel.removeAttribute("width");
+			videoel.removeAttribute("height");
+			videoel.setAttribute("data-ratio",ratio);
 		}
 
 		// Apply youtube class
-		if(videoel.getAttribute('data-youtube-id') !== null && videoel.getAttribute('data-youtube-id') !== ''){
-			$dom.addClass(videoel,'vjs-youtube');
+		if(videoel.getAttribute("data-youtube-id") !== null && videoel.getAttribute("data-youtube-id") !== ""){
+			$dom.addClass(videoel,"vjs-youtube");
 		}
 		
 	},
@@ -207,28 +282,28 @@ afterglow = {
 	getPlayerOptions : function(videoel){
 		// Prepare some options based on the elements attributes
 		// Preloading
-		if(videoel.getAttribute('data-preload') !== null){
-			var preload = videoel.getAttribute('data-preload');
-		} else if(videoel.getAttribute('preload') !== null){
-			var preload = videoel.getAttribute('preload');
+		if(videoel.getAttribute("data-preload") !== null){
+			var preload = videoel.getAttribute("data-preload");
+		} else if(videoel.getAttribute("preload") !== null){
+			var preload = videoel.getAttribute("preload");
 		} else {
 			var preload = "auto";
 		}
 
 		// Autoplay
-		if(videoel.getAttribute('data-autoplay') !== null){
-			var autoplay = videoel.getAttribute('data-autoplay');
-		} else if(videoel.getAttribute('autoplay') !== null){
-			var autoplay = videoel.getAttribute('autoplay');
+		if(videoel.getAttribute("data-autoplay") !== null){
+			var autoplay = videoel.getAttribute("data-autoplay");
+		} else if(videoel.getAttribute("autoplay") !== null){
+			var autoplay = videoel.getAttribute("autoplay");
 		} else {
 			var autoplay = false;
 		}
 
 		// Posterframe
-		if(videoel.getAttribute('data-poster') !== null){
-			var poster = videoel.getAttribute('data-poster');
-		} else if(videoel.getAttribute('poster') !== null){
-			var poster = videoel.getAttribute('poster');
+		if(videoel.getAttribute("data-poster") !== null){
+			var poster = videoel.getAttribute("data-poster");
+		} else if(videoel.getAttribute("poster") !== null){
+			var poster = videoel.getAttribute("poster");
 		} else {
 			var poster = false;
 		}
@@ -242,22 +317,19 @@ afterglow = {
 		};
 
 		// Prepare Youtube and Vimeo playback
-		if(videoel.getAttribute('data-youtube-id') !== null && videoel.getAttribute('data-youtube-id') !== '')
+		if(videoel.getAttribute("data-youtube-id") !== null && videoel.getAttribute("data-youtube-id") !== "")
 		{
 			options.sources = [{
 				"type": "video/youtube",
-				"src": 'https://www.youtube.com/watch?v='+videoel.getAttribute('data-youtube-id')
+				"src": "https://www.youtube.com/watch?v="+videoel.getAttribute("data-youtube-id")
 			}];
-			options.youtube = {
-				showinfo : 0
-			};
-			options.techOrder = ['youtube'];
+			options.techOrder = ["youtube"];
 		}
-		if(videoel.getAttribute('data-vimeo-id') !== null && videoel.getAttribute('data-vimeo-id') !== '')
-		{
-			options.src= 'https://vimeo.com/'+videoel.getAttribute('data-vimeo-id');
-			options.techOrder = ['vimeo', 'html5', 'flash'];
-		}
+		// if(videoel.getAttribute("data-vimeo-id") !== null && videoel.getAttribute("data-vimeo-id") !== "")
+		// {
+		// 	options.src= "https://vimeo.com/"+videoel.getAttribute("data-vimeo-id");
+		// 	options.techOrder = ['vimeo", "html5", "flash'];
+		// }
 
 		// Get the skin buttons that are needed
 		options.children = this.getSkinControls(videoel.skin);
@@ -276,19 +348,19 @@ afterglow = {
 			controlBar: {
 				children: [
 				{
-					name: 'playToggle'
+					name: "playToggle"
 				},
 				{
-					name: 'currentTimeDisplay'
+					name: "currentTimeDisplay"
 				},
 				{
-					name: 'durationDisplay'
+					name: "durationDisplay"
 				},
 				{
-					name: 'progressControl'
+					name: "progressControl"
 				},
 				{
-					name: 'volumeMenuButton',
+					name: "volumeMenuButton",
 					inline:true
 				}
 				]
@@ -304,7 +376,7 @@ afterglow = {
 	 */
 	applySkinStyles : function(player){
 		// If there will be other skins, they will be added here. For now, we just output the 'afterglow' skin children
-		player.addChild('fullscreenToggle');
+		player.addChild("fullscreenToggle");
 	},
 
 	/**
@@ -314,10 +386,25 @@ afterglow = {
 	 */
 	getPlayer : function (playerid){
 	 	for (var i = this.players.length - 1; i >= 0; i--) {
-	 		if(this.players[i].id === playerid)
+			if(this.players[i].id() === playerid){
 	 			return this.players[i];
+			}
 	 	};
 	 	return false;
+	 },
+
+	/**
+	 * Should destroy a player instance if it exists
+	 * @param  {string} playerid  The player's id
+	 * @return void
+	 */
+	destroyPlayer : function(playerid){
+	 	for (var i = this.players.length - 1; i >= 0; i--) {
+	 		if(this.players[i].id() === playerid){
+	 			this.players[i].dispose();
+	 			this.players.splice(i,1);
+	 		}
+	 	};
 	 },
 
 	/**
