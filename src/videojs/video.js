@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 5.0.0-rc.62 <http://videojs.com/>
+ * Video.js 5.0.0-rc.63 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -8058,6 +8058,9 @@ var Player = (function (_Component) {
    */
 
   Player.prototype.addTechControlsListeners = function addTechControlsListeners() {
+    // Make sure to remove all the previous listeners in case we are called multiple times.
+    this.removeTechControlsListeners();
+
     // Some browsers (Chrome & IE) don't trigger a click on a flash swf, but do
     // trigger mousedown/up.
     // http://stackoverflow.com/questions/1444562/javascript-onclick-event-over-flash-object
@@ -9456,7 +9459,6 @@ var Player = (function (_Component) {
       if (this.usingNativeControls_ !== bool) {
         this.usingNativeControls_ = bool;
         if (bool) {
-          this.removeTechControlsListeners();
           this.addClass('vjs-using-native-controls');
 
           /**
@@ -9469,7 +9471,6 @@ var Player = (function (_Component) {
             */
           this.trigger('usingnativecontrols');
         } else {
-          this.addTechControlsListeners();
           this.removeClass('vjs-using-native-controls');
 
           /**
@@ -16280,7 +16281,7 @@ setup.autoSetupTimeout(1, videojs);
  *
  * @type {String}
  */
-videojs.VERSION = '5.0.0-rc.62';
+videojs.VERSION = '5.0.0-rc.63';
 
 /**
  * The global options object. These are the settings that take effect
