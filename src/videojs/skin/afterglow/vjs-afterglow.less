@@ -18,17 +18,20 @@
 /* SKIN */
 
 // Icon font character values
-@play-icon: "\e604";
-@pause-icon: "\e603";
-@volume-muted-icon: "\e60b";
-@volume-low-icon: "\e609";
-@volume-mid-icon: "\e60a";
-@volume-high-icon: "\e608";
-@fullscreen-enter-icon: "\e601";
-@fullscreen-exit-icon: "\e602";
+@play-icon: "\e602";
+@pause-icon: "\e60a";
+@volume-muted-icon: "\e603";
+@volume-low-icon: "\e606";
+@volume-mid-icon: "\e607";
+@volume-high-icon: "\e605";
+@fullscreen-enter-icon: "\e608";
+@fullscreen-exit-icon: "\e609";
 @spinner-icon: "\e00a";
-@subtitles-icon: "\e607";
+@subtitles-icon: "\e60d";
 @captions-icon: "\e600";
+@lightboxclose-icon: "\e601";
+@highres-icon: "\e60b";
+@lowres-icon: "\e60c";
 // @chapters-icon: "\e00c";
 // @share-icon: "\e00e";
 // @cog-icon: "\e600";
@@ -39,7 +42,7 @@
 // Icon font
 @font-face {
 	font-family: 'afterglow-icon';
-	src: url(data:font/truetype;charset=utf-8;base64,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) format('truetype');
+	src: url(data:font/truetype;charset=utf-8;base64,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) format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -68,10 +71,24 @@
 		-webkit-border-radius: 10px;
 		margin: 0 30px;
 
+		@media(max-width:768px){
+			margin: 0 20px;
+		}
+		@media(max-width:512px){
+			margin: 0 12px;
+		}
+
 		.background-color-with-alpha(@slider-background-color, @slider-background-alpha);
 
 		&:hover{
 			margin: 0 30px; /* Overwriting defaults */
+
+			@media(max-width:768px){
+				margin: 0 20px;
+			}
+			@media(max-width:512px){
+				margin: 0 12px;
+			}
 		}
 
 		&:focus{
@@ -119,7 +136,10 @@
 		color:rgba(255,255,255,0.9);
 
 		@media(max-width:768px){
-			bottom:10px;
+			bottom:7px;
+		}
+		@media(max-width:512px){
+			bottom:0px;
 		}
 
 		.background-color-with-alpha(@control-bg-color, @control-bg-alpha);
@@ -199,14 +219,19 @@
 		text-align: center;
 		margin: 0;
 		padding: 0;
-		height: 3.0em;
-		width: 4em;
+		height: 40px;
+		width: auto;
+
+		@media(max-width:768px){
+			height:30px;
+		}
 
 		/* Font button icons */
 		&:before {
 			font-family: 'afterglow-icon';
-			font-size: 1.5em;
-			line-height: 2;
+			font-size: 17px;
+			line-height: 18px;
+			padding-top:10px;
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -215,6 +240,18 @@
 			text-align: center;
 			opacity:.9;
 			text-shadow:0 0 0 rgba(255,255,255,0);
+
+			@media(max-width:768px){
+				font-size:13px;
+				line-height:13px;
+				padding-top:9px;
+			}
+
+			@media(max-width:512px){
+				font-size:11px;
+				line-height:11px;
+				padding-top:6px;
+			}
 		}
 
 		/* Replacement for focus outline */
@@ -245,18 +282,30 @@
 		position:absolute;
 		left:50%;
 		margin-left:-25px;
-		font-size:17px;
-		top:-5px;
+
+		@media(max-width:512px){
+			position:relative;
+			left:auto;
+			margin-left:0;
+			width:25px;
+		}
 
 		&:before{
 			content: @play-icon;
 			margin-left:1px;
-		}
+			font-size:22px;
 
-		@media(max-width:768px){
-			font-size:12px;
-			line-height:12px;
-			top:-3px;
+			@media(max-width:768px){
+				font-size:20px;
+				line-height:22px;
+				top:-5px;
+			}
+
+			@media(max-width:512px){
+				font-size:10px;
+				line-height:10px;
+				top:0px;
+			}
 		}
 	}
 
@@ -279,8 +328,8 @@
 		text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 
 		&.vjs-menu-button .vjs-menu .vjs-menu-content {
-			width: 4em;
-			left: -2em;
+			width: 30px;
+			left: 15px;
 			list-style: none;
 		}
 	}
@@ -291,13 +340,9 @@
 	.vjs-volume-menu-button {
 		cursor: pointer;
 		float: right;
-		font-size:13px;
 		width: auto;
 		padding-left:32px;
-
-		@media(max-width:768px){
-			font-size:11px;
-		}
+		margin-left:40px;
 
 		&:before{
 			content: @volume-high-icon;
@@ -315,46 +360,20 @@
 		&.vjs-vol-2:before{
 			content: @volume-mid-icon;
 		}
+
+		@media(max-width:768px){
+			margin-left:29px;
+		}
+
+		@media(max-width:512px){
+			height:26px;
+			padding-left:27px;
+			margin-left:18px;
+		}
 	}
 
 	.vjs-volume-control {
 		float: right;
-	}
-	
-	.vjs-volume-bar,
-	.vjs-volume-bar.vjs-slider-horizontal {
-		width: 60px;
-		height: 5px;
-		margin: 0;
-		background-color:rgba(255,255,255,0.3);
-		border-radius: 5px;
-
-		@media(max-width:768px){
-			width:40px;
-		}
-
-		.vjs-volume-handle {
-			width: 0px;
-			height: 0px;
-			/* Assumes volume starts at 1.0. If you change the size of the
-				handle relative to the volume bar, you'll need to update this value
-				too. 
-			*/
-			left: 100%;
-
-			&:before {
-				display:none;
-			}
-		}
-
-		.vjs-volume-level{
-			height:4px;
-			border-radius:4px;
-
-			&:before{
-				display:none;
-			}
-		}
 	}
 
 	.vjs-volume-level {
@@ -382,57 +401,115 @@
 		border-top-color: transparent;
 		position:relative;
 		padding-left:0px;
-		top: 17px;
-		left:20px;
+		top: 0px;
+		padding-top:17px;
+		padding-bottom:17px;
+		left:0px;
+		.transition(all 0.2s);
 
 		@media(max-width:768px){
-			left:10px;
-			top:15px;
+			left:0;
+			padding-top:13px;
+			padding-bottom:12px;
 		}
 	
 		.vjs-menu-content {
 			height: 10px;
 			width: 0px;
 			float:right;
+			left:0;
 			box-shadow:none;
 			background:transparent;
 			position:relative;
 			bottom:auto;
+			.transition(all 0.2s);
 		}
 	}
 
 	.vjs-volume-menu-button:hover .vjs-menu,
 	.vjs-volume-menu-button.vjs-volume-menu-button-horizontal:hover .vjs-menu{
-		width: 90px;
+		width: 61px;
 
 		@media(max-width:768px){
-			width:60px;
-		}	
+			padding-left:5px;
+			padding-right:5px;
+			width: 50px;
+		}
+		@media(max-width:500px){
+			display:none;
+
+			&.vjs-lock-showing{
+				display:none !important;
+			}
+		}
 
 		.vjs-menu-content {
 			height: 10px;
-			width: 60px;
-			left:-30px;
+			width: 61px;
 			bottom:0;
+			left:0;
 			box-shadow:none;
+			.transition(all 0.2s);
 
 			@media(max-width:768px){
-				width:40px;
-				left:-20px;
+				width:41px;
+				left:-5px;
 			}
+			@media(max-width:500px){
+				display:none;
+			}
+		}
+	}
+	
+	.vjs-volume-bar,
+	.vjs-volume-bar.vjs-slider-horizontal {
+		width: 0;
+		left:1px;
+		height: 5px;
+		margin: 0;
+		background-color:rgba(255,255,255,0.3);
+		border-radius: 5px;
+		.transition(all 0.2s);
+
+		@media(max-width:768px){
+			width:0;
+		}
+
+		.vjs-volume-handle {
+			width: 0px;
+			height: 0px;
+			/* Assumes volume starts at 1.0. If you change the size of the
+				handle relative to the volume bar, you'll need to update this value
+				too. 
+			*/
+			left: 100%;
+
+			&:before {
+				display:none;
+			}
+		}
+
+		.vjs-volume-level{
+			height:4px;
+			border-radius:4px;
+
+			&:before{
+				display:none;
+			}
+		}
+	}
+	.vjs-volume-menu-button:hover .vjs-menu .vjs-volume-bar.vjs-slider-horizontal,
+	.vjs-volume-menu-button.vjs-volume-menu-button-horizontal:hover .vjs-menu .vjs-volume-bar.vjs-slider-horizontal{
+		width:60px;
+
+		@media(max-width:768px){
+			width:40px;
 		}
 	}
 	
 	.vjs-menu-button-popup .vjs-menu{
 		position:relative;
 		float:right;
-	}
-
-	.vjs-menu-button-inline{
-		width:auto;
-		&:hover{
-			width:auto;
-		}
 	}
 
 
@@ -455,6 +532,11 @@
 			top:-11px;
 			height:9px;
 			.transition(all 0.0s);
+
+			@media(max-width:768px){
+				top:-9px;
+				height:7px;
+			}
 		}
 	}
 
@@ -531,10 +613,6 @@
 	.vjs-seek-handle {
 		width: 10px;
 		height: 100%;
-
-		&:before {
-			padding-top: 0.1em /* Minor adjustment */;
-		}
 	}
 
 	/* Live Mode
@@ -575,6 +653,7 @@
 		margin-top:7px;
 		padding: 0;
 		font-weight: 100;
+		font-size:21px;
 		line-height: 22px;
 		display:block;
 		width:auto;
@@ -583,6 +662,11 @@
 			font-size:17px;
 			line-height:17px;
 		}
+		@media(max-width:512px){
+			font-size:14px;
+			line-height:14px;
+			margin-top:5px;
+		}
 	}
 	.vjs-current-time{
 		margin-left:30px;
@@ -590,69 +674,129 @@
 		@media(max-width:768px){
 			margin-left:20px;
 		}
+
+		@media(max-width:512px){
+			margin-left:12px;
+		}
 	}
 	.vjs-duration {
 		float:right;
 		text-align:right;
 		margin-right:30px;
-		padding-left:20px;
+		padding-left:10px;
+
+		@media(max-width:768px){
+			margin-right:20px;
+			padding-left:6px;
+		}
+
+		@media(max-width:512px){
+			margin-right:12px;
+			padding-left:2px;
+		}
 	}
 	/* Remaining time is in the HTML, but not included in afterglow design */
 	.vjs-remaining-time { display: none; float: right; }
 	.vjs-time-divider { float: left; line-height: 3em; }
+	
 
-	/* Fullscreen
-	--------------------------------------------------------------------------------
-	*/
-	.vjs-fullscreen-control {
-		width: 20px;
-		height:30px;
+	/*
+		TOP CONTROL BAR
+	 */
+	
+	.vjs-top-control-bar{
+		width:auto;
+		height:auto;
 		text-align:right;
-		line-height:13px;
-		font-size:13px;
-		cursor: pointer;
-		position: absolute;
-		top:16px;
+		position:absolute;
 		right:26px;
+		top:16px;
 		display: none;
 		opacity:0;
 
 		@media(max-width:768px){
-			font-size:11px;
-			line-height:11px;
+			top:10px;
+			right:18px;
 		}
 
-		&:before {
-			content: @fullscreen-enter-icon;
+		@media(max-width:512px){
+			top:6px;
+			right:10px;
 		}
 
-		&:hover{
-			opacity:1;
+		.vjs-control{
+			width: 20px;
+			height:30px;
+			text-align:right;
+			line-height:13px;
+			font-size:13px;
+			cursor: pointer;
+			opacity:0.9;
+			margin-left:20px;
+
+			@media(max-width:768px){
+				font-size:11px;
+				line-height:11px;
+				margin-left:16px;
+			}
+			@media(max-width:768px){
+				font-size:9px;
+				line-height:9px;
+				margin-left:5px;
+			}
+
+			&:hover{
+				opacity:1;
+			}
 		}
-	}
-	&.vjs-fullscreen .vjs-fullscreen-control:before {
-		content: @fullscreen-exit-icon;
+
+		.vjs-fullscreen-control {
+
+			&:before {
+				content: @fullscreen-enter-icon;
+			}
+		}
+		
+		.vjs-lightbox-close-button{
+
+			&:before {
+				content: @lightboxclose-icon;
+			}
+		}
 	}
 
 	/* Show the control bar only once the video has started playing */
-	&.vjs-has-started .vjs-fullscreen-control {
+	&.vjs-has-started .vjs-top-control-bar {
 		display: block;
 		/* Visibility needed to make sure things hide in older browsers too. */
 		visibility: visible;
-		opacity: 0.9;
+		opacity:1;
 
 		@trans: visibility 0.1s, opacity 0.1s; // Var needed because of comma
 		.transition(@trans);
+
+		.vjs-control{
+			opacity:0.9;
+			@trans: visibility 0.1s, opacity 0.1s; // Var needed because of comma
+			.transition(@trans);
+		}
 	}
 
-	/* Hide the control bar when the video is playing and the user is inactive  */
-	&.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-fullscreen-control {
+	&.vjs-has-started.vjs-user-inactive.vjs-playing  .vjs-top-control-bar{
 		display: block;
 		visibility: hidden;
-		opacity: 0;
+		opacity:0;
 
 		@trans: visibility 1.0s, opacity 1.0s;
 		.transition(@trans);
+
+		.vjs-control{
+			opacity: 0.9;
+		}
+	}
+
+	&.vjs-fullscreen .vjs-fullscreen-control:before {
+		content: @fullscreen-exit-icon;
 	}
 
 	/* Big Play Button (play button at start)
@@ -720,6 +864,14 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
+
+		@media(max-width:768px){
+			font-size:60px;
+		}
+
+		@media(max-width:512px){
+			font-size:40px;
+		}
 	}
 
 	.vjs-error .vjs-big-play-button {
@@ -856,6 +1008,14 @@
 	.vjs-menu-button {
 		float: right;
 		cursor: pointer;
+
+		&.vjs-menu-button-inline{
+			width:auto;
+
+			&:before{
+				width:30px;
+			}
+		}
 	}
 
 	.vjs-menu {
@@ -871,19 +1031,28 @@
 	/* Button Pop-up Menu */
 	.vjs-menu-button .vjs-menu .vjs-menu-content {
 		display: block;
-		padding: 0;
-		padding-left:20px 
+		padding: 0 0 70px 0;
 		margin: 0;
-		position: relative;
+		position: absolute;
+		bottom:-50px;
 		width: 100px;
-		bottom: auto; /* Same bottom as vjs-menu border-top */
-		max-height: 15em;
+		max-height: none;
 		overflow: auto;
+		left: 28px;
+		font-family: 'Open Sans', Helvetica Light, Helvetica, sans-serif;
+		background: transparent;
 
-		left: auto; /* Width of menu - width of button / 2 */
+		@media(max-width:768px){
+			left:24px;
+			bottom:-40px;
+			padding-bottom: 60px;
+		}
 
-		.background-color-with-alpha(@control-bg-color, @control-bg-alpha);
-		.box-shadow(-0.2em -0.2em 0.3em rgba(255, 255, 255, 0.2));
+		@media(max-width:512px){
+			left:23px;
+			bottom:-30px;
+			padding-bottom: 50px;
+		}
 	}
 
 	.vjs-menu-button:hover .vjs-control-content .vjs-menu,
@@ -897,25 +1066,28 @@
 	.vjs-menu-button ul li {
 		list-style: none;
 		margin: 0;
-		padding: 0.3em 0 0.3em 0;
-		line-height: 1.4em;
-		font-size: 1.2em;
+		padding: 0 5px;
+		line-height: 16px;
+		font-size: 14px;
 		text-align: center;
 		text-transform: lowercase;
+		opacity:.7;
+		text-shadow:0 0 0 rgba(255,255,255,0);
 
 		&.vjs-selected {
-			background-color: #fff;
+			text-shadow: 0 0 5px rgba(255, 255, 255, .6);
+			opacity:1;
+			background:transparent
 		}
 
 		&:hover,
 		&:focus,
 		&.vjs-selected:focus,
 		&.vjs-selected:hover {
-			outline: 0;
-			color: #111;
-
-			.background-color-with-alpha(rgb(255, 255, 255), 0.75);
-			.box-shadow(0 0 1em rgba(255, 255, 255, 1));
+			text-shadow: 0 0 5px rgba(255, 255, 255, .6);
+			opacity:1;
+			background:transparent;
+			color:white;
 		}
 
 		&.vjs-menu-title {
@@ -938,6 +1110,52 @@
 	/* Captions Button */
 	.vjs-captions-button:before {
 		content: @captions-icon;
+	}
+	
+	/* Stylings for Webkit browsers. Not very stable, but worth a try */
+	video::-webkit-media-text-track-container {
+		bottom: 40px;
+		.transition(all 0.3s);
+
+		@media(max-width:768px){
+			bottom:20px;
+		}
+		@media(max-width:512px){
+			bottom:10px;
+		}
+	}
+
+	video::-webkit-media-text-track-background {
+		background-color: rgba(0,0,0,0.5);
+		border-radius: 3px;
+		padding: 10px 14px;
+	}
+
+	video::-webkit-media-text-track-display {
+		color: white;
+		font-family: Open Sans, Georgia;
+		font-size: 16px;
+		padding: 5px 10px 8px 10px;
+
+		@media(max-width:768px){
+			font-size:14px;
+		}
+		@media(max-width:512px){
+			font-size:11px;
+		}
+	}
+
+	&.vjs-user-active{
+		video::-webkit-media-text-track-container {
+			bottom: 70px;
+
+			@media(max-width:768px){
+				bottom:40px;
+			}
+			@media(max-width:512px){
+				bottom:30px;
+			}
+		}
 	}
 
 	/* Chapters Button 
@@ -1131,10 +1349,7 @@ and the native poster can take over */
 /* Overall track holder for both captions and subtitles */
 .video-js .vjs-text-track-display {
 	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 3em;
-	right: 0;
+	bottom: 50px;
 	pointer-events: none;
 }
 

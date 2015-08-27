@@ -25,6 +25,7 @@ afterglow = {
 			this.initLightboxPlayer(lightboxplayers[i]);
 		}
 
+
 	},
 
 	/**
@@ -47,6 +48,7 @@ afterglow = {
 		var player = videojs(videoel, options).ready(function(){
 			// Apply the styles that might be needed by the skin
 			afterglow.applySkinStyles(player);
+
 
 			// Enable hotkeys
 			this.hotkeys({
@@ -200,10 +202,11 @@ afterglow = {
 
 		// Set the options
 		var options = {
-			"controls" : true,
-			"preload" : preload,
-			"autoplay" : autoplay,
-			"poster" : poster
+			controls : true,
+			preload : preload,
+			autoplay : autoplay,
+			poster : poster,
+			techOrder : ["html5","flash"]
 		};
 
 		// Get the skin buttons that are needed
@@ -220,24 +223,37 @@ afterglow = {
 	getSkinControls : function(skin){
 		// If there will be other skins to know, they will be added here. For now, we just output the 'afterglow' skin children
 		var children = {
+			TopControlBar: {
+				children: [
+					{
+						name: "fullscreenToggle"
+					}
+				]
+			},
 			controlBar: {
 				children: [
-				{
-					name: "playToggle"
-				},
-				{
-					name: "currentTimeDisplay"
-				},
-				{
-					name: "durationDisplay"
-				},
-				{
-					name: "progressControl"
-				},
-				{
-					name: "volumeMenuButton",
-					inline:true
-				}
+					{
+						name: "currentTimeDisplay"
+					},
+					{
+						name: "playToggle"
+					},
+					{
+						name: "durationDisplay"
+					},
+					{
+						name: "progressControl"
+					},
+					{
+						name: "volumeMenuButton",
+						inline:true
+					},
+					{
+						name: "subtitlesButton"
+					},
+					{
+						name: "captionsButton"
+					}
 				]
 			}
 		};
@@ -250,8 +266,7 @@ afterglow = {
 	 * @return {void}
 	 */
 	applySkinStyles : function(player){
-		// If there will be other skins, they will be added here. For now, we just output the 'afterglow' skin children
-		player.addChild("fullscreenToggle");
+		// nothing to do here yet
 	},
 
 	/**
@@ -321,9 +336,21 @@ afterglow = {
 		var playerid = videoel.getAttribute("id");
 
 		// Prepare the lightbox element
-		var wrapper = $dom.create("div.afterglow-lightbox-wrapper.hidden");
+		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
 		var cover = $dom.create("div.cover");
 		wrapper.appendChild(cover);
+
+		// Check for native playback
+		if(document.querySelector('video').controls){
+			$dom.addClass(wrapper, 'hidden');
+
+			// Bind the closing event to closing the lightbox too
+			// This is untested and needs testing on real phones
+			addEventHandler(videoel,'webkitendfullscreen',function(){
+				afterglow.closeLightbox();
+			});
+		}
+
 		document.body.appendChild(wrapper);
 
 		// Prepare the player element add push it to the lightbox holder
@@ -335,9 +362,17 @@ afterglow = {
 		afterglow.initPlayer(videoel);
 		afterglow.getPlayer(playerid).play();
 
+		// Add the closing button
+		var lightboxCloseButton = afterglow.getPlayer(playerid).TopControlBar.addChild("LightboxCloseButton");
+		lightboxCloseButton.on('click', function(){
+			afterglow.closeLightbox();
+		})
+
 		// resize the lightbox and make it autoresize
 		afterglow.resizeLightbox();
-		addEventHandler(window,'resize',function(){ afterglow.resizeLightbox(); });
+		addEventHandler(window,'resize',function(){
+			afterglow.resizeLightbox();
+		});
 
 		// bind the closing event
 		addEventHandler(cover,'click',function(){ afterglow.closeLightbox(); });

@@ -3,17 +3,24 @@
 var plugins = require('gulp-load-plugins')();
 var gulp = require('gulp');
 var tag_version = require('gulp-tag-version');
+var del = require('del');
 var pkg = require('./package.json');
-var banner = ['/**',
-  ' * <%= pkg.name %> - <%= pkg.description %>',
-  ' * @link <%= pkg.homepage %>',
-  ' * @license <%= pkg.license %>',
-  ' * ',
-  ' * <%= pkg.name %> includes some scripts provided under different licenses by their authors. Please see the project sources via <%= pkg.homepage %> in order to learn which projects are included and how you may use them.',
-  ' */',
-  ''].join('\n');
 
-gulp.task('build', function(){
+var banner = ['/**',
+' * <%= pkg.name %> - <%= pkg.description %>',
+' * @link <%= pkg.homepage %>',
+' * @license <%= pkg.license %>',
+' * ',
+' * <%= pkg.name %> includes some scripts provided under different licenses by their authors. Please see the project sources via <%= pkg.homepage %> in order to learn which projects are included and how you may use them.',
+' */',
+''].join('\n');
+
+
+gulp.task('build', ['build-afterglow'], function(){
+    del(['./dist/tmp']);
+});
+
+gulp.task('build-afterglow', ['compilecomponents'], function(){
 	// Loading LESS files 
 	return gulp.src([
 		"./src/videojs/skin/afterglow/vjs-afterglow.less",
@@ -42,6 +49,7 @@ gulp.task('build', function(){
 		]))
 	.pipe(plugins.addSrc.append([
 		'./src/videojs/ie8/videojs-ie8.js',
+		'./dist/tmp/components.js',
 		'./src/videojs/plugins/videojs.hotkeys.js',
 		'./src/videojs/plugins/Youtube.js',
 		]))
@@ -53,12 +61,27 @@ gulp.task('build', function(){
 	.pipe(plugins.concat("afterglow.min.js"))
 	
 	// Minify the JavaScript 
-	.pipe(plugins.uglifyjs())
+	.pipe(plugins.uglify().on('error', plugins.util.log))
 
 	.pipe(plugins.header(banner, { pkg : pkg } ))
 	
 	// Finally write it to our destination (./dist/afterglow.min.js) 
 	.pipe(gulp.dest("./dist/"));
+});
+
+gulp.task('compilecomponents', function(){
+	return gulp.src([
+		'./src/videojs/components/TopControlBar.js',
+		'./src/videojs/components/LightboxCloseButton.js'
+	])
+	.pipe(plugins.browserify2({
+		fileName: 'components.js',
+		transform: require('6to5ify'),
+		options: {
+			debug: false
+		}
+	}))
+	.pipe(gulp.dest('dist/tmp/'));
 });
 
 function inc(importance) {
@@ -74,8 +97,9 @@ function inc(importance) {
         .pipe(plugins.filter('package.json'))
         // **tag it in the repository** 
         .pipe(tag_version());
+    
 }
- 
+
 gulp.task('patch', function() { return inc('patch'); })
 gulp.task('feature', function() { return inc('minor'); })
 gulp.task('release', function() { return inc('major'); })
