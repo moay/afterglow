@@ -12,9 +12,13 @@
   "licenses": [
     {
       "name": "MIT",
-      "url": ""
+      "url": "https://github.com/moay/afterglow/blob/master/LICENSE.md"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/moay/afterglow.git"
+  },
   "homepage": "http://afterglowplayer.com",
   "devDependencies": {
     "6to5ify": "^4.1.1",
