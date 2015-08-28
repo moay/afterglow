@@ -24,8 +24,6 @@ afterglow = {
 		for (var i = 0; i < lightboxplayers.length; i++){
 			this.initLightboxPlayer(lightboxplayers[i]);
 		}
-
-
 	},
 
 	/**
@@ -33,7 +31,7 @@ afterglow = {
 	 * @param  {domelement}  videoel  The video element which should be converted
 	 * @return void
 	 */
-	initPlayer : function(videoel){
+	initPlayer : function(videoel, _callback){
 		// Prepare the player element for videojs
 		this.preparePlayer(videoel);
 
@@ -49,12 +47,21 @@ afterglow = {
 			// Apply the styles that might be needed by the skin
 			afterglow.applySkinStyles(player);
 
-
 			// Enable hotkeys
 			this.hotkeys({
 				enableFullscreen: false,
 				enableNumbers: false
 			});
+
+			// Fix youtube poster
+			if(afterglow.isYoutubePlayer(videoel) && this.tech.poster != ""){
+				this.poster(this.tech.poster);
+			}
+
+			// Launch the callback if there is one
+			if(typeof _callback == "function"){
+				_callback();
+			}
 		})
 
 		// Push the player to the accessible ones
@@ -308,14 +315,16 @@ afterglow = {
 	 * get options to play youtube video correctly
 	 */
 	getYoutubeOptions : function(videoel){
-		var ytoptions = {};
 
-		// Prepare Youtube playback
-		ytoptions.sources = [{
-			"type": "video/youtube",
-			"src": "https://www.youtube.com/watch?v="+videoel.getAttribute("data-youtube-id")
-		}];
-		ytoptions.techOrder = ["youtube"];
+		var ytoptions = {
+			// color : "white",
+			showinfo : 0,
+			techOrder : ["youtube"],
+			sources : [{
+				"type": "video/youtube",
+				"src": "https://www.youtube.com/watch?v="+videoel.getAttribute("data-youtube-id")
+			}]
+		};
 
 		return ytoptions;
 	},
@@ -333,7 +342,11 @@ afterglow = {
 	 * @return void
 	 */
 	launchLightbox : function(videoel){
-		var playerid = videoel.getAttribute("id");
+		videoel.setAttribute("data-id", videoel.getAttribute("id"));
+		videoel.setAttribute("id","afterglow-lightbox-videoel");
+		var videoel = videoel.cloneNode(true);
+		var playerid = videoel.getAttribute("data-id");
+		videoel.setAttribute("id", playerid);
 
 		// Prepare the lightbox element
 		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
@@ -359,12 +372,13 @@ afterglow = {
 		lightbox.appendChild(videoel);
 
 		// initiate the player and launch it
-		afterglow.initPlayer(videoel);
-		afterglow.getPlayer(playerid).play();
+		afterglow.initPlayer(videoel, function(){
+			afterglow.getPlayer(playerid).play();
+		});
 
 		// Add the closing button
 		var lightboxCloseButton = afterglow.getPlayer(playerid).TopControlBar.addChild("LightboxCloseButton");
-		lightboxCloseButton.on('click', function(){
+		addEventHandler(lightboxCloseButton.el_,'click',function(){
 			afterglow.closeLightbox();
 		})
 
@@ -393,45 +407,71 @@ afterglow = {
 	 * @return void
 	 */
 	resizeLightbox : function(){
-		// Get window width && height
-		var width = window.innerWidth
-		|| document.documentElement.clientWidth
-		|| document.body.clientWidth;
-		var height = window.innerHeight
-		|| document.documentElement.clientHeight
-		|| document.body.clientHeight;
 
 		// prepare the wrapper
 		var wrapper = $dom.get("div.afterglow-lightbox-wrapper")[0];
 
 		// Do if it exists
 		if(wrapper != undefined){
-			var videoel = $dom.get("div.afterglow-lightbox-wrapper video")[0];
-			$dom.style(wrapper,{"width":width, "height":height});
+			var videoel = $dom.get("div.afterglow-lightbox-wrapper video");
 			
-			var ratio = videoel.getAttribute("data-ratio");
-
-			// Window is wide enough
-			if(height/width > ratio)
-			{
-				var playerwidth = width * .90;
-				var playerheight = playerwidth * ratio;
+			// Standard HTML5 player
+			if(videoel.length == 1){
+				videoel = videoel[0];				
+				var ratio = videoel.getAttribute("data-ratio");
 			}
 			else{
-				var playerheight = height * .92;
-				var playerwidth = playerheight / ratio;
+				// Youtube
+				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
+					playerel = $dom.get("div.afterglow-lightbox-wrapper .vjs-youtube")[0];
+					var ratio = playerel.getAttribute("data-ratio");
+				}
 			}
-			var playeroffsettop = ( height - playerheight ) / 2;
-			var playeroffsetleft = ( width - playerwidth ) / 2;
-
+			
+			// Calculate the new size of the player
+			var sizes = this.calculateLightboxSizes(ratio);
+			
 			// Apply the height and width
-			$dom.style(videoel.parentNode.parentNode, {
-				"height": playerheight + "px",
-				"width": playerwidth + "px",
-				"top": playeroffsettop + "px",
-				"left": playeroffsetleft + "px" 
+			$dom.style(wrapper,{"width":sizes.width, "height":sizes.height});
+			$dom.style($dom.get("div.afterglow-lightbox-wrapper div.afterglow-lightbox")[0], {
+				"height": sizes.playerheight + "px",
+				"width": sizes.playerwidth + "px",
+				"top": sizes.playeroffsettop + "px",
+				"left": sizes.playeroffsetleft + "px" 
 			});
 		}
+	},
+
+	/**
+	 * calculates the current lightbox size based on window width and height and on the players ratio
+	 * @param  {float} ratio   The players ratio
+	 * @return {object}        Some sizes which can be used
+	 */
+	calculateLightboxSizes : function(ratio){
+		var sizes = {};
+
+		// Get window width && height
+		sizes.width = window.innerWidth
+		|| document.documentElement.clientWidth
+		|| document.body.clientWidth;
+		sizes.height = window.innerHeight
+		|| document.documentElement.clientHeight
+		|| document.body.clientHeight;
+
+		// Window is wide enough
+		if(sizes.height/sizes.width > ratio)
+		{
+			sizes.playerwidth = sizes.width * .90;
+			sizes.playerheight = sizes.playerwidth * ratio;
+		}
+		else{
+			sizes.playerheight = sizes.height * .92;
+			sizes.playerwidth = sizes.playerheight / ratio;
+		}
+		sizes.playeroffsettop = ( sizes.height - sizes.playerheight ) / 2;
+		sizes.playeroffsetleft = ( sizes.width - sizes.playerwidth ) / 2;
+
+		return sizes;
 	},
 
 	/**
@@ -450,21 +490,17 @@ afterglow = {
 			// Stop the player
 			afterglow.getPlayer(playerid).pause().exitFullscreen();
 
-			// Create a clone which can be added to the dom after deleting the old one.
-			var ratio = videoel.getAttribute("data-ratio");
-			var rawvideoel = videoel.cloneNode(true);
-
 			// destroy the player
 			afterglow.destroyPlayer(playerid);
 
 			// remove the lightbox
 			wrapper.parentNode.removeChild(wrapper);
 
-			// add the raw one
-			document.body.appendChild(rawvideoel);
-			rawvideoel.setAttribute("class","afterglow-lightboxplayer");
-			rawvideoel.setAttribute("id",playerid);
-
+			// reset the initial video element
+			var videoel = $dom.get("#afterglow-lightbox-videoel")[0];
+			videoel.setAttribute("id", playerid);
+			videoel.removeAttribute("data-id");
+			
 			// Reinitiate the player, else it won't work the next time
 			afterglow.reInitLightboxPlayer(playerid);
 		}

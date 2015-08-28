@@ -43,17 +43,19 @@ THE SOFTWARE. */
       if (!_isOnMobile && !this.options_.ytControls) {
         var divBlocker = document.createElement('div');
         divBlocker.setAttribute('class', 'vjs-iframe-blocker');
-        divBlocker.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%');
+        divBlocker.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;display:block');
 
         // In case the blocker is still there and we want to pause
         divBlocker.onclick = function() {
-          this.pause();
+          // this.pause();
         }.bind(this);
 
         divWrapper.appendChild(divBlocker);
       }
 
       if (Youtube.isApiReady) {
+        // Has to be reset because it gets lost when the player is not pushed to the apiReadyQueue
+        this.setSrc(this.options_.source, true);
         this.initYTPlayer();
       } else {
         Youtube.apiReadyQueue.push(this);
@@ -65,7 +67,7 @@ THE SOFTWARE. */
     initYTPlayer: function() {
       var playerVars = {
         controls: 0,
-        modestbranding: 1,
+        // modestbranding: 1,
         rel: 0,
         showinfo: 0,
         loop: this.options_.loop ? 1 : 0
