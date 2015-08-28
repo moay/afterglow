@@ -52,6 +52,11 @@
 */
 
 .vjs-afterglow-skin {
+	&:focus,
+	*:focus {
+		outline:0;
+	}
+
 	color: @main-font-color;
 
 	video{
@@ -126,7 +131,7 @@
 		position: absolute;
 		/* Place control bar at the bottom of the player box/video.
 		 If you want more margin below the control bar, add more height. *///
-		bottom: 21px;
+		bottom: 16px;
 		/* Use left/right to stretch to 100% width of player div *///
 		left: 0;
 		right: 0;
@@ -150,14 +155,6 @@
 			&:hover{
 				opacity:1;
 			}
-		}
-	}
-
-	&.vjs-youtube{
-		.vjs-control-bar{
-			width:auto;
-			left:100px;
-			right:100px;
 		}
 	}
 
@@ -710,7 +707,7 @@
 		text-align:right;
 		position:absolute;
 		right:26px;
-		top:16px;
+		top:13px;
 		display: none;
 		opacity:0;
 
@@ -793,10 +790,6 @@
 		.vjs-control{
 			opacity: 0.9;
 		}
-	}
-
-	&.vjs-fullscreen .vjs-fullscreen-control:before {
-		content: @fullscreen-exit-icon;
 	}
 
 	/* Big Play Button (play button at start)
@@ -1216,6 +1209,41 @@
 		top:0;
 	}
 
+	&.vjs-youtube{
+		iframe{
+			display:none;
+		}
+
+		&.vjs-has-started{
+			iframe{
+				display:block;
+			}
+		}
+		
+		.vjs-control-bar{
+			right:80px;
+			width:auto;
+		
+			.transition(all .1s);
+			.transition-delay(.4s);
+		}
+
+		&.vjs-has-started{
+			.vjs-control-bar{
+				right:0;
+				.transition(all .3s);
+				.transition-delay(.4s);
+			}
+			&.vjs-paused, &.vjs-ended{
+				.vjs-control-bar{
+					right:80px;
+					width:auto;
+					.transition(all .1s);
+				}
+			}
+		}
+	}
+
 }
 
 
@@ -1281,19 +1309,6 @@ body.vjs-full-window {
 	height: 100%;
 	/* Fix for IE6 full-window. http://www.cssplay.co.uk/layouts/fixed.html *///
 	overflow-y: auto;
-}
-.video-js.vjs-fullscreen {
-	position: fixed;
-	overflow: hidden;
-	z-index: 1000;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	width: 100% !important;
-	height: 100% !important;
-	/* IE6 full-window (underscore hack) *///
-	_position: absolute;
 }
 .video-js.vjs-fullscreen.vjs-user-inactive {
 	cursor: none;
