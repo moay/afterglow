@@ -4,6 +4,8 @@ afterglow is a tool to create fully responsive and totally awesome video players
 
 The project is currently under heavy development and should not be considered usable yet.
 
+You can see a first demo of afterglow here: [afterglowplayer.com/sandbox](http://afterglowplayer.com/sandbox).
+
 ## Known issues
 
 As this is not even the first beta release, there will be some limitations. We currently are aware of these issues:
