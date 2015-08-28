@@ -59,12 +59,12 @@ This is a working basic example which will be opened in a lightbox.
 
 There are some parameters that you **must** pass to your video element in order to make it work.
 
-| Parameter  | Possible values (**default** bold)     | Explanation  |
-|---|---|---|
-| id |  | The id is used to identify your player. It must be unique within the page. |
-| class | | If you want to make this video element be initiated by afterglow, you must set it to **afterglow**. This doesn't apply if you want it to launch in a lightbox (see above). In this case, you must pass the class **afterglow** to the link you want to open the lightbox. |
-| width | | In order to make the player responsive, you must pass witdh and height to calculate a ratio for the video. They don't need to be exact, so you can as well pass 1920 / 1080 as 16 / 9. If you don't want the player to be reponsive, pass both values anyways, they will set the player width and height. |
-| height | | See *width*. |
+| Parameter  |  Explanation  |
+|---|---|
+| id   | The id is used to identify your player. It must be unique within the page. |
+| class | If you want to make this video element be initiated by afterglow, you must set it to **afterglow**. This doesn't apply if you want it to launch in a lightbox (see above). In this case, you must pass the class **afterglow** to the link you want to open the lightbox. |
+| width | In order to make the player responsive, you must pass witdh and height to calculate a ratio for the video. They don't need to be exact, so you can as well pass 1920 / 1080 as 16 / 9. If you don't want the player to be reponsive, pass both values anyways, they will set the player width and height. |
+| height | See *width*. |
 
 ## Optional player parameters
 
