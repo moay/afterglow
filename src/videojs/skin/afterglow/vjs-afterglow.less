@@ -24,7 +24,7 @@
 @volume-high-icon: "\e605";
 @fullscreen-enter-icon: "\e608";
 @fullscreen-exit-icon: "\e609";
-@spinner-icon: "\e00a";
+@spinner-icon: "\e604";
 @subtitles-icon: "\e60d";
 @captions-icon: "\e600";
 @lightboxclose-icon: "\e601";
@@ -936,16 +936,28 @@
 		top: 50%;
 		left: 50%;
 
-		font-size: 4em;
-		line-height: 1;
+		font-family: 'afterglow-icon';
+		font-size: 20px;
+		line-height: 20px;
 
-		width: 1em;
-		height: 1em;
+		width: 30px;
+		height: 30px;
 
-		margin-left: -0.5em;
-		margin-top: -0.5em;
+		margin-left: -15px;
+		margin-top: -15px;
 
 		opacity: 0.75;
+
+		&:before {
+			content: @spinner-icon;
+			font-family: 'afterglow-icon';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 20px;
+			height: 20px;
+			text-align: center;
+		}
 	}
 
 	/* Show the spinner when waiting for data and seeking to a new time */
@@ -963,19 +975,6 @@
 
 		/* ensure animation doesn't continue while hidden *///
 		.animation(none);
-	}
-
-	.vjs-loading-spinner:before {
-		content: @spinner-icon;
-		font-family: 'afterglow-icon';
-
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 1em;
-		height: 1em;
-		text-align: center;
-		text-shadow: 0em 0em 0.1em #000;
 	}
 
 	@-moz-keyframes spin {

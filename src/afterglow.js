@@ -344,9 +344,9 @@ afterglow = {
 	launchLightbox : function(videoel){
 		videoel.setAttribute("data-id", videoel.getAttribute("id"));
 		videoel.setAttribute("id","afterglow-lightbox-videoel");
-		var videoel = videoel.cloneNode(true);
-		var playerid = videoel.getAttribute("data-id");
-		videoel.setAttribute("id", playerid);
+		var lb_videoel = videoel.cloneNode(true);
+		var playerid = lb_videoel.getAttribute("data-id");
+		lb_videoel.setAttribute("id", playerid);
 
 		// Prepare the lightbox element
 		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
@@ -359,7 +359,7 @@ afterglow = {
 
 			// Bind the closing event to closing the lightbox too
 			// This is untested and needs testing on real phones
-			addEventHandler(videoel,'webkitendfullscreen',function(){
+			addEventHandler(lb_videoel,'webkitendfullscreen',function(){
 				afterglow.closeLightbox();
 			});
 		}
@@ -369,10 +369,10 @@ afterglow = {
 		// Prepare the player element add push it to the lightbox holder
 		var lightbox = $dom.create("div.afterglow-lightbox");
 		wrapper.appendChild(lightbox);
-		lightbox.appendChild(videoel);
+		lightbox.appendChild(lb_videoel);
 
 		// initiate the player and launch it
-		afterglow.initPlayer(videoel, function(){
+		afterglow.initPlayer(lb_videoel, function(){
 			afterglow.getPlayer(playerid).play();
 		});
 
@@ -484,8 +484,19 @@ afterglow = {
 		
 		// Do if the wrapper exists
 		if(wrapper != undefined){
-			var videoel = $dom.get("div.afterglow-lightbox-wrapper video")[0];
-			var playerid = videoel.parentNode.getAttribute("id");
+			var videoel = $dom.get("div.afterglow-lightbox-wrapper video");
+
+			if(videoel.length == 1){
+				videoel = videoel[0];				
+				playerid = videoel.getAttribute("data-id");
+			}
+			else{
+				// Youtube
+				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
+					playerel = $dom.get("div.afterglow-lightbox-wrapper .vjs-youtube")[0];
+					var playerid = playerel.getAttribute("data-id");
+				}
+			}
 
 			// Stop the player
 			afterglow.getPlayer(playerid).pause().exitFullscreen();

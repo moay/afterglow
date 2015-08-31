@@ -48,7 +48,6 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 		'./src/videojs/video.js',
 		]))
 	.pipe(plugins.addSrc.append([
-		'./src/videojs/ie8/videojs-ie8.js',
 		'./dist/tmp/components.js',
 		'./src/videojs/plugins/videojs.hotkeys.js',
 		'./src/videojs/plugins/Youtube.js',
