@@ -2,24 +2,10 @@
   "name": "afterglow",
   "description": "An easy to integrate HTML5 video player based on video.js.",
   "version": "0.0.27",
-  "maintainers": [
-    {
-      "name": "moay",
-      "email": "afterglow@moay.de",
-      "web": "http://afterglowplayer.com"
-    }
-  ],
-  "licenses": [
-    {
-      "name": "MIT",
-      "url": "https://github.com/moay/afterglow/blob/master/LICENSE.md"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/moay/afterglow.git"
-  },
+  "license": "MIT",
+  "repository": "moay/afterglow",
   "homepage": "http://afterglowplayer.com",
+  
   "devDependencies": {
     "6to5ify": "^4.1.1",
     "del": "^1.2.1",
