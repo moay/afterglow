@@ -62,7 +62,7 @@ afterglow = {
 			if(typeof _callback == "function"){
 				_callback();
 			}
-		})
+		});
 
 		// Push the player to the accessible ones
 		this.players.push(player);
@@ -342,16 +342,25 @@ afterglow = {
 	 * @return void
 	 */
 	launchLightbox : function(videoel){
-		videoel.setAttribute("data-id", videoel.getAttribute("id"));
-		videoel.setAttribute("id","afterglow-lightbox-videoel");
 		var lb_videoel = videoel.cloneNode(true);
-		var playerid = lb_videoel.getAttribute("data-id");
-		lb_videoel.setAttribute("id", playerid);
+		var playerid = lb_videoel.getAttribute("id");
+
+		// Make the lightboxes start automatically
+		lb_videoel.setAttribute("autoplay","true");
 
 		// Prepare the lightbox element
 		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
 		var cover = $dom.create("div.cover");
 		wrapper.appendChild(cover);
+
+		// Prepare the player element add push it to the lightbox holder
+		var lightbox = $dom.create("div.afterglow-lightbox");
+		wrapper.appendChild(lightbox);
+		lightbox.appendChild(lb_videoel);
+
+		// Remove the id from the original video element in order to not confuse afterglow
+		videoel.setAttribute("data-id", videoel.getAttribute("id"));
+		videoel.setAttribute("id","afterglow-lightbox-videoel");
 
 		// Check for native playback
 		if(document.querySelector('video').controls){
@@ -366,13 +375,12 @@ afterglow = {
 
 		document.body.appendChild(wrapper);
 
-		// Prepare the player element add push it to the lightbox holder
-		var lightbox = $dom.create("div.afterglow-lightbox");
-		wrapper.appendChild(lightbox);
-		lightbox.appendChild(lb_videoel);
-
 		// initiate the player and launch it
 		afterglow.initPlayer(lb_videoel, function(){
+			if(afterglow.isYoutubePlayer(lb_videoel)){
+				// Hide the poster on youtube videos just to not make it popup
+				afterglow.getPlayer(playerid).posterImage.hide();
+			}
 			afterglow.getPlayer(playerid).play();
 		});
 
@@ -488,13 +496,13 @@ afterglow = {
 
 			if(videoel.length == 1){
 				videoel = videoel[0];				
-				playerid = videoel.getAttribute("data-id");
+				playerid = videoel.parentNode.getAttribute("id");
 			}
 			else{
 				// Youtube
 				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
 					playerel = $dom.get("div.afterglow-lightbox-wrapper .vjs-youtube")[0];
-					var playerid = playerel.getAttribute("data-id");
+					var playerid = playerel.getAttribute("id");
 				}
 			}
 

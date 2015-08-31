@@ -166,6 +166,12 @@
 		@trans: visibility 0.1s, opacity 0.1s; // Var needed because of comma
 		.transition(@trans);
 	}
+	&.vjs-has-started.vjs-ended .vjs-control-bar,
+	&.vjs-has-started.vjs-ended .vjs-top-control-bar {
+		display: block;
+		visibility: hidden;
+		opacity: 0;
+	}
 
 	/* Hide the control bar when the video is playing and the user is inactive  */
 	&.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
@@ -814,6 +820,11 @@
 		margin-top:-40px;
 		border:none;
 		background:transparent;
+		visibility: visible;
+		opacity: 1;
+
+		@trans: visibility 0.1s, opacity 0.1s; // Var needed because of comma
+		.transition(@trans);
 
 		.transition(all 0.4s);
 	}
@@ -825,6 +836,13 @@
 	/* Hide when video starts playing */
 	&.vjs-has-started .vjs-big-play-button {
 		display: none;
+		opacity:0;
+	}
+	/* Show when video has ended */
+	&.vjs-has-started.vjs-ended .vjs-big-play-button {
+		display: block;
+		visibility: visible;
+		opacity: 1;
 	}
 	/* Hide on mobile devices. Remove when we stop using native controls
 	by afterglow on mobile  */
@@ -1341,6 +1359,17 @@ body.vjs-full-window {
 /* Hide the poster after the video has started playing */
 .video-js.vjs-has-started .vjs-poster {
 	display: none;
+	visibility: hidden;
+	opacity: 0;
+	.transition(all 0.2s);
+}
+
+/* Show the poster after the video has ended */
+.video-js.vjs-has-started.vjs-ended .vjs-poster {
+	display: block;
+	visibility: visible;
+	opacity: 1;
+	.transition(all 0.2s);
 }
 
 /* Don't hide the poster if we're playing audio */
