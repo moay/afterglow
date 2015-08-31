@@ -45,11 +45,17 @@ THE SOFTWARE. */
         divBlocker.setAttribute('class', 'vjs-iframe-blocker');
         divBlocker.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;display:block');
 
-        // In case the blocker is still there and we want to pause
-        divBlocker.onclick = function() {
-          // this.pause();
-        }.bind(this);
+        // Just for IE10 or older
+        if (document.all) {
+          var iframeBlocker = document.createElement('iframe');
+          iframeBlocker.setAttribute('src',' about:blank');
+          iframeBlocker.setAttribute('class', 'vjs-iframe-blocker');
+          iframeBlocker.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;display:block');
+          iframeBlocker.setAttribute('frameborder', '0');
 
+          divWrapper.appendChild(iframeBlocker);
+        }
+        
         divWrapper.appendChild(divBlocker);
       }
 
@@ -67,7 +73,7 @@ THE SOFTWARE. */
     initYTPlayer: function() {
       var playerVars = {
         controls: 0,
-        // modestbranding: 1,
+        modestbranding: 1,
         rel: 0,
         showinfo: 0,
         loop: this.options_.loop ? 1 : 0
@@ -161,17 +167,29 @@ THE SOFTWARE. */
 
       this.activeVideoId = this.url.videoId;
       this.activeList = playerVars.list;
+      this.playerVars = playerVars;
 
-      this.ytPlayer = new YT.Player(this.options_.techId, {
-        videoId: this.url.videoId,
-        playerVars: playerVars,
-        events: {
-          onReady: this.onPlayerReady.bind(this),
-          onPlaybackQualityChange: this.onPlayerPlaybackQualityChange.bind(this),
-          onStateChange: this.onPlayerStateChange.bind(this),
-          onError: this.onPlayerError.bind(this)
+      // We must wait for the element to exist, especially when there are some other memory/cpu intensive plugins slowing down the processes.
+      var _this = this;
+      var launchCheck = setInterval(function() {
+        if (document.getElementById(_this.options_.techId) != null) {
+          _this.launchPlayer();
+          clearInterval(launchCheck);
         }
-      });
+      }, 50);     
+    },
+
+    launchPlayer: function(){
+        this.ytPlayer = new YT.Player(this.options_.techId, {
+          videoId: this.url.videoId,
+          playerVars: this.playerVars,
+          events: {
+            onReady: this.onPlayerReady.bind(this),
+            onPlaybackQualityChange: this.onPlayerPlaybackQualityChange.bind(this),
+            onStateChange: this.onPlayerStateChange.bind(this),
+            onError: this.onPlayerError.bind(this)
+          }
+        });
     },
 
     onPlayerReady: function() {
