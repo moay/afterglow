@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 5.0.0-rc.64 <http://videojs.com/>
+ * Video.js 5.0.0-rc.70 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -8476,7 +8476,8 @@ var Player = (function (_Component) {
    */
 
   Player.prototype.handleTechError = function handleTechError() {
-    this.error(this.tech.error().code);
+    var error = this.tech.error();
+    this.error(error && error.code);
   };
 
   /**
@@ -11004,6 +11005,9 @@ var Flash = (function (_Tech) {
    */
 
   Flash.prototype.play = function play() {
+    if (this.ended()) {
+      this.setCurrentTime(0);
+    }
     this.el_.vjs_play();
   };
 
@@ -11169,7 +11173,11 @@ var Flash = (function (_Tech) {
    */
 
   Flash.prototype.buffered = function buffered() {
-    return _utilsTimeRangesJs.createTimeRange(0, this.el_.vjs_getProperty('buffered'));
+    var ranges = this.el_.vjs_getProperty('buffered');
+    if (ranges.length === 0) {
+      return _utilsTimeRangesJs.createTimeRange();
+    }
+    return _utilsTimeRangesJs.createTimeRange(ranges[0][0], ranges[0][1]);
   };
 
   /**
@@ -11203,7 +11211,7 @@ var Flash = (function (_Tech) {
 
 var _api = Flash.prototype;
 var _readWrite = 'rtmpConnection,rtmpStream,preload,defaultPlaybackRate,playbackRate,autoplay,loop,mediaGroup,controller,controls,volume,muted,defaultMuted'.split(',');
-var _readOnly = 'error,networkState,readyState,initialTime,duration,startOffsetTime,paused,ended,videoTracks,audioTracks,videoWidth,videoHeight'.split(',');
+var _readOnly = 'networkState,readyState,initialTime,duration,startOffsetTime,paused,ended,videoTracks,audioTracks,videoWidth,videoHeight'.split(',');
 
 function _createSetter(attr) {
   var attrUpper = attr.charAt(0).toUpperCase() + attr.slice(1);
@@ -11347,15 +11355,14 @@ Flash.onEvent = function (swfID, eventName) {
 // Log errors from the swf
 Flash.onError = function (swfID, err) {
   var tech = Dom.getEl(swfID).tech;
-  var msg = 'FLASH: ' + err;
 
+  // trigger MEDIA_ERR_SRC_NOT_SUPPORTED
   if (err === 'srcnotfound') {
-    tech.trigger('error', { code: 4, message: msg });
+    return tech.error(4);
+  }
 
-    // errors we haven't categorized into the media errors
-  } else {
-      tech.trigger('error', msg);
-    }
+  // trigger a custom error
+  tech.error('FLASH: ' + err);
 };
 
 // Flash Version Check
@@ -12702,6 +12709,10 @@ var _utilsTimeRangesJs = _dereq_('../utils/time-ranges.js');
 
 var _utilsBufferJs = _dereq_('../utils/buffer.js');
 
+var _mediaErrorJs = _dereq_('../media-error.js');
+
+var _mediaErrorJs2 = _interopRequireDefault(_mediaErrorJs);
+
 var _globalWindow = _dereq_('global/window');
 
 var _globalWindow2 = _interopRequireDefault(_globalWindow);
@@ -12975,10 +12986,13 @@ var Tech = (function (_Component) {
 
   Tech.prototype.dispose = function dispose() {
     // clear out text tracks because we can't reuse them between techs
-    var tt = this.textTracks();
-    var i = tt.length;
-    while (i--) {
-      this.removeRemoteTextTrack(tt[i]);
+    var textTracks = this.textTracks();
+
+    if (textTracks) {
+      var i = textTracks.length;
+      while (i--) {
+        this.removeRemoteTextTrack(textTracks[i]);
+      }
     }
 
     // Turn off any manual progress or timeupdate tracking
@@ -12991,6 +13005,28 @@ var Tech = (function (_Component) {
     }
 
     _Component.prototype.dispose.call(this);
+  };
+
+  /**
+   * When invoked without an argument, returns a MediaError object
+   * representing the current error state of the player or null if
+   * there is no error. When invoked with an argument, set the current
+   * error state of the player.
+   * @param {MediaError=} err    Optional an error object
+   * @return {MediaError}        the current error object or null
+   * @method error
+   */
+
+  Tech.prototype.error = function error(err) {
+    if (err !== undefined) {
+      if (err instanceof _mediaErrorJs2['default']) {
+        this.error_ = err;
+      } else {
+        this.error_ = new _mediaErrorJs2['default'](err);
+      }
+      this.trigger('error');
+    }
+    return this.error_;
   };
 
   /**
@@ -13345,7 +13381,7 @@ _component2['default'].registerComponent('MediaTechController', Tech);
 exports['default'] = Tech;
 module.exports = exports['default'];
 
-},{"../component":48,"../tracks/text-track":103,"../tracks/text-track-list":101,"../utils/buffer.js":105,"../utils/fn.js":109,"../utils/log.js":112,"../utils/time-ranges.js":115,"global/document":1,"global/window":2}],97:[function(_dereq_,module,exports){
+},{"../component":48,"../media-error.js":83,"../tracks/text-track":103,"../tracks/text-track-list":101,"../utils/buffer.js":105,"../utils/fn.js":109,"../utils/log.js":112,"../utils/time-ranges.js":115,"global/document":1,"global/window":2}],97:[function(_dereq_,module,exports){
 /**
  * @file text-track-cue-list.js
  */
@@ -14567,7 +14603,7 @@ var parseCues = function parseCues(srcContent, track) {
 var loadTrack = function loadTrack(src, track) {
   _xhrJs2['default'](src, Fn.bind(this, function (err, response, responseBody) {
     if (err) {
-      return _utilsLogJs2['default'].error(err);
+      return _utilsLogJs2['default'].error(err, response);
     }
 
     track.loaded_ = true;
@@ -16281,7 +16317,7 @@ setup.autoSetupTimeout(1, videojs);
  *
  * @type {String}
  */
-videojs.VERSION = '5.0.0-rc.64';
+videojs.VERSION = '5.0.0-rc.70';
 
 /**
  * The global options object. These are the settings that take effect
@@ -16797,7 +16833,7 @@ var xhr = function xhr(options, callback) {
     _globalWindow2['default'].clearTimeout(abortTimeout);
 
     if (!err || typeof err === 'string') {
-      err = new Error(err);
+      err = new Error(err || 'XHR Failed with a response of: ' + (request && (request.response || request.responseText)));
     }
 
     callback(err, request);

@@ -147,6 +147,11 @@ afterglow = {
 		// Remove sublime stuff
 		$dom.removeClass(videoel, "sublime");
 
+		// Make lightboxplayer not overscale
+		if(videoel.getAttribute("data-overscale") == "false"){
+			videoel.setAttribute("data-maxwidth",videoel.getAttribute("width"));
+		}
+
 		// Apply some stylings
 		if(videoel.getAttribute("data-autoresize") === 'fit' || $dom.hasClass(videoel, "responsive")){
 			$dom.addClass(videoel, "vjs-responsive");
@@ -161,8 +166,8 @@ afterglow = {
 				var ratio = videoel.getAttribute("height") / videoel.getAttribute("width");
 			}
 			$dom.style(videoel, "padding-top", (ratio * 100)+"%");
-			videoel.removeAttribute("width");
 			videoel.removeAttribute("height");
+			videoel.removeAttribute("width");
 			videoel.setAttribute("data-ratio",ratio);
 		}
 
@@ -345,9 +350,6 @@ afterglow = {
 		var lb_videoel = videoel.cloneNode(true);
 		var playerid = lb_videoel.getAttribute("id");
 
-		// Make the lightboxes start automatically
-		lb_videoel.setAttribute("autoplay","true");
-
 		// Prepare the lightbox element
 		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
 		var cover = $dom.create("div.cover");
@@ -377,7 +379,7 @@ afterglow = {
 
 		// initiate the player and launch it
 		afterglow.initPlayer(lb_videoel, function(){
-			if(afterglow.isYoutubePlayer(lb_videoel)){
+			if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
 				// Hide the poster on youtube videos just to not make it popup
 				afterglow.getPlayer(playerid).posterImage.hide();
 			}
@@ -427,17 +429,24 @@ afterglow = {
 			if(videoel.length == 1){
 				videoel = videoel[0];				
 				var ratio = videoel.getAttribute("data-ratio");
+				if(videoel.getAttribute("data-overscale") == "false")
+				{
+					// Calculate the new size of the player with maxwidth
+					var sizes = this.calculateLightboxSizes(ratio, parseInt(videoel.getAttribute("data-maxwidth")));
+				}
+				else{
+					// Calculate the new size of the player without maxwidth
+					var sizes = this.calculateLightboxSizes(ratio);
+				}
 			}
 			else{
 				// Youtube
 				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
 					playerel = $dom.get("div.afterglow-lightbox-wrapper .vjs-youtube")[0];
 					var ratio = playerel.getAttribute("data-ratio");
+					var sizes = this.calculateLightboxSizes(ratio);
 				}
 			}
-			
-			// Calculate the new size of the player
-			var sizes = this.calculateLightboxSizes(ratio);
 			
 			// Apply the height and width
 			$dom.style(wrapper,{"width":sizes.width, "height":sizes.height});
@@ -455,25 +464,42 @@ afterglow = {
 	 * @param  {float} ratio   The players ratio
 	 * @return {object}        Some sizes which can be used
 	 */
-	calculateLightboxSizes : function(ratio){
+	calculateLightboxSizes : function(ratio, maxwidth){
 		var sizes = {};
 
 		// Get window width && height
-		sizes.width = window.innerWidth
+		sizes.width = window.clientWidth
 		|| document.documentElement.clientWidth
-		|| document.body.clientWidth;
-		sizes.height = window.innerHeight
+		|| document.body.clientWidth
+		|| window.innerWidth;
+		sizes.height = window.clientHeight
 		|| document.documentElement.clientHeight
-		|| document.body.clientHeight;
+		|| document.body.clientHeight
+		|| window.innerHeight;
 
 		// Window is wide enough
 		if(sizes.height/sizes.width > ratio)
-		{
-			sizes.playerwidth = sizes.width * .90;
+		{	
+			// Check if the lightbox should overscale, even if video is smaller
+			if(typeof maxwidth !== 'undefined' && maxwidth < sizes.width * .90){
+				sizes.playerwidth = maxwidth;
+			}
+			// Else scale up as much as possible
+			else{
+				sizes.playerwidth = sizes.width * .90;
+			}
 			sizes.playerheight = sizes.playerwidth * ratio;
 		}
 		else{
-			sizes.playerheight = sizes.height * .92;
+			// Check if the lightbox should overscale, even if video is smaller
+			if(typeof maxwidth !== 'undefined' && maxwidth < (sizes.height * .92)/ratio)
+			{
+				sizes.playerheight = maxwidth * ratio;
+			}
+			// Else scale up as much as possible
+			else{
+				sizes.playerheight = sizes.height * .92;
+			}
 			sizes.playerwidth = sizes.playerheight / ratio;
 		}
 		sizes.playeroffsettop = ( sizes.height - sizes.playerheight ) / 2;

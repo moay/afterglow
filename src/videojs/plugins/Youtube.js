@@ -170,13 +170,12 @@ THE SOFTWARE. */
       this.playerVars = playerVars;
 
       // We must wait for the element to exist, especially when there are some other memory/cpu intensive plugins slowing down the processes.
-      var _this = this;
-      var launchCheck = setInterval(function() {
-        if (document.getElementById(_this.options_.techId) != null) {
-          _this.launchPlayer();
-          clearInterval(launchCheck);
+      this.launchCheck = setInterval(function() {
+        if (document.getElementById(this.options_.techId) != null) {
+          this.launchPlayer();
+          clearInterval(this.launchCheck);
         }
-      }, 50);     
+      }.bind(this), 50);     
     },
 
     launchPlayer: function(){
@@ -471,6 +470,21 @@ THE SOFTWARE. */
         start: function() { return 0; },
         end: function() { return end; }
       };
+    },
+
+    readyState: function() {
+      if(!this.ytPlayer || !this.ytPlayer.getVideoLoadedFraction){
+        return 0;
+      }
+      else if(this.ytPlayer.getVideoLoadedFraction() > .1){
+        return 4;
+      }
+      else if(this.ytPlayer.getVideoLoadedFraction() > .01){
+        return 2;
+      }
+      else{
+        return 1;
+      }
     },
 
     supportsFullScreen: function() {
