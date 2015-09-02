@@ -2,25 +2,32 @@
 
 var plugins = require('gulp-load-plugins')();
 var gulp = require('gulp');
-var tag_version = require('gulp-tag-version');
 var del = require('del');
-var pkg = require('./package.json');
+var fs = require('fs');
+var release = require('gulp-github-release');
+var getPackageJson = function () {
+	return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+};
 
-var banner = ['/**',
-' * <%= pkg.name %> - <%= pkg.description %>',
-' * @link <%= pkg.homepage %>',
-' * @license <%= pkg.license %>',
-' * ',
-' * <%= pkg.name %> includes some scripts provided under different licenses by their authors. Please see the project sources via <%= pkg.homepage %> in order to learn which projects are included and how you may use them.',
-' */',
-''].join('\n');
-
-
+// General build task, cleans up after real build
 gulp.task('build', ['build-afterglow'], function(){
-    del(['./dist/tmp']);
+	del(['./dist/tmp']);
 });
 
+// Helper task for building the release
 gulp.task('build-afterglow', ['compilecomponents'], function(){
+
+	var pkg = getPackageJson();
+	var banner = ['/**',
+	' * <%= pkg.name %> - <%= pkg.description %>',
+	' * @link <%= pkg.homepage %>',
+	' * @version <%= pkg.version %>',
+	' * @license <%= pkg.license %>',
+	' * ',
+	' * <%= pkg.name %> includes some scripts provided under different licenses by their authors. Please see the project sources via <%= pkg.homepage %> in order to learn which projects are included and how you may use them.',
+	' */',
+	''].join('\n');
+
 	// Loading LESS files 
 	return gulp.src([
 		"./src/videojs/skin/afterglow/vjs-afterglow.less",
@@ -68,11 +75,12 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 	.pipe(gulp.dest("./dist/"));
 });
 
+// Task to compile ES6 components
 gulp.task('compilecomponents', function(){
 	return gulp.src([
 		'./src/videojs/components/TopControlBar.js',
 		'./src/videojs/components/LightboxCloseButton.js'
-	])
+		])
 	.pipe(plugins.browserify2({
 		fileName: 'components.js',
 		transform: require('6to5ify'),
@@ -83,22 +91,87 @@ gulp.task('compilecomponents', function(){
 	.pipe(gulp.dest('dist/tmp/'));
 });
 
-function inc(importance) {
-    // get all the files to bump version in 
-    return gulp.src(['./package.json', './bower.json'])
-        // bump the version number in those files 
-        .pipe(plugins.bump({type: importance}))
-        // save it back to filesystem 
-        .pipe(gulp.dest('./'))
-        // commit the changed version number 
-        .pipe(plugins.git.commit('bumps package version'))
-        // read only one file to get the version number 
-        .pipe(plugins.filter('package.json'))
-        // **tag it in the repository** 
-        .pipe(tag_version());
-    
-}
+// Patch version bump
+gulp.task('bump', function(){
+	gulp.src('.')
+	.pipe(plugins.prompt.prompt({
+        type: 'list',
+        name: 'bump',
+        message: 'What type of bump would you like to do?',
+        choices: ['cancel','patch', 'minor', 'major']
+    }, function(res){
+    	if(res.bump == 'cancel'){
+    		plugins.util.log(plugins.util.colors.red('Version bump canceled.'));
+    	}
+    	else{
+    		gulp.src('./package.json')
+			.pipe(plugins.bump({type:res.bump}))
+			.pipe(gulp.dest('./'));
+    	}
+    }));
 
-gulp.task('patch', function() { return inc('patch'); })
-gulp.task('feature', function() { return inc('minor'); })
-gulp.task('release', function() { return inc('major'); })
+	
+});
+
+// Release to github
+gulp.task('release', function(){
+	var pkg = getPackageJson();
+
+	gulp.src('.')
+    .pipe(plugins.prompt.confirm({
+    	message: 'Did you commit and push/sync all changes you made to the code?',
+    	default: false
+    }))
+	.pipe(plugins.prompt.prompt([{
+        type: 'input',
+        name: 'releasename',
+        message: 'How shall the release be named?',
+        default: ['v'+pkg.version]
+    },
+    {
+        type: 'input',
+        name: 'notes',
+        message: 'Provide a release note, if you want to.'
+    },
+    {
+        type: 'list',
+        name: 'type',
+        message: 'What do you want to release?',
+        choices: ['Draft','Prerelease','Release'],
+        default: 2,
+    }],function(res){
+
+    	// Build the options object
+    	var releaseoptions = {
+    		name: res.releasename,
+    		manifest: require('./package.json'),
+    		owner: 'git://github.com/moay/afterglow.git',
+    		repo: 'git://github.com/moay/afterglow.git'
+    	};
+    	if(res.notes != "")
+    	{
+    		releaseoptions.notes = res.notes;
+    	}
+    	if(res.type == "Draft")
+    	{
+    		releaseoptions.draft = true;
+    	}
+    	if(res.type == "Prerelease")
+    	{
+    		releaseoptions.prerelease = true;
+    	}
+
+    	// LAST CHANGE TO CANCEL NOTICE
+    	plugins.util.log('');
+    	plugins.util.log('Your are going to release', plugins.util.colors.green('afterglow'), plugins.util.colors.yellow(res.releasename), plugins.util.colors.cyan('(Version tag: '+pkg.version+')'), 'as a', plugins.util.colors.white(res.type));
+
+
+    	// Remember to set an env var called GITHUB_TOKEN
+		gulp.src('./dist/afterglow.min.js')
+		.pipe(plugins.prompt.confirm({
+	    	message: 'Do you really want this? Last chance!',
+	    	default: false
+	    }))
+		.pipe(release(releaseoptions));    	
+    }));
+});
