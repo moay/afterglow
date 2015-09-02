@@ -137,25 +137,19 @@ gulp.task('release', function(){
         type: 'list',
         name: 'type',
         message: 'What do you want to release?',
-        choices: ['Draft','Prerelease','Release'],
-        default: 2,
+        choices: ['Prerelease','Release'],
+        default: 1,
     }],function(res){
 
     	// Build the options object
+    	console.log(res.releasename)
     	var releaseoptions = {
     		name: res.releasename,
+    		notes: res.notes,
     		manifest: require('./package.json'),
-    		owner: 'git://github.com/moay/afterglow.git',
-    		repo: 'git://github.com/moay/afterglow.git'
+    		owner: 'moay',
+    		repo: 'afterglow'
     	};
-    	if(res.notes != "")
-    	{
-    		releaseoptions.notes = res.notes;
-    	}
-    	if(res.type == "Draft")
-    	{
-    		releaseoptions.draft = true;
-    	}
     	if(res.type == "Prerelease")
     	{
     		releaseoptions.prerelease = true;
