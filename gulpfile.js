@@ -148,7 +148,8 @@ gulp.task('release', function(){
     		notes: res.notes,
     		manifest: require('./package.json'),
     		owner: 'moay',
-    		repo: 'afterglow'
+    		repo: 'afterglow',
+    		draft: true
     	};
     	if(res.type == "Prerelease")
     	{

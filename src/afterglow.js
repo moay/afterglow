@@ -14,13 +14,13 @@ afterglow = {
 		this.configureVideoJS();
 
 		// Get players including sublime fallback
-		var players = $dom.get("video.afterglow, video.sublime");
+		var players = $dom.get("video.afterglow").concat($dom.get("video.sublime"));
 		for (var i = 0; i < players.length; i++){
 			this.initPlayer(players[i]);
 		}
 
 		// Get players to open in a lightbox including sublime fallback
-		var lightboxplayers = $dom.get("a.afterglow, a.sublime");
+		var lightboxplayers = $dom.get("a.afterglow").concat($dom.get("a.sublime"));
 		for (var i = 0; i < lightboxplayers.length; i++){
 			this.initLightboxPlayer(lightboxplayers[i]);
 		}

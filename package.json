@@ -1,11 +1,11 @@
 {
   "name": "afterglow",
   "description": "An easy to integrate HTML5 video player with lightbox support.",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url":"https://github.com/moay/afterglow.git"
+    "url": "https://github.com/moay/afterglow.git"
   },
   "homepage": "http://afterglowplayer.com",
   "devDependencies": {
