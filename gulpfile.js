@@ -126,7 +126,7 @@ gulp.task('release', function(){
         type: 'input',
         name: 'releasename',
         message: 'How shall the release be named?',
-        default: ['v'+pkg.version]
+        default: ['afterglow v'+pkg.version]
     },
     {
         type: 'input',
