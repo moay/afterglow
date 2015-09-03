@@ -384,6 +384,12 @@ afterglow = {
 				afterglow.getPlayer(playerid).posterImage.hide();
 			}
 			afterglow.getPlayer(playerid).play();
+			
+			// Mobile device, so autoplay didn't work
+			if(afterglow.getPlayer(playerid).paused()){
+				afterglow.getPlayer(playerid).posterImage.show();
+				afterglow.getPlayer(playerid).bigPlayButton.show();
+			}
 		});
 
 		// Add the closing button
