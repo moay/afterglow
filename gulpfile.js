@@ -142,13 +142,13 @@ gulp.task('release', function(){
     }],function(res){
 
     	// Build the options object
-    	console.log(res.releasename)
     	var releaseoptions = {
     		name: res.releasename,
     		notes: res.notes,
     		manifest: require('./package.json'),
     		owner: 'moay',
     		repo: 'afterglow',
+    		tag: pkg.version,
     		draft: true
     	};
     	if(res.type == "Prerelease")
