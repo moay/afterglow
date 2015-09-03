@@ -14,12 +14,12 @@
 	<script src="js/less.min.js" type="text/javascript"></script>
 	<script src="../src/lib/afterglow-lib.js" type="text/javascript"></script>
 	<script type="text/javascript" src="../src/dollardom/dollardom.min.js"></script>
-	<script type="text/javascript" src="../src/videojs/video.js"></script>
+	<script type="text/javascript" src="../src/videojs/video.min.js"></script>
 	<!-- <script type="text/javascript" src="../src/videojs/plugins/vjs.vimeo.js"></script> -->
-	<script type="text/javascript" src="../src/videojs/components/TopControlBar.js"></script>
-	<script type="text/javascript" src="../src/videojs/components/LightboxCloseButton.js"></script>
-	<script type="text/javascript" src="../src/videojs/plugins/Youtube.js"></script>
-	<script type="text/javascript" src="../src/videojs/plugins/videojs.hotkeys.js"></script>
+	<!-- <script type="text/javascript" src="../src/videojs/components/TopControlBar.js"></script> -->
+	<!-- <script type="text/javascript" src="../src/videojs/components/LightboxCloseButton.js"></script> -->
+	<!-- <script type="text/javascript" src="../src/videojs/plugins/Youtube.js"></script> -->
+	<!-- <script type="text/javascript" src="../src/videojs/plugins/videojs.hotkeys.js"></script> -->
 	<script type="text/javascript" src="../src/afterglow.js"></script>
 
 	<style>
@@ -34,10 +34,6 @@
 <body>
 	<h1>This is just a sandbox for development.</h1>
 
-	<!-- YOUTUBE TEST -->
-	<h2>Youtube video</h2>
-	<video id="video1" class="afterglow" width="1920" height="1080" data-youtube-id="HgbHx4CY300" data-autoresize="fit" preload="none"></video>
-
 	<!-- LOCAL TEST -->
 	<h2>Local video with poster</h2>
 	<video id="video2" class="afterglow" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-autoresize="fit" preload="none">
@@ -45,31 +41,6 @@
 		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
 	</video>
 
-	<h2>Local video with poster, sublime drop-in</h2>
-	<video id="video2-sublime" class="sublime" class="sublime" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-autoresize="fit" preload="none">
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4" />
-		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
-	</video>
-
-	<!-- LOCAL TEST -->
-	<h2>Local video with poster, captions and subtitles</h2>
-	<video id="video2-subtitles" class="afterglow" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-autoresize="fit">
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4" />
-		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
-		<track kind="subtitle" src="/sandbox/text/subtitles-demo.vtt" srclang="en" label="English"></track>
-	</video>
-
-	<!-- LIGHTBOX TEST -->
-	<!-- LOCAL TEST -->
-	<h2>Local video with poster opened in lightbox</h2>
-	<a href="#video3" class="afterglow">Open the lightbox</a>
-	<video id="video3" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-overscale="false">
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4" />
-		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
-	</video>
-	<!-- LOCAL TEST -->
-	<h2>Youtube opened in lightbox</h2>
-	<a href="#video4" class="afterglow">Open the lightbox</a>
-	<video id="video4" width="1920" height="1080" data-youtube-id="HgbHx4CY300"></video>
+	
 </body>
 </html>

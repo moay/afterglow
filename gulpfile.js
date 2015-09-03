@@ -52,7 +52,7 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 	.pipe(plugins.addSrc.append([
 		'./src/dollardom/dollardom.min.js',
 		'./src/lib/afterglow-lib.js',
-		'./src/videojs/video.js',
+		'./src/videojs/video.min.js',
 		]))
 	.pipe(plugins.addSrc.append([
 		'./dist/tmp/components.js',
