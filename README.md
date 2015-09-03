@@ -19,6 +19,10 @@ As this is not even the first beta release, there will be some limitations. We c
 
 Setup of afterglow is easy. Download the latest release. You will find the file `afterglow.min.js` located in the folder `dist`. Upload it somewhere and make it available so that it can be integrated into your website.
 
+### Setup when replacing SublimeVideo
+
+When you are using afterglow as a drop-in replacement for SublimeVideo, you don't have to change anything to your actual HTML. Just replace the link to SublimeVideo's Javascript file with the new link to your `afterglow.min.js` file.
+
 ## Basic usage
 
 This is a working basic example.
