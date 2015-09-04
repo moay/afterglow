@@ -172,8 +172,17 @@ afterglow = {
 		}
 
 		// Apply youtube class
-		if(videoel.getAttribute("data-youtube-id") !== null && videoel.getAttribute("data-youtube-id") !== ""){
+		if(this.isYoutubePlayer(videoel)){
 			$dom.addClass(videoel,"vjs-youtube");
+			
+			// Check for native playback
+			if(document.querySelector('video').controls){
+				$dom.addClass(videoel, "vjs-using-native-controls");
+			}
+			// Add iOS class, just if is iPad
+			if(/iPad|iPhone|iPod/.test(navigator.platform)){
+				$dom.addClass(videoel, "vjs-iOS");
+			}
 		}
 		
 	},
@@ -364,32 +373,27 @@ afterglow = {
 		videoel.setAttribute("data-id", videoel.getAttribute("id"));
 		videoel.setAttribute("id","afterglow-lightbox-videoel");
 
-		// Check for native playback
-		if(document.querySelector('video').controls){
-			$dom.addClass(wrapper, 'hidden');
-
-			// Bind the closing event to closing the lightbox too
-			// This is untested and needs testing on real phones
-			addEventHandler(lb_videoel,'webkitendfullscreen',function(){
-				afterglow.closeLightbox();
-			});
-		}
-
 		document.body.appendChild(wrapper);
 
 		// initiate the player and launch it
 		afterglow.initPlayer(lb_videoel, function(){
-			if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
-				// Hide the poster on youtube videos just to not make it popup
-				afterglow.getPlayer(playerid).posterImage.hide();
+
+			// Prevent autoplay for iOS, won't work anyways...
+			if(!(/iPad|iPhone|iPod/.test(navigator.platform))){
+				afterglow.getPlayer(playerid).play();
+
+				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length){
+					// Hide the poster on youtube videos just to not make it popup (except for iOS)
+					afterglow.getPlayer(playerid).posterImage.hide();
+				}
+				
+				// Android device, so autoplay didn't work
+				if(afterglow.getPlayer(playerid).paused()){
+					afterglow.getPlayer(playerid).posterImage.show();
+					afterglow.getPlayer(playerid).bigPlayButton.show();
+				}
 			}
-			afterglow.getPlayer(playerid).play();
 			
-			// Mobile device, so autoplay didn't work
-			if(afterglow.getPlayer(playerid).paused()){
-				afterglow.getPlayer(playerid).posterImage.show();
-				afterglow.getPlayer(playerid).bigPlayButton.show();
-			}
 		});
 
 		// Add the closing button
@@ -405,7 +409,9 @@ afterglow = {
 		});
 
 		// bind the closing event
-		addEventHandler(cover,'click',function(){ afterglow.closeLightbox(); });
+		addEventHandler(cover,'click',function(){ 
+			afterglow.closeLightbox(); 
+		});
 
 		// bind the escape key
 		addEventHandler(window,'keyup',function(e){

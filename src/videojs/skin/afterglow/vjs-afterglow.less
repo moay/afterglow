@@ -845,10 +845,10 @@
 		visibility: visible;
 		opacity: 1;
 	}
-	/* Hide on mobile devices. Remove when we stop using native controls
+	/* Hide on mobile devices with youtube. Remove when we stop using native controls
 	by afterglow on mobile  */
 	&.vjs-using-native-controls .vjs-big-play-button {
-		display: none;
+		display: block;
 	}
 
 	&:hover .vjs-big-play-button,
@@ -858,6 +858,15 @@
 		background:transparent;
 
 		.transition(all 0s);
+	}
+
+	/* Show the spinner when waiting for data and seeking to a new time */
+	&.vjs-waiting .vjs-big-play-button,
+	&.vjs-seeking .vjs-big-play-button {
+		display: none;
+
+		/* only animate when showing because it can be processor heavy *///
+		.animation(spin 1.5s infinite linear);
 	}
 
 	.vjs-big-play-button:before {
@@ -1251,6 +1260,19 @@
 					width:auto;
 					.transition(all .1s);
 				}
+			}
+		}
+
+		&.vjs-using-native-controls,
+		&.vjs-iOS{
+			.vjs-big-play-button {
+				display: none;
+			}
+			.vjs-poster {
+				display: none;
+			}
+			iframe{
+				display:block;
 			}
 		}
 	}
