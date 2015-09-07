@@ -191,8 +191,8 @@
 		display: none;
 	}
 
-	/* The control bar shouldn't show after an error */
-	&.vjs-error .vjs-control-bar {
+	/* The control bars shouldn't show after an error */
+	&.vjs-error .vjs-control-bar, &.vjs-error .vjs-top-control-bar {
 		display: none;
 	}
 
@@ -668,6 +668,13 @@
 			margin-top:5px;
 		}
 	}
+	&.vjs-no-flex{
+		// Necessary for IE9
+		.vjs-current-time, .vjs-duration{
+			display:block;
+		}
+	}
+
 	.vjs-current-time{
 		margin-left:30px;
 
@@ -895,7 +902,7 @@
 		}
 	}
 
-	.vjs-error .vjs-big-play-button {
+	&.vjs-error .vjs-big-play-button {
 		display: none;
 	}
 
@@ -907,7 +914,7 @@
 		display: none;
 	}
 
-	.vjs-error .vjs-error-display {
+	&.vjs-error .vjs-error-display {
 		display: block;
 		position: absolute;
 		left: 0;
@@ -917,31 +924,16 @@
 	}
 
 	.vjs-error .vjs-error-display:before {
-		content: 'X';
-		font-family: Arial;
-		font-size: 4em;
-		color: #666666;
-		/* In order to center the play icon vertically we need to set the line height
-		to the same as the button height */
-		line-height: 1;
-		text-shadow: 0.05em 0.05em 0.1em #000;
-		text-align: center /* Needed for IE8 */;
-		vertical-align: middle;
-
-		position: absolute;
-		left: 0;
-		top: 50%;
-		margin-top: -0.5em;
-		width: 100%;
+		content: '';
 	}
 
 	.vjs-error-display div {
 		position: absolute;
-		bottom: 1em;
+		bottom: 40px;
 		right: 0;
 		left: 0;
-
-		font-size: 1.4em;
+		font-family: 'Open Sans', Helvetica light, Helvetica, sans-serif;
+		font-size: 16px;
 		text-align: center;
 		padding: 3px;
 		background: rgb(0, 0, 0); // fallback to just black
@@ -1238,6 +1230,12 @@
 	&.vjs-youtube{
 		iframe{
 			display:none;
+		}
+
+		&.vjs-IE{
+			iframe{
+				display:block;
+			}
 		}
 
 		&.vjs-has-started{

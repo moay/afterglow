@@ -39,10 +39,32 @@ function merge_options(obj1,obj2){
     return obj3;
 }
 
+/**
+ * Gets a youtube video thumbnail
+ * @param  {string} id 	The videos youtube id
+ * @return {string} the url to the thumbnail
+ */
 function loadYoutubeThumbnailUrl(id){
-
     var uri = 'https://img.youtube.com/vi/' + id + '/maxresdefault.jpg';
-
     return uri;
-
 };
+
+
+/**
+ * Sets a variable 'ie' holding the IE version (if IE)
+ */
+var ie = (function(){
+
+    var undef,
+        v = 6,
+        div = document.createElement('div'),
+        all = div.getElementsByTagName('i');
+
+    while (
+        div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->',
+        all[0]
+    );
+
+    return v > 7 ? v : undef;
+
+}());

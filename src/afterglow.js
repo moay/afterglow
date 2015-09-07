@@ -15,12 +15,16 @@ afterglow = {
 
 		// Get players including sublime fallback
 		var players = $dom.get("video.afterglow").concat($dom.get("video.sublime"));
+
+		// Get lightboxplayers including sublime fallback
+		var lightboxplayers = $dom.get("a.afterglow").concat($dom.get("a.sublime"));
+		
+		// Initialize players
 		for (var i = 0; i < players.length; i++){
 			this.initPlayer(players[i]);
 		}
 
-		// Get players to open in a lightbox including sublime fallback
-		var lightboxplayers = $dom.get("a.afterglow").concat($dom.get("a.sublime"));
+		// Initialize players launching in a lightbox
 		for (var i = 0; i < lightboxplayers.length; i++){
 			this.initLightboxPlayer(lightboxplayers[i]);
 		}
@@ -86,7 +90,7 @@ afterglow = {
 	initLightboxPlayer : function(linkel){
 		// Get the playerid
 		var playerid = linkel.getAttribute("href");
-
+		
 		// Hide the video element
 		var videoel = $dom.get(playerid)[0];
 		$dom.addClass(videoel, "afterglow-lightboxplayer");
@@ -183,8 +187,17 @@ afterglow = {
 			if(/iPad|iPhone|iPod/.test(navigator.platform)){
 				$dom.addClass(videoel, "vjs-iOS");
 			}
+
+			// Check for IE9 - IE11
+			if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
+				$dom.addClass(videoel, "vjs-using-native-controls");
+			}
 		}
-		
+
+		// Check for IE9 - IE11
+		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
+			$dom.addClass(videoel, 'vjs-IE');
+		}
 	},
 
 	/**
@@ -338,7 +351,14 @@ afterglow = {
 				"type": "video/youtube",
 				"src": "https://www.youtube.com/watch?v="+videoel.getAttribute("data-youtube-id")
 			}]
-		};
+		};		
+
+		if(ie >= 8 && ie <= 11){
+			ytoptions.youtube = {
+				ytControls : 2,
+				color : "white"
+			}
+		}
 
 		return ytoptions;
 	},
