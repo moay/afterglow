@@ -12,6 +12,10 @@ var getPackageJson = function () {
 // General build task, cleans up after real build
 gulp.task('build', ['build-afterglow'], function(){
 	del(['./dist/tmp']);
+
+	return gulp.src('./dist/afterglow.min.js')
+        .pipe(plugins.zip('afterglow.zip'))
+        .pipe(gulp.dest('dist'));
 });
 
 // Helper task for building the release
