@@ -64,7 +64,7 @@ afterglow = {
 
 			// Launch the callback if there is one
 			if(typeof _callback == "function"){
-				_callback();
+				_callback(this);
 			}
 		});
 
@@ -396,7 +396,7 @@ afterglow = {
 		document.body.appendChild(wrapper);
 
 		// initiate the player and launch it
-		afterglow.initPlayer(lb_videoel, function(){
+		afterglow.initPlayer(lb_videoel, function(player){
 
 			// Prevent autoplay for iOS, won't work anyways...
 			if(!(/iPad|iPhone|iPod/.test(navigator.platform))){
@@ -413,7 +413,13 @@ afterglow = {
 					afterglow.getPlayer(playerid).bigPlayButton.show();
 				}
 			}
-			
+
+			// Adding autoclose functionality
+			if(lb_videoel.getAttribute("data-autoclose") == "true"){
+				player.on('ended', function(){
+					afterglow.closeLightbox();
+				});
+			}
 		});
 
 		// Add the closing button
