@@ -96,12 +96,6 @@ afterglow = {
 		$dom.addClass(videoel, "afterglow-lightboxplayer");
 
 		// Prepare the element
-		if(videoel.hasAttribute("poster")){
-			videoel.removeAttribute("poster");
-		}
-		if(videoel.hasAttribute("data-poster")){
-			videoel.removeAttribute("data-poster");
-		}
 		videoel.setAttribute("data-autoresize","fit");
 
 		linkel.onclick = function(e){
@@ -379,6 +373,8 @@ afterglow = {
 		var lb_videoel = videoel.cloneNode(true);
 		var playerid = lb_videoel.getAttribute("id");
 
+		console.log(lb_videoel);
+
 		// Prepare the lightbox element
 		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
 		var cover = $dom.create("div.cover");
@@ -401,11 +397,6 @@ afterglow = {
 			// Prevent autoplay for iOS, won't work anyways...
 			if(!(/iPad|iPhone|iPod/.test(navigator.platform))){
 				afterglow.getPlayer(playerid).play();
-
-				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length){
-					// Hide the poster on youtube videos just to not make it popup (except for iOS)
-					afterglow.getPlayer(playerid).posterImage.hide();
-				}
 				
 				// Android device, so autoplay didn't work
 				if(afterglow.getPlayer(playerid).paused()){
@@ -418,6 +409,11 @@ afterglow = {
 			if(lb_videoel.getAttribute("data-autoclose") == "true"){
 				player.on('ended', function(){
 					afterglow.closeLightbox();
+				});
+			}
+			else{
+				player.on('ended', function(){
+					afterglow.getPlayer(playerid).posterImage.show();
 				});
 			}
 		});
