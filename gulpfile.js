@@ -166,7 +166,7 @@ gulp.task('release', function(){
 
 
     	// Remember to set an env var called GITHUB_TOKEN
-		gulp.src('./dist/afterglow.min.js')
+		gulp.src('./dist/afterglow.zip')
 		.pipe(plugins.prompt.confirm({
 	    	message: 'Do you really want this? Last chance!',
 	    	default: false
