@@ -211,9 +211,11 @@ afterglow = {
 		}
 
 		// Autoplay
-		if(videoel.getAttribute("data-autoplay") !== null){
+		if(videoel.getAttribute("data-autoplay") !== null && videoel.getAttribute("data-autoplay") !== "false"){
 			var autoplay = videoel.getAttribute("data-autoplay");
-		} else if(videoel.getAttribute("autoplay") !== null){
+		} else if(
+				(videoel.getAttribute("autoplay") !== null && videoel.getAttribute("autoplay") !== "false"
+			){
 			var autoplay = videoel.getAttribute("autoplay");
 		} else {
 			var autoplay = false;
