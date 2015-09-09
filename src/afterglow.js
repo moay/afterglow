@@ -58,7 +58,7 @@ afterglow = {
 			});
 
 			// Fix youtube poster
-			if(afterglow.isYoutubePlayer(videoel) && this.tech.poster != ""){
+			if(afterglow.isYoutubePlayer(videoel) && !options.poster && this.tech.poster != ""){
 				this.poster(this.tech.poster);
 			}
 
@@ -213,9 +213,7 @@ afterglow = {
 		// Autoplay
 		if(videoel.getAttribute("data-autoplay") !== null && videoel.getAttribute("data-autoplay") !== "false"){
 			var autoplay = videoel.getAttribute("data-autoplay");
-		} else if(
-				(videoel.getAttribute("autoplay") !== null && videoel.getAttribute("autoplay") !== "false"
-			){
+		} else if(videoel.getAttribute("autoplay") !== null && videoel.getAttribute("autoplay") !== "false"){
 			var autoplay = videoel.getAttribute("autoplay");
 		} else {
 			var autoplay = false;
