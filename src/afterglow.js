@@ -395,7 +395,7 @@ afterglow = {
 			// Prevent autoplay for iOS, won't work anyways...
 			if(!(/iPad|iPhone|iPod/.test(navigator.platform))){
 				afterglow.getPlayer(playerid).play();
-				
+
 				// Android device, so autoplay didn't work
 				if(afterglow.getPlayer(playerid).paused()){
 					afterglow.getPlayer(playerid).posterImage.show();
@@ -415,13 +415,13 @@ afterglow = {
 					afterglow.getPlayer(playerid).posterImage.show();
 				});
 			}
-		});
 
-		// Add the closing button
-		var lightboxCloseButton = afterglow.getPlayer(playerid).TopControlBar.addChild("LightboxCloseButton");
-		addEventHandler(lightboxCloseButton.el_,'click tap',function(){
-			afterglow.closeLightbox();
-		})
+			// Add the closing button
+			var lightboxCloseButton = afterglow.getPlayer(playerid).TopControlBar.addChild("LightboxCloseButton");
+			addEventHandler(lightboxCloseButton.el_,'click tap',function(){
+				afterglow.closeLightbox();
+			});
+		});
 
 		// resize the lightbox and make it autoresize
 		afterglow.resizeLightbox();
