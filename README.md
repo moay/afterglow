@@ -2,22 +2,11 @@
 
 afterglow is a tool to create fully responsive and totally awesome video players from an HTML5 video element with as little effort as possible.
 
-The project is currently under heavy development and should not be considered usable yet.
-
-You can see a first demo of afterglow here: [afterglowplayer.com/sandbox](http://afterglowplayer.com/sandbox).
+Learn more about the project on the project website: [http://afterglowplayer.com](http://afterglowplayer.com).
 
 ## Documentation
 
 There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
-
-## Known issues
-
-As this is not even the first beta release, there will be some limitations. We currently are aware of these issues:
-
-- IE support is not ready yet. It will work on Edge, IE11 and IE10 but the skin needs to be adopted to work well in IE9. IE8 ~~seems not to be working at all yet~~ will not be supported. Read more [here](http://community.afterglowplayer.com/discussion/5/support-for-ie8). *Partially fixed with v0.0.34 - lightboxes won't work on IE9/Windows 7*
-- The lightbox closing button may not work on mobile devices. Please test this and tell us about it.
-- ~~Youtube videos don't work in lightbox players.~~ *Fixed with v0.0.28*
-- ~~The lightbox seems to not work perfectly on some devices.~~ *Fixed with v0.0.32*
 
 ## Credits
 
