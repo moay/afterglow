@@ -373,8 +373,6 @@ afterglow = {
 		var lb_videoel = videoel.cloneNode(true);
 		var playerid = lb_videoel.getAttribute("id");
 
-		console.log(lb_videoel);
-
 		// Prepare the lightbox element
 		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
 		var cover = $dom.create("div.cover");
@@ -411,6 +409,7 @@ afterglow = {
 					afterglow.closeLightbox();
 				});
 			}
+			// Else show the poster frame on ended.
 			else{
 				player.on('ended', function(){
 					afterglow.getPlayer(playerid).posterImage.show();
@@ -420,7 +419,7 @@ afterglow = {
 
 		// Add the closing button
 		var lightboxCloseButton = afterglow.getPlayer(playerid).TopControlBar.addChild("LightboxCloseButton");
-		addEventHandler(lightboxCloseButton.el_,'click',function(){
+		addEventHandler(lightboxCloseButton.el_,'click tap',function(){
 			afterglow.closeLightbox();
 		})
 

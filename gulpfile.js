@@ -113,8 +113,6 @@ gulp.task('bump', function(){
 			.pipe(gulp.dest('./'));
     	}
     }));
-
-	
 });
 
 // Release to github
@@ -162,7 +160,7 @@ gulp.task('release', function(){
 
     	// LAST CHANGE TO CANCEL NOTICE
     	plugins.util.log('');
-    	plugins.util.log('Your are going to release', plugins.util.colors.green('afterglow'), plugins.util.colors.yellow(res.releasename), plugins.util.colors.cyan('(Version tag: '+pkg.version+')'), 'as a', plugins.util.colors.white(res.type));
+    	plugins.util.log('Your are going to release', plugins.util.colors.yellow(res.releasename), plugins.util.colors.cyan('(Version tag: '+pkg.version+')'), 'as a', plugins.util.colors.white(res.type));
 
 
     	// Remember to set an env var called GITHUB_TOKEN
