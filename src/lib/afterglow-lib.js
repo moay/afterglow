@@ -95,7 +95,6 @@ var ie = (function () {
             };
         }
     }
-<<<<<<< HEAD
     return ret;
 }()).actualVersion;
 
@@ -143,8 +142,3 @@ Node.prototype.removeClass = function (className) {
     }
     return this;
 };
-=======
-
-    return ret;
-}()).actualVersion;
->>>>>>> master
