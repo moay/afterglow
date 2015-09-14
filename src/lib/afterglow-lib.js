@@ -111,3 +111,48 @@ var mobileDetect = {
     }
 };
 var isMobile = mobileDetect.any();
+
+/**
+ * This extends the basic functionality of every Node. Will check if a Node has a className
+ * @param  {string}  className  The class to check for
+ * @return {Boolean}
+ */
+Node.prototype.hasClass = function (className) {
+    if (this.classList) {
+        return this.classList.contains(className);
+    } else {
+        return (-1 < this.className.indexOf(className));
+    }
+};
+
+/**
+ * This extends the basic functionality of every Node. Will add the className if not yet added.
+ * @param  {string}  className  The class to add
+ * @return {Boolean}           
+ */
+Node.prototype.addClass = function (className) {
+    if (this.classList) {
+        this.classList.add(className);
+    } else if (!this.hasClass(className)) {
+        var classes = this.className.split(" ");
+        classes.push(className);
+        this.className = classes.join(" ");
+    }
+    return this;
+};
+
+/**
+ * This extends the basic functionality of every Node. Will remove the className if not yet removed.
+ * @param  {string}  className  The class to remove
+ * @return {Boolean}           
+ */
+Node.prototype.removeClass = function (className) {
+    if (this.classList) {
+        this.classList.remove(className);
+    } else {
+        var classes = this.className.split(" ");
+        classes.splice(classes.indexOf(className), 1);
+        this.className = classes.join(" ");
+    }
+    return this;
+};
