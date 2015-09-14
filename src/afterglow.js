@@ -59,6 +59,7 @@ afterglow = {
 
 			// Fix youtube poster
 			if(afterglow.isYoutubePlayer(videoel) && !options.poster && this.tech.poster != ""){
+				this.addClass('vjs-youtube-ready');
 				this.poster(this.tech.poster);
 			}
 
