@@ -160,7 +160,6 @@ THE SOFTWARE. */
         playerVars.html5 = 1;
       }
 
-
       this.activeVideoId = this.url.videoId;
       this.activeList = playerVars.list;
       this.playerVars = playerVars;
