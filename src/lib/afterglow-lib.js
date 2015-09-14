@@ -108,7 +108,6 @@ var mobileDetect = {
     Opera: function() { return navigator.userAgent.match(/Opera Mini/i); }, 
     Windows: function() { return navigator.userAgent.match(/IEMobile/i); }, 
     any: function() { return (mobileDetect.Android() || mobileDetect.BlackBerry() || mobileDetect.iOS() || mobileDetect.Opera() || mobileDetect.Windows()); } 
-    }
 };
 var isMobile = mobileDetect.any();
 
