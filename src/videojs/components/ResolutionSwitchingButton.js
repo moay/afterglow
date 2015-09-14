@@ -3,7 +3,7 @@
 const VjsButtonResBBase = videojs.getComponent('Button');
 
 /**
- * Button to close the lightbox
+ * Button to switch resolutions based on the data-quality attribute.
  *
  * @extends Button
  * @class LightboxCloseButton
@@ -19,8 +19,11 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  		return 'vjs-ag-res-button vjs-control vjs-button';
  	}
 
+ 	/**
+ 	 * Initiates the button and its functionality
+ 	 * @return {void}
+ 	 */
  	init(){
- 		this.createPlayerMethods();
  		this.prepareSources();
  		
  		this.setCurrentResFromPlayer();
@@ -28,8 +31,13 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 
  		this.updateButton();
  		this.on('click',this.switchResolution);
+ 		this.on('tap',this.switchResolution);
  	}
 
+ 	/**
+ 	 * Prepares the sources that are needed for the button functionality
+ 	 * @return {void}
+ 	 */
  	prepareSources(){
  		this.sources = this.player_.options_['sources'];
 		this.sourcesByType = videojs.reduce(this.sources, function(init, val, i){
@@ -39,6 +47,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 		this.typeAndTech = this.selectTypeAndTech(this.sources);
     }
     
+    /**
+     * Sets the currentRes based on the currently played source
+     */
     setCurrentResFromPlayer(){
     	var currentSrc = this.player_.src();
     	var allSources = this.sources;
@@ -54,6 +65,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
     	};
     }
 
+    /**
+     * Checks if the plugin is needed for that player
+     */
 	setResolutionsNeededFromPlayer(){
 		// Fallback
 		this.resolutionsNeeded = false;
@@ -74,6 +88,10 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 		}
 	}
 
+	/**
+	 * Removes all sources without actually disposing the player
+	 * @return {void}
+	 */
     removeSources(){
     	var videoEl = this.player_.el_.getElementsByTagName("video")[0];
 
@@ -85,6 +103,10 @@ const VjsButtonResBBase = videojs.getComponent('Button');
     	}
     }
 
+    /**
+     * Gets the source that should be launched on the next resolution change
+     * @return {object} The source object which should be played
+     */
     getSourceForResolutionChange(){
     	var type = this.typeAndTech.type;
     	var availableSources = this.sourcesByType[type];
@@ -103,24 +125,30 @@ const VjsButtonResBBase = videojs.getComponent('Button');
     	return availableSources[0];
     }
 
+    /**
+     * Changes the currently played source to another solution if possible
+     * @return {[type]} [description]
+     */
  	switchResolution(){
  		var sourceToPlay = this.getSourceForResolutionChange();
- 		console.log(sourceToPlay);
  		this.switchSource(sourceToPlay);
  	}
 
+ 	/**
+ 	 * Stops the currently playing stream without disposing the player
+ 	 * @return {[type]} [description]
+ 	 */
  	stopStream(){
 		switch(this.player_.techName){
 			case "Flash":
 			    this.player_.tech.el_.vjs_stop();
 			    break;
 		}
-
-		// this may cause flash or the native player to emit errors but
-		// they are harmless
-		this.player_.src("");
     }
 
+    /**
+     * Selectes sources by type
+     */
     selectSource(sources){
 		this.removeSources();
 
@@ -163,6 +191,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 		}
 	}
 
+	/**
+	 * Selects a source for a given resolution
+	 */
 	selectResolution(typeSources) {
 		var defaultRes = 0;
 		var supportsLocalStorage = !!window.localStorage;
@@ -244,6 +275,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	    });
 	}
 
+	/**
+	 * Updates the button display the currently active quality.
+	 */
 	updateButton(){
 		var buttonEl = this.el_;
 		if(!this.resolutionsNeeded){
@@ -259,13 +293,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 		else{
 			buttonEl.removeClass("vjs-ag-res-hd");
 		}
-		this.el_.blur();
-	}
 
-	createPlayerMethods(){
-		// this.player_.resolution = function(){
-		// 	return this.cache_.src.res;
-		// }
+		// Get rid of the focus when having clicked the button
+		this.el_.blur();
 	}
 }
 

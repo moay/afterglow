@@ -69,7 +69,7 @@ afterglow = {
 			}
 
 			// Add resolution switching
-			this.controlBar.addChild("ResolutionSwitchingButton");
+			// this.controlBar.addChild("ResolutionSwitchingButton");
 
 			// Launch the callback if there is one
 			if(typeof _callback == "function"){
@@ -280,6 +280,9 @@ afterglow = {
 					},
 					{
 						name: "progressControl"
+					},
+					{
+						name: "ResolutionSwitchingButton"
 					},
 					{
 						name: "volumeMenuButton",

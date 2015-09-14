@@ -430,7 +430,7 @@
 
 	.vjs-volume-menu-button:hover .vjs-menu,
 	.vjs-volume-menu-button.vjs-volume-menu-button-horizontal:hover .vjs-menu{
-		width: 61px;
+		width: 74px;
 
 		@media(max-width:768px){
 			padding-left:5px;
@@ -450,6 +450,7 @@
 			width: 61px;
 			bottom:0;
 			left:0;
+			float:none;
 			box-shadow:none;
 			.transition(all 0.2s);
 
@@ -1209,6 +1210,19 @@
 	.vjs-ag-res-button{
 		float:right;
 		cursor:pointer;
+		width:50px;
+
+		@media(max-width:768px){
+			width:30px;
+			margin-left:-4px;
+		}
+
+		@media(max-width:512px){
+			width:20px;
+			margin-right:5px;
+			margin-left:0;
+		}
+
 
 		&:before{
 			content: @lowres-icon;
@@ -1218,7 +1232,7 @@
 
 			&:before{
 				content: @highres-icon;
-				margin-left:-1px;
+				margin-left:.5px;
 			}
 		}
 	}
