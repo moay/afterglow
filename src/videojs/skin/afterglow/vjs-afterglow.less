@@ -1266,18 +1266,14 @@
 
 	&.vjs-youtube{
 		iframe{
-			display:none;
+			display:block;
+			visibility:hidden;
 		}
 
 		&.vjs-IE{
 			iframe{
 				display:block;
-			}
-		}
-
-		&.vjs-has-started{
-			iframe{
-				display:block;
+				visibility:visible;
 			}
 		}
 		
@@ -1314,6 +1310,27 @@
 			}
 			iframe{
 				display:block;
+			}
+		}
+	}
+
+	&.vjs-youtube-ready{
+		iframe{
+			display:none;
+			visibility:visible;
+		}
+
+		&.vjs-IE{
+			iframe{
+				display:block;
+				visibility:visible;
+			}
+		}
+
+		&.vjs-has-started{
+			iframe{
+				display:block;
+				visibility:visible;
 			}
 		}
 	}
@@ -1451,6 +1468,10 @@ and the native poster can take over */
 	position: absolute;
 	bottom: 50px;
 	pointer-events: none;
+}
+
+.video-js.vjs-IE .vjs-text-track-display{
+	display:none;
 }
 
 /* Captions Settings Dialog */

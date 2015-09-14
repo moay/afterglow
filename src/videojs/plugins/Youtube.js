@@ -155,6 +155,12 @@ THE SOFTWARE. */
         playerVars.theme = this.options_.theme;
       }
 
+      // FORCE HTML5 FOR FIREFOX
+      if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+        playerVars.html5 = 1;
+      }
+
+
       this.activeVideoId = this.url.videoId;
       this.activeList = playerVars.list;
       this.playerVars = playerVars;
