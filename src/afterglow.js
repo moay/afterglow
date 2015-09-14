@@ -68,6 +68,9 @@ afterglow = {
 				this.poster(this.tech.poster);
 			}
 
+			// Add resolution switching
+			this.controlBar.addChild("ResolutionSwitchingButton");
+
 			// Launch the callback if there is one
 			if(typeof _callback == "function"){
 				_callback(this);
@@ -424,9 +427,6 @@ afterglow = {
 
 			// Add the closing button
 			var lightboxCloseButton = afterglow.getPlayer(playerid).TopControlBar.addChild("LightboxCloseButton");
-			addEventHandler(lightboxCloseButton.el_,'click tap',function(){
-				afterglow.closeLightbox();
-			});
 		});
 
 		// resize the lightbox and make it autoresize
