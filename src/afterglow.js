@@ -57,6 +57,12 @@ afterglow = {
 				enableNumbers: false
 			});
 
+			// Set initial volume if needed
+			if(videoel.getAttribute('data-volume') !== null){
+				var volume = parseFloat(videoel.getAttribute('data-volume'));
+				this.volume(volume);
+			}
+
 			// Fix youtube poster
 			if(afterglow.isYoutubePlayer(videoel) && !options.poster && this.tech.poster != ""){
 				this.poster(this.tech.poster);
@@ -404,7 +410,7 @@ afterglow = {
 			}
 
 			// Adding autoclose functionality
-			if(lb_videoel.getAttribute("data-autoclose") == "true"){
+			if(videoel.getAttribute("data-autoclose") == "true"){
 				player.on('ended', function(){
 					afterglow.closeLightbox();
 				});

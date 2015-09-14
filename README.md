@@ -1,6 +1,6 @@
 # afterglow
 
-afterglow is a tool to create fully responsive and totally awesome video players from an HTML5 video element with as little effort as possible.
+afterglow is a tool to create fully responsive and totally awesome video players from HTML5 video elements with as little effort as possible.
 
 Learn more about the project on the project website: [http://afterglowplayer.com](http://afterglowplayer.com).
 
