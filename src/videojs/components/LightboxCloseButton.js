@@ -1,6 +1,6 @@
 'use strict';
 
-const VjsButton = videojs.getComponent('Button');
+const VjsLBButtonClose = videojs.getComponent('Button');
 
 /**
  * Button to close the lightbox
@@ -8,7 +8,7 @@ const VjsButton = videojs.getComponent('Button');
  * @extends Button
  * @class LightboxCloseButton
 */
-class LightboxCloseButton extends VjsButton {
+class LightboxCloseButton extends VjsLBButtonClose {
 
  	constructor(player, options) {
  		super(player, options);

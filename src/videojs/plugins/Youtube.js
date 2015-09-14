@@ -190,7 +190,7 @@ THE SOFTWARE. */
     },
 
     onPlayerPlaybackQualityChange: function() {
-
+      this.trigger('resolutionchange')
     },
 
     onPlayerStateChange: function(e) {
