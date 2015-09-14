@@ -99,46 +99,15 @@ var ie = (function () {
 }()).actualVersion;
 
 /**
- * This extends the basic functionality of every Node. Will check if a Node has a className
- * @param  {string}  className  The class to check for
- * @return {Boolean}
+ * Sets a variable for mobile devices
  */
-Node.prototype.hasClass = function (className) {
-    if (this.classList) {
-        return this.classList.contains(className);
-    } else {
-        return (-1 < this.className.indexOf(className));
+var mobileDetect = { 
+    Android: function() { return navigator.userAgent.match(/Android/i); }, 
+    BlackBerry: function() { return navigator.userAgent.match(/BlackBerry/i); }, 
+    iOS: function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); }, 
+    Opera: function() { return navigator.userAgent.match(/Opera Mini/i); }, 
+    Windows: function() { return navigator.userAgent.match(/IEMobile/i); }, 
+    any: function() { return (mobileDetect.Android() || mobileDetect.BlackBerry() || mobileDetect.iOS() || mobileDetect.Opera() || mobileDetect.Windows()); } 
     }
 };
-
-/**
- * This extends the basic functionality of every Node. Will add the className if not yet added.
- * @param  {string}  className  The class to add
- * @return {Boolean}           
- */
-Node.prototype.addClass = function (className) {
-    if (this.classList) {
-        this.classList.add(className);
-    } else if (!this.hasClass(className)) {
-        var classes = this.className.split(" ");
-        classes.push(className);
-        this.className = classes.join(" ");
-    }
-    return this;
-};
-
-/**
- * This extends the basic functionality of every Node. Will remove the className if not yet removed.
- * @param  {string}  className  The class to remove
- * @return {Boolean}           
- */
-Node.prototype.removeClass = function (className) {
-    if (this.classList) {
-        this.classList.remove(className);
-    } else {
-        var classes = this.className.split(" ");
-        classes.splice(classes.indexOf(className), 1);
-        this.className = classes.join(" ");
-    }
-    return this;
-};
+var isMobile = mobileDetect.any();

@@ -405,11 +405,11 @@ afterglow = {
 		// initiate the player and launch it
 		afterglow.initPlayer(lb_videoel, function(player){
 
-			// Prevent autoplay for iOS, won't work anyways...
-			if(!(/iPad|iPhone|iPod/.test(navigator.platform))){
+			// Prevent autoplay for mobile devices, won't work anyways...
+			if(!isMobile){
 				afterglow.getPlayer(playerid).play();
 
-				// Android device, so autoplay didn't work
+				// If autoplay didn't work
 				if(afterglow.getPlayer(playerid).paused()){
 					afterglow.getPlayer(playerid).posterImage.show();
 					afterglow.getPlayer(playerid).bigPlayButton.show();
