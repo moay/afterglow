@@ -39,11 +39,11 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  	 * @return {void}
  	 */
  	prepareSources(){
- 		this.sources = this.player_.options_['sources'];
+ 		this.sources = this.player().options_['sources'];
 		this.sourcesByType = videojs.reduce(this.sources, function(init, val, i){
 			(init[val.type] = init[val.type] || []).push(val);
 			return init;
-		}, {}, this.player_);
+		}, {}, this.player());
 		this.typeAndTech = this.selectTypeAndTech(this.sources);
     }
     
@@ -51,7 +51,7 @@ const VjsButtonResBBase = videojs.getComponent('Button');
      * Sets the currentRes based on the currently played source
      */
     setCurrentResFromPlayer(){
-    	var currentSrc = this.player_.src();
+    	var currentSrc = this.player().src();
     	var allSources = this.sources;
     	for (var i = allSources.length - 1; i >= 0; i--) {
     		if(allSources[i]['src'] == currentSrc){
@@ -93,9 +93,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	 * @return {void}
 	 */
     removeSources(){
-    	var videoEl = this.player_.el_.getElementsByTagName("video")[0];
+    	var videoEl = this.player().el_.getElementsByTagName("video")[0];
 
-    	if (this.player_.techName !== "Html5" || !videoEl) return;
+    	if (this.player().techName !== "Html5" || !videoEl) return;
 
     	var srcs = videoEl.getElementsByTagName("source");
     	for(var i=0;i<srcs.length;i++){
@@ -139,9 +139,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  	 * @return {[type]} [description]
  	 */
  	stopStream(){
-		switch(this.player_.techName){
+		switch(this.player().techName){
 			case "Flash":
-			    this.player_.tech.el_.vjs_stop();
+			    this.player().tech.el_.vjs_stop();
 			    break;
 		}
     }
@@ -173,8 +173,8 @@ const VjsButtonResBBase = videojs.getComponent('Button');
     	var techName;
     	var tech;
 
-    	for (var i=0,j=this.player_.options_['techOrder'];i<j.length;i++) {
-    		techName = this.player_.techName;
+    	for (var i=0,j=this.player().options_['techOrder'];i<j.length;i++) {
+    		techName = this.player().techName;
     		tech     = window['videojs'].getComponent(techName);
 
 	        // Check if the browser supports this technology
@@ -228,17 +228,17 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	*/
 	switchSource(new_source){
 	    // has the exact same source been chosen?
-	    if (this.player_.cache_.src === new_source.src){
-			this.player_.trigger('resolutionchange');
-			return this.player_; // basically a no-op
+	    if (this.player().cache_.src === new_source.src){
+			this.player().trigger('resolutionchange');
+			return this.player(); // basically a no-op
 	    }
 
 	    // remember our position and playback state
-	    var curTime      = this.player_.currentTime();
-	    var remainPaused = this.player_.paused();
+	    var curTime      = this.player().currentTime();
+	    var remainPaused = this.player().paused();
 
 	    // pause playback
-	    this.player_.pause();
+	    this.player().pause();
 
 	    // attempts to stop the download of the existing video
 	    this.stopStream();
@@ -246,25 +246,25 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	    // HTML5 tends to not recover from reloading the tech but it can
 	    // generally handle changing src. Flash generally cannot handle
 	    // changing src but can reload its tech.
-	    if (this.player_.techName === "Html5"){
-	        this.player_.src(new_source.src);
+	    if (this.player().techName === "Html5"){
+	        this.player().src(new_source.src);
 	    } else {
-	        this.player_.loadTech(this.player_.techName, {src: new_source.src});
+	        this.player().loadTech(this.player().techName, {src: new_source.src});
 	    }
 
 	    var _this = this;
 
 	    // when the technology is re-started, kick off the new stream
-	    this.player_.ready(function() {
-			this.player_.one('loadeddata', videojs.bind(this.player_, function() {
-				this.player_.currentTime(curTime);
+	    this.player().ready(function() {
+			this.player().one('loadeddata', videojs.bind(this.player(), function() {
+				this.player().currentTime(curTime);
 			}));
 
-			this.player_.trigger('resolutionchange');
+			this.player().trigger('resolutionchange');
 
 			if (!remainPaused) {
-				this.player_.load();
-				this.player_.play();
+				this.player().load();
+				this.player().play();
 			}
 
 			// remember this selection
