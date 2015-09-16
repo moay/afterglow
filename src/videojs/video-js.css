@@ -86,11 +86,11 @@
   .vjs-icon-square:before {
     content: '\f10a'; }
 
-.vjs-icon-spinner, .vjs-loading-spinner {
+.vjs-icon-spinner {
   font-family: VideoJS;
   font-weight: normal;
   font-style: normal; }
-  .vjs-icon-spinner:before, .vjs-loading-spinner:before {
+  .vjs-icon-spinner:before {
     content: '\f10b'; }
 
 .vjs-icon-subtitles, .video-js .vjs-subtitles-button {
@@ -128,11 +128,11 @@
   .vjs-icon-cog:before {
     content: '\f110'; }
 
-.vjs-icon-circle, .video-js .vjs-play-progress, .video-js .vjs-volume-level {
+.vjs-icon-circle, .video-js .vjs-mouse-display, .video-js .vjs-play-progress, .video-js .vjs-volume-level {
   font-family: VideoJS;
   font-weight: normal;
   font-style: normal; }
-  .vjs-icon-circle:before, .video-js .vjs-play-progress:before, .video-js .vjs-volume-level:before {
+  .vjs-icon-circle:before, .video-js .vjs-mouse-display:before, .video-js .vjs-play-progress:before, .video-js .vjs-volume-level:before {
     content: '\f111'; }
 
 .vjs-icon-circle-outline {
@@ -171,6 +171,7 @@
   /* Start with 10px for base font size so other dimensions can be em based and
   easily calculable. */
   font-size: 10px;
+  line-height: 1;
   /* Provide some basic defaults for fonts */
   font-weight: normal;
   font-style: normal;
@@ -191,6 +192,18 @@
 /* All elements inherit border-box sizing */
 .video-js *, .video-js *:before, .video-js *:after {
   box-sizing: inherit; }
+
+/* List style reset */
+.video-js ul {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  list-style-position: outside;
+  /* Important to specify each */
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0; }
 
 /* Fill the width of the containing element and use padding to create the
    desired aspect ratio. Default to 16x9 unless another ratio is given. */
@@ -297,14 +310,11 @@ about what's required to play video. */
   -o-transition: all 0.4s;
   transition: all 0.4s; }
 
-.video-js.vjs-big-play-centered .vjs-big-play-button {
+.vjs-big-play-centered .vjs-big-play-button {
   top: 50%;
   left: 50%;
   margin-top: -0.75em;
   margin-left: -1.5em; }
-
-.video-js.vjs-controls-disabled .vjs-big-play-button, .video-js.vjs-has-started .vjs-big-play-button, .video-js.vjs-using-native-controls .vjs-big-play-button {
-  display: none; }
 
 .video-js:hover .vjs-big-play-button, .video-js .vjs-big-play-button:focus {
   outline: 0;
@@ -316,7 +326,7 @@ about what's required to play video. */
   -o-transition: all 0s;
   transition: all 0s; }
 
-.vjs-error .vjs-big-play-button {
+.vjs-controls-disabled .vjs-big-play-button, .vjs-has-started .vjs-big-play-button, .vjs-using-native-controls .vjs-big-play-button, .vjs-error .vjs-big-play-button {
   display: none; }
 
 .video-js button {
@@ -326,24 +336,28 @@ about what's required to play video. */
   display: inline-block;
   overflow: visible;
   font-size: inherit;
+  line-height: inherit;
+  text-transform: none;
+  text-decoration: none;
+  transition: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none; }
 
-.video-js .vjs-menu-button {
+.vjs-menu-button {
   cursor: pointer; }
 
-.video-js .vjs-menu .vjs-menu-content {
+.vjs-menu .vjs-menu-content {
   display: block;
   padding: 0;
   margin: 0;
   overflow: auto; }
 
 /* prevent menus from opening while scrubbing (FF, IE) */
-.video-js.vjs-scrubbing .vjs-menu-button:hover .vjs-menu {
+.vjs-scrubbing .vjs-menu-button:hover .vjs-menu {
   display: none; }
 
-.video-js .vjs-menu ul li {
+.vjs-menu li {
   list-style: none;
   margin: 0;
   padding: 0.2em 0;
@@ -352,16 +366,16 @@ about what's required to play video. */
   text-align: center;
   text-transform: lowercase; }
 
-.video-js .vjs-menu ul li.vjs-selected {
+.vjs-menu li.vjs-selected {
   background-color: #000; }
 
-.video-js .vjs-menu ul li:focus, .video-js .vjs-menu ul li:hover, .video-js .vjs-menu ul li.vjs-selected:focus, .video-js .vjs-menu ul li.vjs-selected:hover {
+.vjs-menu li:focus, .vjs-menu li:hover, .vjs-menu li.vjs-selected:focus, .vjs-menu li.vjs-selected:hover {
   outline: 0;
   color: #000;
   background-color: #fff;
   background-color: rgba(255, 255, 255, 0.75); }
 
-.video-js .vjs-menu ul li.vjs-menu-title {
+.vjs-menu li.vjs-menu-title {
   text-align: center;
   text-transform: uppercase;
   font-size: 1em;
@@ -375,22 +389,20 @@ about what's required to play video. */
   display: none;
   position: absolute;
   bottom: 0;
+  width: 10em;
   left: -3em;
   /* (Width of vjs-menu - width of button) / 2 */
-  width: 0em;
   height: 0em;
   margin-bottom: 1.5em;
   border-top-color: rgba(7, 40, 50, 0.5);
   /* Same as ul background */ }
 
 /* Button Pop-up Menu */
-.vjs-menu-button-popup .vjs-menu-content {
+.vjs-menu-button-popup .vjs-menu ul {
   background-color: #000;
-  background-color: rgba(0, 0, 0, 0.7); }
-
-.vjs-menu-button-popup .vjs-menu-content {
+  background-color: rgba(0, 0, 0, 0.7);
   position: absolute;
-  width: 10em;
+  width: 100%;
   bottom: 1.5em;
   /* Same bottom as vjs-menu border-top */
   max-height: 15em; }
@@ -461,7 +473,7 @@ about what's required to play video. */
   background-color: #2B333F;
   background-color: rgba(43, 51, 63, 0.5); }
 
-.video-js.vjs-has-started .vjs-control-bar {
+.vjs-has-started .vjs-control-bar {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -473,7 +485,7 @@ about what's required to play video. */
   -o-transition: visibility 0.1s, opacity 0.1s;
   transition: visibility 0.1s, opacity 0.1s; }
 
-.video-js.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
+.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
   visibility: hidden;
   opacity: 0;
   -webkit-transition: visibility 1s, opacity 1s;
@@ -481,10 +493,11 @@ about what's required to play video. */
   -o-transition: visibility 1s, opacity 1s;
   transition: visibility 1s, opacity 1s; }
 
-.video-js.video-js.video-js.vjs-controls-disabled .vjs-control-bar, .video-js.video-js.video-js.vjs-using-native-controls .vjs-control-bar, .video-js.video-js.video-js.vjs-error .vjs-control-bar {
-  display: none; }
+.vjs-controls-disabled .vjs-control-bar, .vjs-using-native-controls .vjs-control-bar, .vjs-error .vjs-control-bar {
+  /* !important is ok in this context. */
+  display: none !important; }
 
-.video-js.vjs-audio.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
+.vjs-audio.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-control-bar {
   opacity: 1;
   visibility: visible; }
 
@@ -494,11 +507,11 @@ fonts to show/hide properly.
 - Found in XP IE8 from http://modern.ie. Does not show up in "IE8 mode" in IE9
 */
 @media \0screen {
-  .video-js.vjs-user-inactive.vjs-playing .vjs-control-bar :before {
+  .vjs-user-inactive.vjs-playing .vjs-control-bar :before {
     content: ""; } }
 
 /* IE 8 + 9 Support */
-.video-js.vjs-has-started.vjs-no-flex .vjs-control-bar {
+.vjs-has-started.vjs-no-flex .vjs-control-bar {
   display: table; }
 
 .video-js .vjs-control {
@@ -590,7 +603,7 @@ fonts to show/hide properly.
   font-size: 1.6666666667em; }
 
 /* Also show the current time tooltip */
-.video-js .vjs-progress-control:hover .vjs-play-progress:after {
+.video-js .vjs-progress-control:hover .vjs-mouse-display:after, .video-js .vjs-progress-control:hover .vjs-play-progress:after {
   display: block;
   /* If we let the font size grow as much as everything else, the current time tooltip ends up
      ginormous. If you'd like to enable the current time tooltip all the time, this should be disabled
@@ -610,17 +623,18 @@ fonts to show/hide properly.
   left: 0;
   top: 0; }
 
+.video-js .vjs-mouse-display:before {
+  display: none; }
+
 .video-js .vjs-play-progress {
   background-color: #fff; }
   .video-js .vjs-play-progress:before {
     position: absolute;
     top: -0.3333333333em;
     right: -0.5em;
-    font-size: 0.9em;
-    height: 1em;
-    line-height: 1em; }
+    font-size: 0.9em; }
 
-.video-js .vjs-play-progress:after {
+.video-js .vjs-mouse-display:after, .video-js .vjs-play-progress:after {
   /* By default this is hidden and only shown when hovering over the progress control */
   display: none;
   position: absolute;
@@ -636,6 +650,9 @@ fonts to show/hide properly.
   -moz-border-radius: 0.3em;
   border-radius: 0.3em; }
 
+.video-js .vjs-play-progress:before, .video-js .vjs-play-progress:after {
+  z-index: 1; }
+
 .video-js .vjs-load-progress {
   background: #646464;
   /* IE8- Fallback */
@@ -648,6 +665,36 @@ specific time ranges that have been buffered */
 
 .video-js.vjs-no-flex .vjs-progress-control {
   width: auto; }
+
+.video-js .vjs-progress-control .vjs-mouse-display {
+  display: none;
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  background-color: #000;
+  z-index: 1; }
+
+.vjs-no-flex .vjs-progress-control .vjs-mouse-display {
+  z-index: 0; }
+
+.video-js .vjs-progress-control:hover .vjs-mouse-display {
+  display: block; }
+
+.video-js.vjs-user-inactive .vjs-progress-control .vjs-mouse-display, .video-js.vjs-user-inactive .vjs-progress-control .vjs-mouse-display:after {
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: visibility 1s, opacity 1s;
+  -moz-transition: visibility 1s, opacity 1s;
+  -o-transition: visibility 1s, opacity 1s;
+  transition: visibility 1s, opacity 1s; }
+
+.video-js.vjs-user-inactive.vjs-no-flex .vjs-progress-control .vjs-mouse-display, .video-js.vjs-user-inactive.vjs-no-flex .vjs-progress-control .vjs-mouse-display:after {
+  display: none; }
+
+.video-js .vjs-progress-control .vjs-mouse-display:after {
+  color: #fff;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.8); }
 
 .video-js .vjs-slider {
   outline: 0;
@@ -774,6 +821,7 @@ width and height to zero. */
   left: 0;
   height: 100%; }
 
+/* Used for IE8 fallback */
 .vjs-poster img {
   display: block;
   vertical-align: middle;
@@ -783,20 +831,20 @@ width and height to zero. */
   width: 100%; }
 
 /* Hide the poster after the video has started playing */
-.video-js.vjs-has-started .vjs-poster {
+.vjs-has-started .vjs-poster {
   display: none; }
 
 /* Don't hide the poster if we're playing audio */
-.video-js.vjs-audio.vjs-has-started .vjs-poster {
+.vjs-audio.vjs-has-started .vjs-poster {
   display: block; }
 
 /* Hide the poster when controls are disabled because it's clickable
 and the native poster can take over */
-.video-js.vjs-controls-disabled .vjs-poster {
+.vjs-controls-disabled .vjs-poster {
   display: none; }
 
 /* Hide the poster when native controls are used otherwise it covers them */
-.video-js.vjs-using-native-controls .vjs-poster {
+.vjs-using-native-controls .vjs-poster {
   display: none; }
 
 .video-js .vjs-live-control {
@@ -834,10 +882,10 @@ and the native poster can take over */
   display: none; }
 
 /* We need the extra specificity that referencing .vjs-no-flex provides. */
-.video-js .vjs-current-time, .video-js.vjs-no-flex .vjs-current-time {
+.video-js .vjs-current-time, .vjs-no-flex .vjs-current-time {
   display: none; }
 
-.video-js .vjs-duration, .video-js.vjs-no-flex .vjs-duration {
+.video-js .vjs-duration, .vjs-no-flex .vjs-duration {
   display: none; }
 
 .vjs-time-divider {
@@ -855,7 +903,7 @@ and the native poster can take over */
   -ms-flex: none;
   flex: none; }
 
-.video-js .vjs-text-track-display {
+.vjs-text-track-display {
   position: absolute;
   bottom: 3em;
   left: 0;
@@ -876,11 +924,11 @@ and the native poster can take over */
   background-color: #000;
   background-color: rgba(0, 0, 0, 0.5); }
 
-.video-js .vjs-subtitles {
+.vjs-subtitles {
   color: #fff;
   /* Subtitles are white */ }
 
-.video-js .vjs-captions {
+.vjs-captions {
   color: #fc6;
   /* Captions are yellow */ }
 
@@ -897,7 +945,7 @@ and the native poster can take over */
   flex: none; }
 
 /* Switch to the exit icon when the player is in fullscreen */
-.video-js .vjs-playback-rate .vjs-playback-rate-value {
+.vjs-playback-rate .vjs-playback-rate-value {
   font-size: 1.5em;
   line-height: 2;
   position: absolute;
@@ -907,13 +955,9 @@ and the native poster can take over */
   height: 100%;
   text-align: center; }
 
-.video-js .vjs-playback-rate .vjs-menu {
-  left: 0em; }
-
-.video-js .vjs-playback-rate.vjs-menu-button .vjs-menu .vjs-menu-content {
+.vjs-playback-rate .vjs-menu {
   width: 4em;
-  left: 0;
-  list-style: none; }
+  left: 0em; }
 
 .vjs-error-display {
   display: none; }
@@ -963,75 +1007,92 @@ and the native poster can take over */
   position: absolute;
   top: 50%;
   left: 50%;
-  font-size: 4em;
-  line-height: 1;
-  width: 1em;
-  height: 1em;
-  margin-left: -0.5em;
-  margin-top: -0.5em;
-  opacity: 0.75; }
+  margin: -25px 0 0 -25px;
+  opacity: 0.85;
+  border: 6px solid rgba(113, 119, 129, 0.75);
+  box-sizing: border-box;
+  background-clip: padding-box;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px; }
 
-/* Show the spinner when waiting for data and seeking to a new time */
-.vjs-waiting .vjs-loading-spinner, .vjs-seeking .vjs-loading-spinner {
-  display: block;
-  /* only animate when showing because it can be processor heavy */
-  -webkit-animation: spin 1.5s infinite linear;
-  -moz-animation: spin 1.5s infinite linear;
-  -o-animation: spin 1.5s infinite linear;
-  animation: spin 1.5s infinite linear; }
+.vjs-seeking .vjs-loading-spinner, .vjs-waiting .vjs-loading-spinner {
+  display: block; }
 
-/* Errors are unrecoverable without user interaction so hide the spinner */
-.vjs-error .vjs-loading-spinner {
-  display: none;
-  /* ensure animation doesn't continue while hidden */
-  -webkit-animation: none;
-  -moz-animation: none;
-  -o-animation: none;
-  animation: none; }
-
-.video-js .vjs-loading-spinner:before {
+.vjs-loading-spinner:before, .vjs-loading-spinner:after {
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 1em;
-  height: 1em;
-  text-align: center;
-  text-shadow: 0em 0em 0.1em #000; }
+  margin: -6px;
+  box-sizing: inherit;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  /* Keep 100% opacity so they don't show through each other */
+  opacity: 1;
+  border: inherit;
+  border-color: transparent;
+  border-top-color: white; }
 
-@-moz-keyframes spin {
+/* only animate when showing because it can be processor heavy */
+.vjs-seeking .vjs-loading-spinner:before, .vjs-seeking .vjs-loading-spinner:after, .vjs-waiting .vjs-loading-spinner:before, .vjs-waiting .vjs-loading-spinner:after {
+  -webkit-animation: vjs-spinner-spin 1.1s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, vjs-spinner-fade 1.1s linear infinite;
+  animation: vjs-spinner-spin 1.1s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, vjs-spinner-fade 1.1s linear infinite; }
+
+.vjs-seeking .vjs-loading-spinner:before, .vjs-waiting .vjs-loading-spinner:before {
+  border-top-color: white; }
+
+.vjs-seeking .vjs-loading-spinner:after, .vjs-waiting .vjs-loading-spinner:after {
+  border-top-color: white;
+  -webkit-animation-delay: 0.44s;
+  animation-delay: 0.44s; }
+
+@keyframes vjs-spinner-spin {
+  100% {
+    transform: rotate(360deg); } }
+
+@-webkit-keyframes vjs-spinner-spin {
+  100% {
+    -webkit-transform: rotate(360deg); } }
+
+@keyframes vjs-spinner-fade {
   0% {
-    -moz-transform: rotate(0deg); }
+    border-top-color: #a6aab0; }
+
+  20% {
+    border-top-color: #a6aab0; }
+
+  35% {
+    border-top-color: white; }
+
+  60% {
+    border-top-color: #a6aab0; }
 
   100% {
-    -moz-transform: rotate(359deg); } }
+    border-top-color: #a6aab0; } }
 
-@-webkit-keyframes spin {
+@-webkit-keyframes vjs-spinner-fade {
   0% {
-    -webkit-transform: rotate(0deg); }
+    border-top-color: #a6aab0; }
+
+  20% {
+    border-top-color: #a6aab0; }
+
+  35% {
+    border-top-color: white; }
+
+  60% {
+    border-top-color: #a6aab0; }
 
   100% {
-    -webkit-transform: rotate(359deg); } }
+    border-top-color: #a6aab0; } }
 
-@-o-keyframes spin {
-  0% {
-    -o-transform: rotate(0deg); }
+.vjs-chapters-button .vjs-menu {
+  left: -10em;
+  /* (Width of vjs-menu - width of vjs-control) / 2 */
+  width: 0; }
 
-  100% {
-    -o-transform: rotate(359deg); } }
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg); }
-
-  100% {
-    transform: rotate(359deg); } }
-
-.video-js .vjs-chapters-button.vjs-menu-button .vjs-menu {
-  left: 2em; }
-
-.video-js .vjs-chapters-button.vjs-menu-button .vjs-menu .vjs-menu-content {
-  width: 24em;
-  left: -12em; }
+.vjs-chapters-button .vjs-menu ul {
+  width: 24em; }
 
 .video-js.vjs-layout-tiny:not(.vjs-fullscreen) .vjs-custom-control-spacer {
   -webkit-box-flex: auto;

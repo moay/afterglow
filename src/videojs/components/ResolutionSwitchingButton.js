@@ -16,7 +16,7 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  	}
 
  	buildCSSClass(){
- 		return 'vjs-ag-res-button vjs-control vjs-button';
+ 		return `vjs-ag-res-button ${super.buildCSSClass()}`;
  	}
 
  	/**
@@ -25,13 +25,18 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  	 */
  	init(){
  		this.prepareSources();
- 		
- 		this.setCurrentResFromPlayer();
  		this.setResolutionsNeededFromPlayer();
+ 		if(this.resolutionsNeeded){
+	 		this.setCurrentResFromPlayer();
 
- 		this.updateButton();
- 		this.on('click',this.switchResolution);
- 		this.on('tap',this.switchResolution);
+	 		// Empty sources for not having double playing native players
+	 		this.removeSources();
+
+	 		// Bind events
+	 		this.on('click',this.switchResolution);
+	 		this.on('tap',this.switchResolution);
+	 	}
+	 	this.updateButton();
  	}
 
  	/**
@@ -71,7 +76,6 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	setResolutionsNeededFromPlayer(){
 		// Fallback
 		this.resolutionsNeeded = false;
-		
 		// Real determination
 		if(typeof this.typeAndTech == 'object'){
 			var type = this.typeAndTech.type;
@@ -93,14 +97,16 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	 * @return {void}
 	 */
     removeSources(){
+    	console.log('removed sources.');
     	var videoEl = this.player_.el_.getElementsByTagName("video")[0];
 
-    	if (this.player_.techName !== "Html5" || !videoEl) return;
+    	if (this.player_.techName_ !== "Html5" || !videoEl) return;
 
     	var srcs = videoEl.getElementsByTagName("source");
     	for(var i=0;i<srcs.length;i++){
     		videoEl.removeChild(srcs[i]);
     	}
+
     }
 
     /**
@@ -139,9 +145,9 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  	 * @return {[type]} [description]
  	 */
  	stopStream(){
-		switch(this.player_.techName){
+		switch(this.player_.techName_){
 			case "Flash":
-			    this.player_.tech.el_.vjs_stop();
+			    this.player_.tech_.el_.vjs_stop();
 			    break;
 		}
     }
@@ -174,13 +180,14 @@ const VjsButtonResBBase = videojs.getComponent('Button');
     	var tech;
 
     	for (var i=0,j=this.player_.options_['techOrder'];i<j.length;i++) {
-    		techName = this.player_.techName;
+    		techName = this.player_.techName_;
     		tech     = window['videojs'].getComponent(techName);
 
 	        // Check if the browser supports this technology
 	        if (tech.isSupported()) {
 				// Loop through each source object
 				for (var a=0,b=sources;a<b.length;a++) {
+		
 		          	var source = b[a];
 		            // Check if source can be played with this technology
 		            if (tech['canPlaySource'](source)) {
@@ -246,10 +253,10 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	    // HTML5 tends to not recover from reloading the tech but it can
 	    // generally handle changing src. Flash generally cannot handle
 	    // changing src but can reload its tech.
-	    if (this.player_.techName === "Html5"){
+	    if (this.player_.techName_ === "Html5"){
 	        this.player_.src(new_source.src);
 	    } else {
-	        this.player_.loadTech(this.player_.techName, {src: new_source.src});
+	        this.player_.loadTech(this.player_.techName_, {src: new_source.src});
 	    }
 
 	    var _this = this;

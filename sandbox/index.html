@@ -18,6 +18,7 @@
 	<!-- <script type="text/javascript" src="../src/videojs/plugins/vjs.vimeo.js"></script> -->
 	<script type="text/javascript" src="../src/videojs/components/TopControlBar.js"></script>
 	<script type="text/javascript" src="../src/videojs/components/LightboxCloseButton.js"></script>
+	<script type="text/javascript" src="../src/videojs/components/ResolutionSwitchingButton.js"></script>
 	<script type="text/javascript" src="../src/videojs/plugins/Youtube.js"></script>
 	<script type="text/javascript" src="../src/videojs/plugins/videojs.hotkeys.js"></script>
 	<script type="text/javascript" src="../src/afterglow.js"></script>
@@ -42,11 +43,12 @@
 	<video id="video2" class="afterglow" width="1920" height="1080" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-autoresize="fit" preload="none" src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4"></video>
 
 	<!-- LOCAL TEST -->
-	<h2>Local video with poster, captions and subtitles</h2>
-	<video id="video-subtitles" class="afterglow" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-autoresize="fit" preload="none">
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4" />
+	<h2>Local video with poster and resolution test</h2>
+	<video id="video-subtitles" class="afterglow" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-volume="0.7" data-autoresize="fit" preload="none">
+		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4"/>
+		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
 		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
-		<track kind="subtitle" src="/sandbox/text/subtitles-demo.vtt" srclang="en" label="English"></track>
+		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local_hd.webm" type="video/webm" data-quality="hd" />
 	</video>
 
 	<!-- LIGHTBOX TEST -->
@@ -55,6 +57,7 @@
 	<a href="#video3" class="afterglow">Open the lightbox</a>
 	<video id="video3" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-autoresize="fit" preload="none">
 		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4" />
+		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
 		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
 	</video>
 	<!-- LOCAL TEST -->

@@ -59,7 +59,7 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 		'./src/videojs/video.min.js',
 		]))
 	.pipe(plugins.addSrc.append([
-		'./dist/tmp/components.js',
+		'./dist/tmp/*.js',
 		'./src/videojs/plugins/videojs.hotkeys.js',
 		'./src/videojs/plugins/Youtube.js',
 		]))
@@ -81,17 +81,8 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 
 // Task to compile ES6 components
 gulp.task('compilecomponents', function(){
-	return gulp.src([
-		'./src/videojs/components/TopControlBar.js',
-		'./src/videojs/components/LightboxCloseButton.js'
-		])
-	.pipe(plugins.browserify2({
-		fileName: 'components.js',
-		transform: require('6to5ify'),
-		options: {
-			debug: false
-		}
-	}))
+	return gulp.src('./src/videojs/components/*.js')
+	.pipe(plugins.babel())
 	.pipe(gulp.dest('dist/tmp/'));
 });
 
