@@ -57,11 +57,20 @@ afterglow = {
 				enableNumbers: false
 			});
 
-			// Fix youtube poster
-			if(afterglow.isYoutubePlayer(videoel) && !options.poster && this.tech.poster != ""){
-				this.addClass('vjs-youtube-ready');
-				this.poster(this.tech.poster);
+			// Set initial volume if needed
+			if(videoel.getAttribute('data-volume') !== null){
+				var volume = parseFloat(videoel.getAttribute('data-volume'));
+				this.volume(volume);
 			}
+
+			// Fix youtube poster
+			if(afterglow.isYoutubePlayer(videoel) && !options.poster && this.tech_.poster != ""){
+				this.addClass('vjs-youtube-ready');
+				this.poster(this.tech_.poster);
+			}
+
+			// Add resolution switching
+			// this.controlBar.addChild("ResolutionSwitchingButton");
 
 			// Launch the callback if there is one
 			if(typeof _callback == "function"){
@@ -274,6 +283,9 @@ afterglow = {
 						name: "progressControl"
 					},
 					{
+						name: "ResolutionSwitchingButton"
+					},
+					{
 						name: "volumeMenuButton",
 						inline:true
 					},
@@ -405,7 +417,7 @@ afterglow = {
 			}
 
 			// Adding autoclose functionality
-			if(lb_videoel.getAttribute("data-autoclose") == "true"){
+			if(videoel.getAttribute("data-autoclose") == "true"){
 				player.on('ended', function(){
 					afterglow.closeLightbox();
 				});
@@ -419,9 +431,6 @@ afterglow = {
 
 			// Add the closing button
 			var lightboxCloseButton = afterglow.getPlayer(playerid).TopControlBar.addChild("LightboxCloseButton");
-			addEventHandler(lightboxCloseButton.el_,'click tap',function(){
-				afterglow.closeLightbox();
-			});
 		});
 
 		// resize the lightbox and make it autoresize
