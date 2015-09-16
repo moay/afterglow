@@ -119,6 +119,11 @@
 		display:none;
 	}
 
+	.vjs-progress-control .vjs-mouse-display,
+	.vjs-progress-control:hover .vjs-mouse-display{
+		display:none;
+	}
+
 	/* Control Bar
 	--------------------------------------------------------------------------------
 	The afterglow control bar that is a container for most of the controls.
@@ -968,8 +973,10 @@
 		-webkit-animation: spCircRot 1.6s infinite linear;
 		animation: spCircRot 1.6s infinite linear;
 
-		&:before{
+		&:before,
+		&:after{
 			content:none;
+			border:0px;
 		}
 	}
 
@@ -1210,6 +1217,7 @@
 		float:right;
 		cursor:pointer;
 		width:50px;
+		font-family: 'afterglow-icon';
 
 		@media(max-width:768px){
 			width:30px;
@@ -1224,6 +1232,7 @@
 
 
 		&:before{
+			font-family: 'afterglow-icon';
 			content: @lowres-icon;
 		}
 
@@ -1232,6 +1241,25 @@
 			&:before{
 				content: @highres-icon;
 				margin-left:.5px;
+			}
+		}
+	}
+
+	&.vjs-IE{
+		.vjs-ag-res-button{
+			font-size: 17px;
+			line-height: 18px;
+			padding-top:10px;
+
+			@media(max-width:768px){
+				font-size:11px;
+				line-height:11px;
+				margin-left:16px;
+			}
+			@media(max-width:768px){
+				font-size:9px;
+				line-height:9px;
+				margin-left:5px;
 			}
 		}
 	}
