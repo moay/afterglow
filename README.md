@@ -21,6 +21,8 @@ Also, some video.js plugins are included:
 - [videojs-hotkeys](https://github.com/ctd1500/videojs-hotkeys) published under the [Apache License 2.0](https://github.com/ctd1500/videojs-hotkeys/blob/master/LICENSE.md)
 - [videojs-youtube](https://github.com/eXon/videojs-youtube) published under the [MIT License](https://github.com/eXon/videojs-youtube/blob/master/LICENSE)
 
+Our resolution switching component is based on [videojs-resolutions](https://github.com/vidcaster/video-js-resolutions) published under the [Apache License 2.0](https://github.com/vidcaster/video-js-resolutions/blob/master/LICENSE.txt).
+
 Thanks for your great work, guys!
 
 ## Copyright and License
