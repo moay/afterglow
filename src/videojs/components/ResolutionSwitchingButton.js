@@ -27,16 +27,22 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  		this.prepareSources();
  		this.setResolutionsNeededFromPlayer();
  		if(this.resolutionsNeeded){
+ 			this.switchSource(this.sources[0]);
 	 		this.setCurrentResFromPlayer();
-
-	 		// Empty sources for not having double playing native players
-	 		this.removeSources();
 
 	 		// Bind events
 	 		this.on('click',this.switchResolution);
 	 		this.on('tap',this.switchResolution);
 	 	}
 	 	this.updateButton();
+
+	 	var this_ = this;
+	 	this.player_.on('ready', function(){
+	 		this_.updateButton;
+	 	});
+	 	this.player_.on('play', function(){
+	 		this_.updateButton;
+	 	});
  	}
 
  	/**
@@ -44,7 +50,7 @@ const VjsButtonResBBase = videojs.getComponent('Button');
  	 * @return {void}
  	 */
  	prepareSources(){
- 		this.sources = this.player_.options_['sources'];
+ 		this.sources = this.getAbsoluteSources();
 		this.sourcesByType = videojs.reduce(this.sources, function(init, val, i){
 			(init[val.type] = init[val.type] || []).push(val);
 			return init;
@@ -97,7 +103,6 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	 * @return {void}
 	 */
     removeSources(){
-    	console.log('removed sources.');
     	var videoEl = this.player_.el_.getElementsByTagName("video")[0];
 
     	if (this.player_.techName_ !== "Html5" || !videoEl) return;
@@ -106,7 +111,43 @@ const VjsButtonResBBase = videojs.getComponent('Button');
     	for(var i=0;i<srcs.length;i++){
     		videoEl.removeChild(srcs[i]);
     	}
+    }
 
+    getAbsoluteSources(){
+    	var sources = this.player_.options_['sources'];
+		var base = window.location.href.match(/(.*\/)/)[0];
+		var protocol = window.location.protocol;
+		var origin = window.location.origin;
+    	for (var i = sources.length - 1; i >= 0; i--) {
+    		var src = sources[i].src;
+    		if(src !== undefined && src !== ''){
+    			// Handle absolute URLs (with protocol-relative prefix)
+			    // Example: //domain.com/file.png
+			    if (src.search(/^\/\//) != -1) {
+			        src = protocol + src;
+			    }
+
+			    // Handle absolute URLs (with explicit origin)
+			    // Example: http://domain.com/file.png
+			    else if (src.search(/:\/\//) != -1) {
+			        continue;
+			    }
+
+			    // Handle absolute URLs (without explicit origin)
+			    // Example: /file.png
+			    else if (src.search(/^\//) != -1) {
+			        src = origin + src;
+			    }
+
+			    // Handle relative URLs
+			    // Example: file.png
+			    else{
+			 		src = base + src;
+			    }
+			    sources[i].src = src;
+    		}
+    	};
+    	return sources;
     }
 
     /**
