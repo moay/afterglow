@@ -4,6 +4,8 @@ var plugins = require('gulp-load-plugins')();
 var gulp = require('gulp');
 var del = require('del');
 var fs = require('fs');
+var browserify = require('browserify');
+var babelify = require("babelify")
 var release = require('gulp-github-release');
 var getPackageJson = function () {
 	return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -57,7 +59,6 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 
 	// Add all the javascript files in the correct order
 	.pipe(plugins.addSrc.append([
-		'./src/dollardom/dollardom.min.js',
 		'./src/lib/afterglow-lib.js',
 		'./src/videojs/video.min.js',
 		]))
@@ -67,10 +68,7 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 		'./src/videojs/plugins/Youtube.js',
 		]))
 	.pipe(plugins.addSrc.append([
-		'./src/tmp/afterglow/*.js'
-		]))
-	.pipe(plugins.addSrc.append([
-		'./src/init.js'
+		'./dist/tmp/afterglow-bundle.js'
 		]))
 
 	// Concatenate into a single large file 
@@ -87,13 +85,20 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 
 // Task to compile ES6 components
 gulp.task('compileES6', function(){
+
 	gulp.src('./src/videojs/components/*.js')
 	.pipe(plugins.babel())
 	.pipe(gulp.dest('dist/tmp/components'));
-
-	return gulp.src('./src/afterglow/*.js')
-	.pipe(plugins.babel())
-	.pipe(gulp.dest('dist/tmp/afterglow'));
+	
+	var extensions = ['.js','.json','.es6'];
+	return browserify({ debug: true, extensions:extensions })
+	    .transform(babelify.configure({
+	      extensions: extensions
+	    }))
+	    .require("./src/init.js", { entry: true })
+	    .bundle()
+	    .on("error", function (err) { console.log("Error : " + err.message); })
+	    .pipe(fs.createWriteStream("./dist/tmp/afterglow-bundle.js"))
 });
 
 // Patch version bump

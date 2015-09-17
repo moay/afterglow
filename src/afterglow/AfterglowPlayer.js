@@ -3,10 +3,13 @@
  * @link http://afterglowplayer.com
  * @license MIT
  */
+
 'use strict';
 
-class Lightbox{
+class AfterglowPlayer {
+
 	constructor(){
-		
 	}
 }
+
+export default AfterglowPlayer;

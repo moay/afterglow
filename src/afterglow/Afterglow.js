@@ -6,6 +6,9 @@
 
 'use strict';
 
+import AfterglowPlayer from './AfterglowPlayer';
+import AfterglowLightbox from './AfterglowLightbox';
+
 class Afterglow {
 
 	constructor(){
@@ -25,10 +28,10 @@ class Afterglow {
 		this.configureVideoJS();
 
 		// Get players including sublime fallback
-		var players = $dom.get("video.afterglow").concat($dom.get("video.sublime"));
+		var players = document.querySelectorAll("video.afterglow,video.sublime");
 
 		// Get lightboxplayers including sublime fallback
-		var lightboxplayers = $dom.get("a.afterglow").concat($dom.get("a.sublime"));
+		var lightboxplayers = document.querySelectorAll("a.afterglow,a.sublime");
 		
 		// Initialize players
 		for (var i = 0; i < players.length; i++){
@@ -101,7 +104,7 @@ class Afterglow {
 	 * @return void
 	 */
 	reInitPlayer(playerid){
-		var player = $dom.get("video#"+playerid)[0];
+		var player = document.querySelector("video#"+playerid);
 		this.initPlayer(player);
 	}
 
@@ -115,11 +118,13 @@ class Afterglow {
 		var playerid = linkel.getAttribute("href");
 		
 		// Hide the video element
-		var videoel = $dom.get(playerid)[0];
-		$dom.addClass(videoel, "afterglow-lightboxplayer");
+		var videoel = document.querySelector(playerid);
+		videoel.addClass("afterglow-lightboxplayer");
 
 		// Prepare the element
 		videoel.setAttribute("data-autoresize","fit");
+
+		var afterglow = this;
 
 		linkel.onclick = function(e){
 			// Prevent the click event, IE8 compatible
@@ -137,7 +142,7 @@ class Afterglow {
 	 * @return void
 	 */
 	reInitLightboxPlayer(playerid){
-		var lightboxplayers = $dom.get("a.afterglow, a.sublime");
+		var lightboxplayers = document.querySelectorAll("a.afterglow,a.sublime");
 		for (var i = 0; i < lightboxplayers.length; i++){
 			if(lightboxplayers[i].getAttribute('href') === '#'+playerid){
 				this.initLightboxPlayer(lightboxplayers[i]);
@@ -152,8 +157,8 @@ class Afterglow {
 	 */
 	preparePlayer(videoel){
 		// Add some classes
-		$dom.addClass(videoel, "video-js");
-		$dom.addClass(videoel, "afterglow");
+		videoel.addClass("video-js");
+		videoel.addClass("afterglow");
 
 		// Set the skin
 		var skin = "afterglow";
@@ -163,10 +168,10 @@ class Afterglow {
 		// 	skin = videoel.getAttribute("data-skin");
 		// }
 		videoel.skin = skin;
-		$dom.addClass(videoel, "vjs-"+skin+"-skin");
+		videoel.addClass("vjs-"+skin+"-skin");
 
 		// Remove sublime stuff
-		$dom.removeClass(videoel, "sublime");
+		videoel.removeClass("sublime");
 
 		// Make lightboxplayer not overscale
 		if(videoel.getAttribute("data-overscale") == "false"){
@@ -174,8 +179,8 @@ class Afterglow {
 		}
 
 		// Apply some stylings
-		if(videoel.getAttribute("data-autoresize") === 'fit' || $dom.hasClass(videoel, "responsive")){
-			$dom.addClass(videoel, "vjs-responsive");
+		if(videoel.getAttribute("data-autoresize") === 'fit' || videoel.hasClass("responsive")){
+			videoel.addClass("vjs-responsive");
 			if(videoel.getAttribute("data-ratio")){
 				var ratio = videoel.getAttribute("data-ratio");
 			}
@@ -186,7 +191,7 @@ class Afterglow {
 			else{
 				var ratio = videoel.getAttribute("height") / videoel.getAttribute("width");
 			}
-			$dom.style(videoel, "padding-top", (ratio * 100)+"%");
+			videoel.style.paddingTop = (ratio * 100)+"%";
 			videoel.removeAttribute("height");
 			videoel.removeAttribute("width");
 			videoel.setAttribute("data-ratio",ratio);
@@ -194,26 +199,26 @@ class Afterglow {
 
 		// Apply youtube class
 		if(this.isYoutubePlayer(videoel)){
-			$dom.addClass(videoel,"vjs-youtube");
+			videoel.addClass("vjs-youtube");
 			
 			// Check for native playback
 			if(document.querySelector('video').controls){
-				$dom.addClass(videoel, "vjs-using-native-controls");
+				videoel.addClass("vjs-using-native-controls");
 			}
 			// Add iOS class, just if is iPad
 			if(/iPad|iPhone|iPod/.test(navigator.platform)){
-				$dom.addClass(videoel, "vjs-iOS");
+				videoel.addClass("vjs-iOS");
 			}
 
 			// Check for IE9 - IE11
 			if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
-				$dom.addClass(videoel, "vjs-using-native-controls");
+				videoel.addClass("vjs-using-native-controls");
 			}
 		}
 
 		// Check for IE9 - IE11
 		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
-			$dom.addClass(videoel, 'vjs-IE');
+			videoel.addClass('vjs-IE');
 		}
 	}
 
@@ -393,12 +398,12 @@ class Afterglow {
 		var playerid = lb_videoel.getAttribute("id");
 
 		// Prepare the lightbox element
-		var wrapper = $dom.create("div.afterglow-lightbox-wrapper");
-		var cover = $dom.create("div.cover");
+		var wrapper = document.createElement('div').addClass("afterglow-lightbox-wrapper");
+		var cover = document.createElement('div').addClass("cover");
 		wrapper.appendChild(cover);
 
 		// Prepare the player element add push it to the lightbox holder
-		var lightbox = $dom.create("div.afterglow-lightbox");
+		var lightbox = document.createElement('div').addClass("afterglow-lightbox");
 		wrapper.appendChild(lightbox);
 		lightbox.appendChild(lb_videoel);
 
@@ -408,8 +413,10 @@ class Afterglow {
 
 		document.body.appendChild(wrapper);
 
+		var afterglow = this;
+
 		// initiate the player and launch it
-		afterglow.initPlayer(lb_videoel, function(player){
+		this.initPlayer(lb_videoel, function(player){
 
 			// Prevent autoplay for mobile devices, won't work anyways...
 			if(!isMobile){
@@ -440,7 +447,7 @@ class Afterglow {
 		});
 
 		// resize the lightbox and make it autoresize
-		afterglow.resizeLightbox();
+		this.resizeLightbox();
 		addEventHandler(window,'resize',function(){
 			afterglow.resizeLightbox();
 		});
@@ -468,11 +475,11 @@ class Afterglow {
 	resizeLightbox(){
 
 		// prepare the wrapper
-		var wrapper = $dom.get("div.afterglow-lightbox-wrapper")[0];
+		var wrapper = document.querySelector("div.afterglow-lightbox-wrapper");
 
 		// Do if it exists
 		if(wrapper != undefined){
-			var videoel = $dom.get("div.afterglow-lightbox-wrapper video");
+			var videoel = document.querySelectorAll("div.afterglow-lightbox-wrapper video");
 			
 			// Standard HTML5 player
 			if(videoel.length == 1){
@@ -490,21 +497,22 @@ class Afterglow {
 			}
 			else{
 				// Youtube
-				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
-					playerel = $dom.get("div.afterglow-lightbox-wrapper .vjs-youtube")[0];
+				if(document.querySelectorAll("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
+					playerel = document.querySelector("div.afterglow-lightbox-wrapper .vjs-youtube");
 					var ratio = playerel.getAttribute("data-ratio");
 					var sizes = this.calculateLightboxSizes(ratio);
 				}
 			}
 			
 			// Apply the height and width
-			$dom.style(wrapper,{"width":sizes.width, "height":sizes.height});
-			$dom.style($dom.get("div.afterglow-lightbox-wrapper div.afterglow-lightbox")[0], {
-				"height": sizes.playerheight + "px",
-				"width": sizes.playerwidth + "px",
-				"top": sizes.playeroffsettop + "px",
-				"left": sizes.playeroffsetleft + "px" 
-			});
+			wrapper.style.width = sizes.width;
+			wrapper.style.height = sizes.height;
+
+			var lightbox = document.querySelector("div.afterglow-lightbox-wrapper div.afterglow-lightbox");	
+			lightbox.style.height = sizes.playerheight + "px";
+			lightbox.style.width = sizes.playerwidth + "px";
+			lightbox.style.top = sizes.playeroffsettop + "px";
+			lightbox.style.left = sizes.playeroffsetleft + "px";
 		}
 	}
 
@@ -563,11 +571,11 @@ class Afterglow {
 	 */
 	closeLightbox(){
 		// Get the needed elements
-		var wrapper = $dom.get("div.afterglow-lightbox-wrapper")[0];
+		var wrapper = document.querySelector("div.afterglow-lightbox-wrapper");
 		
 		// Do if the wrapper exists
 		if(wrapper != undefined){
-			var videoel = $dom.get("div.afterglow-lightbox-wrapper video");
+			var videoel = document.querySelectorAll("div.afterglow-lightbox-wrapper video");
 
 			if(videoel.length == 1){
 				videoel = videoel[0];				
@@ -575,28 +583,28 @@ class Afterglow {
 			}
 			else{
 				// Youtube
-				if($dom.get("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
-					playerel = $dom.get("div.afterglow-lightbox-wrapper .vjs-youtube")[0];
+				if(document.querySelectorAll("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
+					playerel = document.querySelector("div.afterglow-lightbox-wrapper .vjs-youtube");
 					var playerid = playerel.getAttribute("id");
 				}
 			}
 
 			// Stop the player
-			afterglow.getPlayer(playerid).pause().exitFullscreen();
+			this.getPlayer(playerid).pause().exitFullscreen();
 
 			// destroy the player
-			afterglow.destroyPlayer(playerid);
+			this.destroyPlayer(playerid);
 
 			// remove the lightbox
 			wrapper.parentNode.removeChild(wrapper);
 
 			// reset the initial video element
-			var videoel = $dom.get("#afterglow-lightbox-videoel")[0];
+			var videoel = document.querySelector("#afterglow-lightbox-videoel");
 			videoel.setAttribute("id", playerid);
 			videoel.removeAttribute("data-id");
 			
 			// Reinitiate the player, else it won't work the next time
-			afterglow.reInitLightboxPlayer(playerid);
+			this.reInitLightboxPlayer(playerid);
 		}
 	}
 

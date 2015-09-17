@@ -4,8 +4,10 @@
  * @license MIT
  */
 
+var Afterglow = require('./afterglow/Afterglow.js');
+
 // Initiate afterglow when the DOM is ready. This is not IE8 compatible!
 document.addEventListener("DOMContentLoaded", function() { 
-	var afterglow = new Afterglow;
+	window.afterglow = new Afterglow();
 	afterglow.init();
 });
