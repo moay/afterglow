@@ -1,15 +1,26 @@
-afterglow = {
-	/**
-	 * Will hold the players in order to make them accessible
-	 * @type Object
-	 */
-	players : [],
+/**
+ * afterglow - An easy to integrate HTML5 video player with lightbox support.
+ * @link http://afterglowplayer.com
+ * @license MIT
+ */
+
+'use strict';
+
+class Afterglow {
+
+	constructor(){
+		/**
+		 * Will hold the players in order to make them accessible
+		 * @type Object
+		 */
+		this.players = [];
+	}
 
 	/**
 	 * Initiate all players that were found and need to be initiated
 	 * @return void
 	 */
-	init : function(){
+	init(){
 		// Run some preparations
 		this.configureVideoJS();
 
@@ -28,14 +39,14 @@ afterglow = {
 		for (var i = 0; i < lightboxplayers.length; i++){
 			this.initLightboxPlayer(lightboxplayers[i]);
 		}
-	},
+	}
 
 	/**
 	 * Initiate one player
 	 * @param  {domelement}  videoel  The video element which should be converted
 	 * @return void
 	 */
-	initPlayer : function(videoel, _callback){
+	initPlayer(videoel, _callback){
 		// Prepare the player element for videojs
 		this.preparePlayer(videoel);
 
@@ -45,6 +56,8 @@ afterglow = {
 		if(this.isYoutubePlayer(videoel)){
 			options = merge_options(options, this.getYoutubeOptions(videoel));
 		}
+
+		let afterglow = this;
 
 		// initiate videojs and do some post initiation stuff
 		var player = videojs(videoel, options).ready(function(){
@@ -80,24 +93,24 @@ afterglow = {
 
 		// Push the player to the accessible ones
 		this.players.push(player);
-	},
+	}
 
 	/**
 	 * Re-initiate a player by its ID
 	 * @param  {string}  playerid  The id of the video element which should be converted
 	 * @return void
 	 */
-	reInitPlayer : function(playerid){
+	reInitPlayer(playerid){
 		var player = $dom.get("video#"+playerid)[0];
 		this.initPlayer(player);
-	},
+	}
 
 	/**
 	 * Method to prepare the lightbox players and make them initiate when their time has come
 	 * @param  {domelement} linkel  The DOM element which initiates the lightbox
 	 * @return {void}
 	 */
-	initLightboxPlayer : function(linkel){
+	initLightboxPlayer(linkel){
 		// Get the playerid
 		var playerid = linkel.getAttribute("href");
 		
@@ -116,28 +129,28 @@ afterglow = {
 			// Launch the lightbox
 			afterglow.launchLightbox(videoel);
 		};
-	},
+	}
 
 	/**
 	 * Re-initiate a player lightbox by its player ID
 	 * @param  {string}  playerid  The id of the video element which should be converted
 	 * @return void
 	 */
-	reInitLightboxPlayer : function(playerid){
+	reInitLightboxPlayer(playerid){
 		var lightboxplayers = $dom.get("a.afterglow, a.sublime");
 		for (var i = 0; i < lightboxplayers.length; i++){
 			if(lightboxplayers[i].getAttribute('href') === '#'+playerid){
 				this.initLightboxPlayer(lightboxplayers[i]);
 			}
 		}
-	},
+	}
 
 	/**
 	 * Prepare a video element for further use with videojs
 	 * @param  domelement  videoel  The video element which should be prepared
 	 * @return void
 	 */
-	preparePlayer : function(videoel){
+	preparePlayer(videoel){
 		// Add some classes
 		$dom.addClass(videoel, "video-js");
 		$dom.addClass(videoel, "afterglow");
@@ -202,14 +215,14 @@ afterglow = {
 		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
 			$dom.addClass(videoel, 'vjs-IE');
 		}
-	},
+	}
 
 	/**
 	 * Get the options for a video element in order to pass them to videojs
 	 * @param  domelement  videoel  The video element which should be prepared
 	 * @return {Object} The options object for videojs
 	 */
-	getPlayerOptions : function(videoel){
+	getPlayerOptions(videoel){
 		// Prepare some options based on the elements attributes
 		// Preloading
 		if(videoel.getAttribute("data-preload") !== null){
@@ -251,14 +264,14 @@ afterglow = {
 		options.children = this.getSkinControls(videoel.skin);
 
 		return options;
-	},
+	}
 
 	/**
 	 * Method to get the skin controls for the given skin
 	 * @param  {string} skin  For now there is just one skin, so pass 'afterglow' into the function
 	 * @return {object}       The controls that are needed, usable for the vjs options
 	 */
-	getSkinControls : function(skin){
+	getSkinControls(skin){
 		// If there will be other skins to know, they will be added here. For now, we just output the 'afterglow' skin children
 		var children = {
 			TopControlBar: {
@@ -299,56 +312,56 @@ afterglow = {
 			}
 		};
 		return children;
-	},
+	}
 
 	/**
 	 * Applies skin styles and adds skin children to the player DOM
 	 * @param  {object} player  The player object
 	 * @return {void}
 	 */
-	applySkinStyles : function(player){
+	applySkinStyles(player){
 		// nothing to do here yet
-	},
+	}
 
 	/**
 	 * Returns the the players object if it was initiated yet
 	 * @param  string The player's id
 	 * @return boolean false or object if found
 	 */
-	getPlayer : function (playerid){
+	getPlayer(playerid){
 	 	for (var i = this.players.length - 1; i >= 0; i--) {
 			if(this.players[i].id() === playerid){
 	 			return this.players[i];
 			}
 	 	};
 	 	return false;
-	 },
+	 }
 
 	/**
 	 * Should destroy a player instance if it exists
 	 * @param  {string} playerid  The player's id
 	 * @return void
 	 */
-	destroyPlayer : function(playerid){
+	destroyPlayer(playerid){
 	 	for (var i = this.players.length - 1; i >= 0; i--) {
 	 		if(this.players[i].id() === playerid){
 	 			this.players[i].dispose();
 	 			this.players.splice(i,1);
 	 		}
 	 	};
-	},
+	}
 
 	/**
 	 * Check wether or not the player to load is a youtube video
 	 */
-	isYoutubePlayer : function(videoel){
+	isYoutubePlayer(videoel){
 		return videoel.hasAttribute("data-youtube-id");
-	},
+	}
 
 	/**
 	 * get options to play youtube video correctly
 	 */
-	getYoutubeOptions : function(videoel){
+	getYoutubeOptions(videoel){
 
 		var ytoptions = {
 			// color : "white",
@@ -368,21 +381,14 @@ afterglow = {
 		}
 
 		return ytoptions;
-	},
-
-	/**
-	 * Check wether or not the player to load is a vimeo video
-	 */
-	isVimeoPlayer : function(videoel){
-		return videoel.hasAttribute("data-vimeo-id");
-	},
+	}
 
 	/**
 	 * Launches a lightbox containing the player and plays it
 	 * @param  {domelement} videoel  the video element to launch
 	 * @return void
 	 */
-	launchLightbox : function(videoel){
+	launchLightbox(videoel){
 		var lb_videoel = videoel.cloneNode(true);
 		var playerid = lb_videoel.getAttribute("id");
 
@@ -453,13 +459,13 @@ afterglow = {
 				afterglow.closeLightbox();
 			}
 		});
-	},
+	}
 
 	/**
 	 * Resize the lightbox according to the media ratio
 	 * @return void
 	 */
-	resizeLightbox : function(){
+	resizeLightbox(){
 
 		// prepare the wrapper
 		var wrapper = $dom.get("div.afterglow-lightbox-wrapper")[0];
@@ -500,14 +506,14 @@ afterglow = {
 				"left": sizes.playeroffsetleft + "px" 
 			});
 		}
-	},
+	}
 
 	/**
 	 * calculates the current lightbox size based on window width and height and on the players ratio
 	 * @param  {float} ratio   The players ratio
 	 * @return {object}        Some sizes which can be used
 	 */
-	calculateLightboxSizes : function(ratio, maxwidth){
+	calculateLightboxSizes(ratio, maxwidth){
 		var sizes = {};
 
 		// Get window width && height
@@ -549,13 +555,13 @@ afterglow = {
 		sizes.playeroffsetleft = ( sizes.width - sizes.playerwidth ) / 2;
 
 		return sizes;
-	},
+	}
 
 	/**
 	 * Closes the lightbox and resets the lightbox player so that it can be reopened
 	 * @return void
 	 */
-	closeLightbox : function(){
+	closeLightbox(){
 		// Get the needed elements
 		var wrapper = $dom.get("div.afterglow-lightbox-wrapper")[0];
 		
@@ -592,19 +598,16 @@ afterglow = {
 			// Reinitiate the player, else it won't work the next time
 			afterglow.reInitLightboxPlayer(playerid);
 		}
-	},
+	}
 
 	/**
 	 * Run some configurations on video.js to make it work for us
 	 * @return void
 	 */
-	configureVideoJS: function(){
+	configureVideoJS(){
 		// Disable tracking
 		window.HELP_IMPROVE_VIDEOJS = false;	
 	}
 }
 
-// Initiate all players
-$dom.onready(function(){
-	afterglow.init();
-});
+export default Afterglow;
