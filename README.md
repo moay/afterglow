@@ -4,6 +4,10 @@ afterglow is a tool to create fully responsive and totally awesome video players
 
 Learn more about the project on the project website: [http://afterglowplayer.com](http://afterglowplayer.com).
 
+# Don't use this branch!
+
+This branch is under heavy development. The builds should be mostly working, but there is no point in using an unstable branch. Except if you want to, of course.
+
 ## Documentation
 
 There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
