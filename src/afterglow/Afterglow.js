@@ -88,7 +88,7 @@ class Afterglow {
 	getPlayer(playerid){
 	 	for (var i = this.players.length - 1; i >= 0; i--) {
 			if(this.players[i].id() === playerid){
-	 			return this.players[i];
+	 			return this.players[i].videojs;
 			}
 	 	};
 	 	return false;
