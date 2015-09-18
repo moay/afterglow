@@ -12,12 +12,14 @@ var getPackageJson = function () {
 };
 
 // Shortcut to the build task
-gulp.task('build', ['cleanup'], function(){});
+gulp.task('build', ['package-build'], function(){});
 
 // General build task, cleans up after real build
-gulp.task('cleanup', ['build-afterglow'], function(){
+gulp.task('cleanup-tmp',['build-afterglow'], function(){
 	del(['./dist/tmp']);
+});
 
+gulp.task('package-build', ['cleanup-tmp'], function(){
 	return gulp.src('./dist/afterglow.min.js')
         .pipe(plugins.zip('afterglow.zip'))
         .pipe(gulp.dest('dist'));
@@ -86,19 +88,25 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 // Task to compile ES6 components
 gulp.task('compileES6', function(){
 
+	// Compile VIDEO.js components
 	gulp.src('./src/videojs/components/*.js')
-	.pipe(plugins.babel())
-	.pipe(gulp.dest('dist/tmp/components'));
+		.pipe(plugins.babel())
+		.pipe(gulp.dest(__dirname+'/dist/tmp/components'));
+
+	// Create empty file
+	plugins.file('afterglow-bundle.js','', { src: true })
+		.pipe(gulp.dest(__dirname+'/dist/tmp/'));
 	
+	// Compile
 	var extensions = ['.js','.json','.es6'];
 	return browserify({ debug: true, extensions:extensions })
 	    .transform(babelify.configure({
 	      extensions: extensions
 	    }))
-	    .require("./src/init.js", { entry: true })
+	    .require(__dirname+"/src/init.js", { entry: true })
 	    .bundle()
 	    .on("error", function (err) { console.log("Error : " + err.message); })
-	    .pipe(fs.createWriteStream("./dist/tmp/afterglow-bundle.js"))
+	    .pipe(fs.createWriteStream(__dirname+"/dist/tmp/afterglow-bundle.js",{flags: 'w'}));
 });
 
 // Patch version bump
