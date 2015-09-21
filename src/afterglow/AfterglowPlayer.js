@@ -13,11 +13,15 @@ import AfterglowUtil from './AfterglowUtil';
 class AfterglowPlayer {
 
 	constructor(videoelement){
+		// Passing to setup for testability
+		this.setup(videoelement);
+	}
+
+	setup(videoelement){
 		this.videoelement = videoelement;
 		this.id = videoelement.getAttribute('id');
 		this.config = new AfterglowConfig(videoelement);
 		this.prepareVideoElement();
-
 		// Set an activity variable to be able to detect if the player can be deleted
 		this.alive = true;
 	}
