@@ -58,16 +58,20 @@ class Afterglow {
 		for (var i = 0; i < lightboxtriggers.length; i++){
 			let trigger = new AfterglowLightboxTrigger(lightboxtriggers[i]);
 
-			trigger.on('trigger',() => {
-				this.players.push(trigger.getPlayer());
-				this.consolidatePlayers;
-			});
-			trigger.on('close',() => {
-				this.consolidatePlayers();
-			});
+			this.bindLightboxTriggerEvents(trigger);
 
 			this.lightboxtriggers.push(trigger);
 		}
+	}
+
+	bindLightboxTriggerEvents(trigger){
+		trigger.on('trigger',() => {
+			this.players.push(trigger.getPlayer());
+			this.consolidatePlayers;
+		});
+		trigger.on('close',() => {
+			this.consolidatePlayers();
+		});
 	}
 
 	/**

@@ -36,6 +36,9 @@ describe("Afterglow Core", () => {
 		// Mocking the player methods that are called
 		sinon.stub(AfterglowPlayer.prototype, 'init', () => {} );
 		sinon.stub(AfterglowPlayer.prototype, 'setup', () => {} );
+
+
+		sinon.stub(AfterglowLightboxTrigger.prototype, 'init', () => {} );
 	});
 
 	beforeEach(() => {
@@ -45,8 +48,10 @@ describe("Afterglow Core", () => {
 	});
 
 	after(() => {
+		// Restore stubbed methods
 		AfterglowPlayer.prototype.init.restore();
 		AfterglowPlayer.prototype.setup.restore();
+		AfterglowLightboxTrigger.prototype.init.restore();
 	});
 
 	describe("Bootup", () => {
@@ -110,6 +115,26 @@ describe("Afterglow Core", () => {
 
 			// Holding two of them afterwards
 			afterglow.players.should.be.length(2);
+		});
+	});
+
+	describe("Lightbox element initiation", () => {
+
+		/** 
+		 * VIDEO ELEMENT SETUP TESTS
+		 */
+
+		it('detects lightbox elements properly, including SublimeVideo markup and prepares the triggers.', () =>{
+			// Mock the DOM
+			document.body.innerHTML = '<video id="test1"></video><video id="test2"></video><a class="sublime" href="#test1"></a><a class="afterglow" href="#test2"></a>';
+
+			sinon.stub(afterglow, 'bindLightboxTriggerEvents', () => {} );
+
+			// Run the tests
+			let res = afterglow.prepareLightboxVideos();
+
+			sinon.assert.calledTwice(AfterglowLightboxTrigger.prototype.init);
+			sinon.assert.calledTwice(afterglow.bindLightboxTriggerEvents);
 		});
 	});
 });

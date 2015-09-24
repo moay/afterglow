@@ -14,9 +14,12 @@ class AfterglowLightboxTrigger {
 
 	constructor(element){
 		this.element = element;
-		
+		this.init();
+	}
+
+	init(){
 		// Get the playerid
-		this.playerid = element.getAttribute("href");
+		this.playerid = this.element.getAttribute("href");
 		// Hide the video element
 		this.videoelement = document.querySelector(this.playerid);
 		
