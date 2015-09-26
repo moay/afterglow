@@ -61,8 +61,13 @@ describe("Afterglow Core", () => {
 		 */
 
 		it('initiates the player container properly', () => {
-			afterglow.players.should.be.a('array');
+			afterglow.players.should.be.an('array');
 			afterglow.players.should.have.length(0);
+		});
+
+		it('initiates the lightbox trigger container properly', () => {
+			afterglow.lightboxtriggers.should.be.an('array');
+			afterglow.lightboxtriggers.should.have.length(0);
 		});
 
 		it('calls video.js configuration on init', () =>{
@@ -187,7 +192,7 @@ describe("Afterglow Core", () => {
 		});
 
 		it('should delete players from the player container when deleting by id',() => {
-			var destroyTest = {
+			let destroyTest = {
 				alert : () => {}
 			}
 
@@ -222,11 +227,16 @@ describe("Afterglow Core", () => {
 		});
 
 		it('should properly close all lightboxes when closing is triggered', () => {
-			var closeTest = {
+			let closeTest = {
 				alert : () => {}
 			}
 
 			afterglow.lightboxtriggers = [
+				{
+					closeLightbox : () => {
+						closeTest.alert();
+					}
+				},
 				{
 					closeLightbox : () => {
 						closeTest.alert();
@@ -238,7 +248,7 @@ describe("Afterglow Core", () => {
 
 			afterglow.closeLightbox();
 
-			assert(closeTest.alert.calledOnce);
+			assert(closeTest.alert.calledTwice);
 			sinon.assert.calledOnce(afterglow.consolidatePlayers);
 		});
 	});
