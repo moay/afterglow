@@ -136,5 +136,144 @@ describe("Afterglow Core", () => {
 			sinon.assert.calledTwice(AfterglowLightboxTrigger.prototype.init);
 			sinon.assert.calledTwice(afterglow.bindLightboxTriggerEvents);
 		});
+
+		it('passes initialized lightbox triggers to the trigger container',() => {// Mock the DOM
+			document.body.innerHTML = '<video id="test1"></video><video id="test2"></video><a class="sublime" href="#test1"></a><a class="afterglow" href="#test2"></a>';
+
+			sinon.stub(afterglow, 'bindLightboxTriggerEvents', () => {} );
+			
+			afterglow.lightboxtriggers.should.be.length(0);
+
+			// Run the tests
+			let res = afterglow.prepareLightboxVideos();
+
+			afterglow.lightboxtriggers.should.be.length(2);
+		});
+
+		it('binds lightbox trigger events properly', () => {
+			let Trigger = {
+				on : () => {}
+			};
+
+			sinon.spy(Trigger,'on');
+
+			afterglow.bindLightboxTriggerEvents(Trigger);
+			assert(Trigger.on.calledTwice);
+		});
 	});
+
+	describe("API methods", () => {
+		it('should return the player when getting by id',() => {
+			afterglow.players = [
+				{
+					id : 'testid'
+				}
+			];
+
+			afterglow.lightboxtriggers = [
+				{
+					playerid : 'testid2',
+					getPlayer: () => {
+						return 'test';
+					}
+				}
+			];
+
+			let regularPlayer = afterglow.getPlayer('testid');
+			let lightboxPlayer = afterglow.getPlayer('testid2');
+
+			regularPlayer.id.should.equal('testid');
+			lightboxPlayer.should.equal('test');
+		});
+
+		it('should delete players from the player container when deleting by id',() => {
+			var destroyTest = {
+				alert : () => {}
+			}
+
+			afterglow.players = [
+				{
+					id : 'testid',
+					destroy : () => {
+						destroyTest.alert();
+					}
+				}
+			];
+			sinon.spy(destroyTest, 'alert');
+			afterglow.players.should.be.length(1);
+
+			afterglow.destroyPlayer('testid');
+
+			assert(destroyTest.alert.calledOnce);
+			afterglow.players.should.be.length(0);
+		});
+
+		it('should close lightbox for lightbox players when deleting by id',() => {
+			afterglow.lightboxtriggers = [
+				{
+					playerid : 'testid',
+				}
+			];
+			sinon.stub(afterglow, 'closeLightbox', () => {} );
+
+			afterglow.destroyPlayer('testid');
+
+			sinon.assert.calledOnce(afterglow.closeLightbox);
+		});
+
+		it('should properly close all lightboxes when closing is triggered', () => {
+			var closeTest = {
+				alert : () => {}
+			}
+
+			afterglow.lightboxtriggers = [
+				{
+					closeLightbox : () => {
+						closeTest.alert();
+					}
+				}
+			];
+			sinon.spy(closeTest, 'alert');
+			sinon.stub(afterglow, 'consolidatePlayers', () => {} );
+
+			afterglow.closeLightbox();
+
+			assert(closeTest.alert.calledOnce);
+			sinon.assert.calledOnce(afterglow.consolidatePlayers);
+		});
+	});
+	
+	describe('Consolidation',() => {
+		it('should remove players that have been destroyed', () => {
+			afterglow.players = [
+				{
+					alive: false
+				},{
+					alive: true
+				},{
+					alive: true
+				},{
+				},
+			];
+			afterglow.players.should.be.length(4);
+			afterglow.consolidatePlayers();
+			afterglow.players.should.be.length(2);
+		});
+		it('should reindex the player container after removing destroyed players', () => {
+			afterglow.players = [
+				{
+					alive: false
+				},{
+					alive: true
+				},{
+					alive: true
+				},{
+				},
+			];
+			afterglow.players.should.have.all.keys(["0","1","2","3"]);
+			afterglow.consolidatePlayers();
+			afterglow.players.should.have.all.keys(["0","1"]);
+
+		});
+	});	
 });

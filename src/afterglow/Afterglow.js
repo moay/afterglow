@@ -38,6 +38,10 @@ class Afterglow {
 		this.prepareLightboxVideos();
 	}
 
+	/**
+	 * Looks for players to initiate and creates AfterglowPlayer objects based on those elements
+	 * @return void
+	 */
 	initVideoElements(){
 		// Get players including sublime fallback
 		var players = document.querySelectorAll("video.afterglow,video.sublime");
@@ -50,6 +54,10 @@ class Afterglow {
 		}
 	}
 
+	/**
+	 * Prepares all found trigger elements and makes them open their corresponding players when needed
+	 * @return void
+	 */
 	prepareLightboxVideos(){
 		// Get lightboxplayers including sublime fallback
 		var lightboxtriggers = document.querySelectorAll("a.afterglow,a.sublime");
@@ -64,6 +72,11 @@ class Afterglow {
 		}
 	}
 
+	/**
+	 * Binds some elements for lightbox triggers.
+	 * @param  {object} the trigger object
+	 * @return void
+	 */
 	bindLightboxTriggerEvents(trigger){
 		trigger.on('trigger',() => {
 			this.players.push(trigger.getPlayer());
@@ -75,41 +88,48 @@ class Afterglow {
 	}
 
 	/**
-	 * Re-initiate a player by its ID
-	 * @param  {string}  playerid  The id of the video element which should be converted
-	 * @return void
-	 */
-	reInitPlayer(playerid){
-		var player = document.querySelector("video#"+playerid);
-		this.initPlayer(player);
-	}
-
-	/**
 	 * Returns the the players object if it was initiated yet
 	 * @param  string The player's id
 	 * @return boolean false or object if found
 	 */
 	getPlayer(playerid){
+		// Try to get regular player
 	 	for (var i = this.players.length - 1; i >= 0; i--) {
-			if(this.players[i].id() === playerid){
-	 			return this.players[i].videojs;
+			if(this.players[i].id === playerid){
+	 			return this.players[i];
+			}
+	 	};
+		// Else try to find lightbox player
+	 	for (var i = this.lightboxtriggers.length - 1; i >= 0; i--) {
+			if(this.lightboxtriggers[i].playerid === playerid){
+	 			return this.lightboxtriggers[i].getPlayer();
 			}
 	 	};
 	 	return false;
-	 }
+	}
 
 	/**
-	 * Should destroy a player instance if it exists
+	 * Should destroy a player instance if it exists. Lightbox players should be just closed.
 	 * @param  {string} playerid  The player's id
 	 * @return void
 	 */
 	destroyPlayer(playerid){
+		// Look for regular players
 	 	for (var i = this.players.length - 1; i >= 0; i--) {
-	 		if(this.players[i].id() === playerid){
-	 			this.players[i].dispose();
+	 		if(this.players[i].id === playerid){
+	 			this.players[i].destroy();
 	 			this.players.splice(i,1);
+	 			return true;
 	 		}
 	 	};
+	 	// Else look for an active lightbox
+	 	for (var i = this.lightboxtriggers.length - 1; i >= 0; i--) {
+	 		if(this.lightboxtriggers[i].playerid === playerid){
+	 			this.closeLightbox();
+	 			return true;
+	 		}
+	 	};
+	 	return false;
 	}
 
 	/**
@@ -123,13 +143,17 @@ class Afterglow {
 		this.consolidatePlayers();
 	}
 
+	/**
+	 * Consolidates the players container and removes players that are not alive any more.
+	 * @return {[type]} [description]
+	 */
 	consolidatePlayers(){
 		for (var i = this.players.length - 1; i >= 0; i--) {
 			if(this.players[i] !== undefined && !this.players[i].alive){
 				delete this.players[i];
 				
 				// Reset indexes
-				this.players = this.players.filter(function(){return true;});
+				this.players = this.players.filter(() =>{return true});
 			}
 		};
 	}
