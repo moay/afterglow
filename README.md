@@ -12,6 +12,12 @@ This branch is under heavy development. The builds should be mostly working, but
 
 There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
 
+## Build status
+
+Green is good (means: all unit tests are passing), red is bad (means: think before you use it).
+
+![Build status](https://codeship.com/projects/fe194d60-47f5-0133-2d73-1e85bf92c557/status)
+
 ## Credits
 
 afterglow relies on scripts provided by many great people.
