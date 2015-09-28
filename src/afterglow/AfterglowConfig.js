@@ -19,68 +19,63 @@ class AfterglowConfig {
 			// Set videoelement
 			this.videoelement = videoelement;
 
+			// Prepare the options container
+			this.options = {};
+
 			// Prepare option variables
 			this.setDefaultOptions();
 			this.setSkinControls();
 
-			if(AfterglowUtil.isYoutubePlayer(this.videoelement)){
-				this.setYoutubeOptions();
+			let util = new AfterglowUtil;
+			// Initialize youtube if the current player is a youtube player
+			if(util.isYoutubePlayer(this.videoelement)){
+				this.setYoutubeOptions();	
 			}
 
+			// Set the skin
 			this.skin = skin;
 		}
 	}
 
 	/**
 	 * Sets some basic options based on the videoelement's attributes
+	 * @return {void}
 	 */
-	setDefaultOptions(){	
-		this.options = {
-			// Controls needed for the player
-			controls : true,
-			
-			// Default tech order
-			techOrder : ["html5","flash"],
-			
-			preload : this.getPreloadValue(),
-			autoplay : this.getAutoplayValue(),
-			poster : this.getPosterframeValue()
-		};
+	setDefaultOptions(){
+		// Controls needed for the player
+		this.options.controls = true;
+		
+		// Default tech order
+		this.options.techOrder = ["html5","flash"];
+	
+		// Some default player parameters
+		this.options.preload = this.getPlayerAttributeFromVideoElement('preload','auto');
+		this.options.autoplay = this.getPlayerAttributeFromVideoElement('autoplay');
+		this.options.poster = this.getPlayerAttributeFromVideoElement('poster');
 	}
 
-	getAutoplayValue(){
-		if(this.videoelement.getAttribute("data-autoplay") !== null && this.videoelement.getAttribute("data-autoplay") !== "false"){
-			return this.videoelement.getAttribute("data-autoplay");
-		} else if(this.videoelement.getAttribute("autoplay") !== null && this.videoelement.getAttribute("autoplay") !== "false"){
-			return this.videoelement.getAttribute("autoplay");
+	/**
+	 * Gets a configuration value that has been passed to the videoelement as HTML tag attribute
+	 * @param  {string}  attributename  The name of the attribute to get
+	 * @param  {mixed} fallback      	The expected fallback if the attribute was not set - false by default
+	 * @return {mixed}					The attribute (with data-attributename being preferred) or the fallback if none.
+	 */
+	getPlayerAttributeFromVideoElement(attributename, fallback = false){
+		if(this.videoelement.getAttribute("data-"+attributename) !== null){
+			return this.videoelement.getAttribute("data-"+attributename);
+		} else if(this.videoelement.getAttribute(attributename) !== null){
+			return this.videoelement.getAttribute(attributename);
 		} else {
-			return false;
+			return fallback;
 		}
 	}
 
-	getPreloadValue(){
-		if(this.videoelement.getAttribute("data-preload") !== null){
-			return this.videoelement.getAttribute("data-preload");
-		} else if(this.videoelement.getAttribute("preload") !== null){
-			return this.videoelement.getAttribute("preload");
-		} else {
-			return "auto";
-		}
-	}
-
-	getPosterframeValue(){
-		if(this.videoelement.getAttribute("data-poster") !== null){
-			return this.videoelement.getAttribute("data-poster");
-		} else if(this.videoelement.getAttribute("poster") !== null){
-			return this.videoelement.getAttribute("poster");
-		} else {
-			return false;
-		}
-	}
-
+	/**
+	 * Sets the controls which are needed for the player to work properly.
+	 */
 	setSkinControls(){
-		// If there will be other skins to know, they will be added here. For now, we just output the 'afterglow' skin children
-		var children = {
+		// For now, we just output the default 'afterglow' skin children, as there isn't any other skin defined yet
+		let children = {
 			TopControlBar: {
 				children: [
 					{
@@ -121,15 +116,19 @@ class AfterglowConfig {
 		this.options.children = children;
 	}
 
+	/**
+	 * Sets options needed for youtube to work and replaces the sources with the correct youtube source
+	 */
 	setYoutubeOptions(){
 		this.options.showinfo = 0;
 		this.options.techOrder = ["youtube"];
 		this.options.sources = [{
 			"type": "video/youtube",
-			"src": "https://www.youtube.com/watch?v="+this.videoelement.getAttribute("data-youtube-id")
+			"src": "https://www.youtube.com/watch?v="+this.getPlayerAttributeFromVideoElement('youtube-id')
 		}];
 
-		if(ie >= 8 && ie <= 11){
+		let util = new AfterglowUtil;
+		if(util.ie().actualVersion >= 8 && util.ie().actualVersion <= 11){
 			this.options.youtube = {
 				ytControls : 2,
 				color : "white"

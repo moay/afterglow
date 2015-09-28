@@ -62,12 +62,12 @@ describe("Afterglow Core", () => {
 
 		it('initiates the player container properly', () => {
 			afterglow.players.should.be.an('array');
-			afterglow.players.should.have.length(0);
+			afterglow.players.should.be.empty;
 		});
 
 		it('initiates the lightbox trigger container properly', () => {
 			afterglow.lightboxtriggers.should.be.an('array');
-			afterglow.lightboxtriggers.should.have.length(0);
+			afterglow.lightboxtriggers.should.be.empty;
 		});
 
 		it('calls video.js configuration on init', () =>{

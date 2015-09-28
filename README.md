@@ -14,7 +14,7 @@ There is a full documentation available here: [docs.afterglowplayer.com](http://
 
 ## Build status
 
-Green is good (means: all unit tests are passing), red is bad (means: think before you use it).
+Green is good (means: all unit tests are passing). Red is bad (means: think before you use it). Gray is nothing (means: test are running right now, come back in a second).
 
 ![Build status](https://codeship.com/projects/fe194d60-47f5-0133-2d73-1e85bf92c557/status)
 
