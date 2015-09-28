@@ -30,11 +30,11 @@
   .vjs-icon-play-circle:before {
     content: '\f102'; }
 
-.vjs-icon-pause, .video-js.vjs-playing .vjs-play-control {
+.vjs-icon-pause, .video-js .vjs-play-control.vjs-playing {
   font-family: VideoJS;
   font-weight: normal;
   font-style: normal; }
-  .vjs-icon-pause:before, .video-js.vjs-playing .vjs-play-control:before {
+  .vjs-icon-pause:before, .video-js .vjs-play-control.vjs-playing:before {
     content: '\f103'; }
 
 .vjs-icon-volume-mute, .video-js .vjs-mute-control.vjs-vol-0, .video-js .vjs-volume-menu-button.vjs-vol-0 {
