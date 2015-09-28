@@ -10,60 +10,72 @@ import AfterglowUtil from './AfterglowUtil';
 class AfterglowConfig {
 
 	constructor(videoelement, skin = 'afterglow'){
-		// Set videoelement
-		this.videoelement = videoelement;
 
-		// Prepare option variables
-		this.setDefaultOptions();
-		this.setSkinControls();
-
-		if(AfterglowUtil.isYoutubePlayer(this.videoelement)){
-			this.setYoutubeOptions();
+		// Check for the video element
+		if(videoelement == undefined){
+			console.error('Please provide a proper video element to afterglow');
 		}
+		else{
+			// Set videoelement
+			this.videoelement = videoelement;
 
-		this.skin = skin;
+			// Prepare option variables
+			this.setDefaultOptions();
+			this.setSkinControls();
+
+			if(AfterglowUtil.isYoutubePlayer(this.videoelement)){
+				this.setYoutubeOptions();
+			}
+
+			this.skin = skin;
+		}
 	}
 
-	setDefaultOptions(){
-		// Prepare some options based on the elements attributes
-		
-		// Preloading
-		if(this.videoelement.getAttribute("data-preload") !== null){
-			var preload = this.videoelement.getAttribute("data-preload");
-		} else if(this.videoelement.getAttribute("preload") !== null){
-			var preload = this.videoelement.getAttribute("preload");
-		} else {
-			var preload = "auto";
-		}
-
-		// Autoplay
-		if(this.videoelement.getAttribute("data-autoplay") !== null && this.videoelement.getAttribute("data-autoplay") !== "false"){
-			var autoplay = this.videoelement.getAttribute("data-autoplay");
-		} else if(this.videoelement.getAttribute("autoplay") !== null && this.videoelement.getAttribute("autoplay") !== "false"){
-			var autoplay = this.videoelement.getAttribute("autoplay");
-		} else {
-			var autoplay = false;
-		}
-
-		// Posterframe
-		if(this.videoelement.getAttribute("data-poster") !== null){
-			var poster = this.videoelement.getAttribute("data-poster");
-		} else if(this.videoelement.getAttribute("poster") !== null){
-			var poster = this.videoelement.getAttribute("poster");
-		} else {
-			var poster = false;
-		}
-
-		// Set the options
-		var options = {
+	/**
+	 * Sets some basic options based on the videoelement's attributes
+	 */
+	setDefaultOptions(){	
+		this.options = {
+			// Controls needed for the player
 			controls : true,
-			preload : preload,
-			autoplay : autoplay,
-			poster : poster,
-			techOrder : ["html5","flash"]
+			
+			// Default tech order
+			techOrder : ["html5","flash"],
+			
+			preload : this.getPreloadValue(),
+			autoplay : this.getAutoplayValue(),
+			poster : this.getPosterframeValue()
 		};
+	}
 
-		this.options = options;
+	getAutoplayValue(){
+		if(this.videoelement.getAttribute("data-autoplay") !== null && this.videoelement.getAttribute("data-autoplay") !== "false"){
+			return this.videoelement.getAttribute("data-autoplay");
+		} else if(this.videoelement.getAttribute("autoplay") !== null && this.videoelement.getAttribute("autoplay") !== "false"){
+			return this.videoelement.getAttribute("autoplay");
+		} else {
+			return false;
+		}
+	}
+
+	getPreloadValue(){
+		if(this.videoelement.getAttribute("data-preload") !== null){
+			return this.videoelement.getAttribute("data-preload");
+		} else if(this.videoelement.getAttribute("preload") !== null){
+			return this.videoelement.getAttribute("preload");
+		} else {
+			return "auto";
+		}
+	}
+
+	getPosterframeValue(){
+		if(this.videoelement.getAttribute("data-poster") !== null){
+			return this.videoelement.getAttribute("data-poster");
+		} else if(this.videoelement.getAttribute("poster") !== null){
+			return this.videoelement.getAttribute("poster");
+		} else {
+			return false;
+		}
 	}
 
 	setSkinControls(){

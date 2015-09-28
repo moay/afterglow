@@ -62,7 +62,7 @@ describe("Afterglow Core", () => {
 
 		it('initiates the player container properly', () => {
 			afterglow.players.should.be.an('array');
-			afterglow.players.should.have.length(0);
+			afterglow.players.should.have.length(12);
 		});
 
 		it('initiates the lightbox trigger container properly', () => {
