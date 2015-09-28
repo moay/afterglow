@@ -1,5 +1,7 @@
 'use strict';
 
+require('babel/register');
+
 var plugins = require('gulp-load-plugins')();
 var gulp = require('gulp');
 var del = require('del');
@@ -185,4 +187,9 @@ gulp.task('release', function(){
 	    }))
 		.pipe(release(releaseoptions));    	
     }));
+});
+
+gulp.task('mocha', function(){
+	return gulp.src('./test/*.js')
+		.pipe(plugins.mocha());
 });
