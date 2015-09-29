@@ -23,12 +23,12 @@ describe("Afterglow Core", () => {
 	var afterglow,
 		$;
 
-	before(() => {
+	before((done) => {
 		// Mocking the player methods that are called
 		sinon.stub(AfterglowPlayer.prototype, 'init', () => {} );
 		sinon.stub(AfterglowPlayer.prototype, 'setup', () => {} );
-
 		sinon.stub(AfterglowLightboxTrigger.prototype, 'init', () => {} );
+		done();
 	});
 
 	beforeEach(() => {
@@ -37,11 +37,12 @@ describe("Afterglow Core", () => {
 		afterglow = new Afterglow();
 	});
 
-	after(() => {
+	after((done) => {
 		// Restore stubbed methods
 		AfterglowPlayer.prototype.init.restore();
 		AfterglowPlayer.prototype.setup.restore();
 		AfterglowLightboxTrigger.prototype.init.restore();
+		done();
 	});
 
 	describe("Bootup", () => {
