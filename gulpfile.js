@@ -43,15 +43,15 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 
 	// Loading LESS files 
 	return gulp.src([
-		"./src/videojs/skin/afterglow/vjs-afterglow.less",
-		"./src/lightbox/afterglow-lightbox.less"
+		"./src/less/skins/*.less",
+		"./src/less/components/*.less"
 		])
 
 	// Convert LESS files to CSS 
 	.pipe(plugins.less())
 
 	// Add normal css which doesn't need to be compiled
-	.pipe(plugins.addSrc.prepend('./src/videojs/video-js.css'))
+	.pipe(plugins.addSrc.prepend('./vendor/videojs/video-js.css'))
 	
 	// Minify the CSS 
 	.pipe(plugins.cssmin())
@@ -63,13 +63,12 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 
 	// Add all the javascript files in the correct order
 	.pipe(plugins.addSrc.append([
-		'./src/lib/afterglow-lib.js',
-		'./src/videojs/video.min.js',
+		'./vendor/videojs/video.min.js',
 		]))
 	.pipe(plugins.addSrc.append([
 		'./dist/tmp/components/*.js',
-		'./src/videojs/plugins/videojs.hotkeys.js',
-		'./src/videojs/plugins/Youtube.js',
+		'./vendor/videojs/plugins/videojs.hotkeys.js',
+		'./vendor/videojs/plugins/Youtube.js',
 		]))
 	.pipe(plugins.addSrc.append([
 		'./dist/tmp/afterglow-bundle.js'
@@ -91,7 +90,7 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 gulp.task('compileES6', function(){
 
 	// Compile VIDEO.js components
-	gulp.src('./src/videojs/components/*.js')
+	gulp.src('./src/js/vjs-components/*.js')
 		.pipe(plugins.babel())
 		.pipe(gulp.dest(__dirname+'/dist/tmp/components'));
 
@@ -105,7 +104,7 @@ gulp.task('compileES6', function(){
 	    .transform(babelify.configure({
 	      extensions: extensions
 	    }))
-	    .require(__dirname+"/src/init.js", { entry: true })
+	    .require(__dirname+"/src/js/init.js", { entry: true })
 	    .bundle()
 	    .on("error", function (err) { console.log("Error : " + err.message); })
 	    .pipe(fs.createWriteStream(__dirname+"/dist/tmp/afterglow-bundle.js",{flags: 'w'}));

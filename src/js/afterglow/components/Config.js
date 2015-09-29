@@ -5,9 +5,9 @@
  */
 'use strict';
 
-import AfterglowUtil from './AfterglowUtil';
+import Util from '../lib/Util';
 
-class AfterglowConfig {
+class Config {
 
 	constructor(videoelement, skin = 'afterglow'){
 
@@ -26,7 +26,7 @@ class AfterglowConfig {
 			this.setDefaultOptions();
 			this.setSkinControls();
 
-			let util = new AfterglowUtil;
+			let util = new Util;
 			// Initialize youtube if the current player is a youtube player
 			if(util.isYoutubePlayer(this.videoelement)){
 				this.setYoutubeOptions();	
@@ -127,7 +127,7 @@ class AfterglowConfig {
 			"src": "https://www.youtube.com/watch?v="+this.getPlayerAttributeFromVideoElement('youtube-id')
 		}];
 
-		let util = new AfterglowUtil;
+		let util = new Util;
 		if(util.ie().actualVersion >= 8 && util.ie().actualVersion <= 11){
 			this.options.youtube = {
 				ytControls : 2,
@@ -145,4 +145,4 @@ class AfterglowConfig {
 	}
 }
 
-export default AfterglowConfig;
+export default Config;

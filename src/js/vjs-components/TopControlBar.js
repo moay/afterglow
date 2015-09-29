@@ -33,5 +33,4 @@ TopControlBar.prototype.options_ = {
 
 (function(){
 	videojs.registerComponent('TopControlBar', TopControlBar);
-
 })();

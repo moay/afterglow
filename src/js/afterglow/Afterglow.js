@@ -6,9 +6,9 @@
 
 'use strict';
 
-import AfterglowPlayer from './AfterglowPlayer';
-import AfterglowLightbox from './AfterglowLightbox';
-import AfterglowLightboxTrigger from './AfterglowLightboxTrigger';
+import Player from './components/Player';
+import Lightbox from './components/Lightbox';
+import LightboxTrigger from './components/LightboxTrigger';
 
 class Afterglow {
 
@@ -48,7 +48,7 @@ class Afterglow {
 
 		// Initialize players
 		for (var i = 0; i < players.length; i++){
-			var player = new AfterglowPlayer(players[i]);
+			var player = new Player(players[i]);
 			player.init();
 			this.players.push(player);
 		}
@@ -64,7 +64,7 @@ class Afterglow {
 		
 		// Initialize players launching in a lightbox
 		for (var i = 0; i < lightboxtriggers.length; i++){
-			let trigger = new AfterglowLightboxTrigger(lightboxtriggers[i]);
+			let trigger = new LightboxTrigger(lightboxtriggers[i]);
 
 			this.bindLightboxTriggerEvents(trigger);
 

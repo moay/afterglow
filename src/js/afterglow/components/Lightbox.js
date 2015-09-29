@@ -5,13 +5,13 @@
  */
 'use strict';
 
-import AfterglowPlayer from './AfterglowPlayer';
-import AfterglowUtil from './AfterglowUtil';
+import Player from './Player';
+import Util from '../lib/Util';
 
 // For emitting and receiving events
-import Emitter from './components/Emitter';
+import Emitter from '../../../../vendor/Emitter/Emitter';
 
-class AfterglowLightbox {
+class Lightbox {
 
 	constructor(){
 		this.build();
@@ -39,7 +39,7 @@ class AfterglowLightbox {
 		this.videoelement = videoelement;
 		this.videoelement.setAttribute("autoplay","autoplay");
 
-		this.player = new AfterglowPlayer(this.videoelement);
+		this.player = new Player(this.videoelement);
 	}
 
 	launch(_callback){
@@ -197,4 +197,4 @@ class AfterglowLightbox {
 	}
 }
 
-export default AfterglowLightbox;
+export default Lightbox;

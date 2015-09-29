@@ -5,7 +5,7 @@
  */
 'use strict';
 
-class AfterglowUtil {
+class Util {
 
 	isYoutubePlayer(videoelement){
 		return videoelement.hasAttribute("data-youtube-id");
@@ -53,4 +53,4 @@ class AfterglowUtil {
 
 }
 
-export default AfterglowUtil;
+export default Util;

@@ -6,11 +6,10 @@
 
 'use strict';
 
-import Afterglow from './Afterglow';
-import AfterglowConfig from './AfterglowConfig';
-import AfterglowUtil from './AfterglowUtil';
+import Config from './Config';
+import Util from '../lib/Util';
 
-class AfterglowPlayer {
+class Player {
 
 	constructor(videoelement){
 		// Passing to setup for testability
@@ -20,14 +19,13 @@ class AfterglowPlayer {
 	setup(videoelement){
 		this.videoelement = videoelement;
 		this.id = videoelement.getAttribute('id');
-		this.config = new AfterglowConfig(videoelement);
+		this.config = new Config(videoelement);
 		this.prepareVideoElement();
 		// Set an activity variable to be able to detect if the player can be deleted
 		this.alive = true;
 	}
 
 	init(_callback){
-		let afterglow = new Afterglow();
 		let videoelement = this.videoelement;
 		let options = this.config.options;
 
@@ -47,7 +45,7 @@ class AfterglowPlayer {
 			}
 
 			// Fix youtube poster
-			if(AfterglowUtil.isYoutubePlayer(videoelement) && !options.poster && this.tech_.poster != ""){
+			if(Util.isYoutubePlayer(videoelement) && !options.poster && this.tech_.poster != ""){
 				this.addClass('vjs-youtube-ready');
 				this.poster(this.tech_.poster);
 			}
@@ -98,7 +96,7 @@ class AfterglowPlayer {
 		}
 
 		// Apply youtube class
-		if(AfterglowUtil.isYoutubePlayer(this.videoelement)){
+		if(Util.isYoutubePlayer(this.videoelement)){
 			this.videoelement.addClass("vjs-youtube");
 			
 			// Check for native playback
@@ -134,4 +132,4 @@ class AfterglowPlayer {
 	}
 }
 
-export default AfterglowPlayer;
+export default Player;

@@ -1,29 +1,22 @@
-// Import chai.
-let chai = require('chai'),
-  path = require('path');
+import Afterglow from '../src/js/afterglow/Afterglow';
+import AfterglowPlayer from '../src/js/afterglow/components/Player';
+import AfterglowLightbox from '../src/js/afterglow/components/Lightbox';
+import AfterglowLightboxTrigger from '../src/js/afterglow/components/LightboxTrigger';
+import AfterglowConfig from '../src/js/afterglow/components/Config';
+import AfterglowUtil from '../src/js/afterglow/lib/Util';
 
-// Import Sinon
+var chai = require('chai');
 var sinon = require("sinon");
 var sinonChai = require("sinon-chai");
-chai.use(sinonChai);
-
-// Setup the DOM
 var jsdom = require('mocha-jsdom');
 
-// Tell chai that we'll be using the "should" style assertions.
+chai.use(sinonChai);
 chai.should();
-// Enable assert & expect style, too
+
 var assert = chai.assert;
 var expect = chai.expect;
 
-let AfterglowConfig = require(path.join(__dirname, '..', 'src', 'afterglow', 'AfterglowConfig.js'));
-
-import AfterglowUtil from '../src/afterglow/AfterglowUtil';
-
-describe("Afterglow Config", () => {
-		
-	require(path.join(__dirname, '..', 'src', 'afterglow', 'AfterglowConfig.js'));
-	
+describe("Afterglow Config", () => {	
 	// Initiate the DOM
 	jsdom();
 

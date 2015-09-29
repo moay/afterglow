@@ -5,12 +5,12 @@
  */
 'use strict';
 
-import AfterglowLightbox from './AfterglowLightbox';
+import Lightbox from './Lightbox';
 
 // For emitting and receiving events
-import Emitter from './components/Emitter';
+import Emitter from '../../../../vendor/Emitter/Emitter';
 
-class AfterglowLightboxTrigger {
+class LightboxTrigger {
 
 	constructor(element){
 		this.element = element;
@@ -45,7 +45,7 @@ class AfterglowLightboxTrigger {
 	}
 
 	trigger(){
-		this.lightbox = new AfterglowLightbox();
+		this.lightbox = new Lightbox();
 
 		var videoelement = this.videoelement.cloneNode(true);
 		
@@ -74,4 +74,4 @@ class AfterglowLightboxTrigger {
 
 }
 
-export default AfterglowLightboxTrigger;
+export default LightboxTrigger;
