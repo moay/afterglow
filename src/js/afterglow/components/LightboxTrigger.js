@@ -9,17 +9,18 @@ import Lightbox from './Lightbox';
 
 // For emitting and receiving events
 import Emitter from '../../../../vendor/Emitter/Emitter';
+import DOMElement from '../lib/DOMElement';
 
-class LightboxTrigger {
+class LightboxTrigger extends DOMElement {
 
-	constructor(element){
-		this.element = element;
+	constructor(node){
+		super(node);
 		this.init();
 	}
 
 	init(){
 		// Get the playerid
-		this.playerid = this.element.getAttribute("href");
+		this.playerid = this.node.getAttribute("href");
 		// Hide the video element
 		this.videoelement = document.querySelector(this.playerid);
 		
@@ -34,14 +35,14 @@ class LightboxTrigger {
 		// Prepare the element
 		this.videoelement.setAttribute("data-autoresize","fit");
 
-		this.element.onclick = (e) => {
+		this.bind('click', (e) => {
 			// Prevent the click event, IE8 compatible
 			e = e ? e : window.event;
 			e.preventDefault();
 
 			// Launch the lightbox
 			this.trigger();
-		};
+		});
 	}
 
 	trigger(){

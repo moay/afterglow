@@ -188,7 +188,7 @@ gulp.task('release', function(){
     }));
 });
 
-gulp.task('mocha', function(){
+gulp.task('test', function(){
 	return gulp.src('./test/*.js')
 		.pipe(plugins.mocha());
 });

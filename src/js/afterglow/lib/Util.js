@@ -7,10 +7,29 @@
 
 class Util {
 
+    /**
+     * Checks wether or not the given video element should be converted into a video element
+     * @param  {node}  videoelement
+     * @return {Boolean}
+     */
 	isYoutubePlayer(videoelement){
 		return videoelement.hasAttribute("data-youtube-id");
 	}
 
+    /**
+     * Gets a youtube video thumbnail
+     * @param  {string} id  The videos youtube id
+     * @return {string} the url to the thumbnail
+     */
+    loadYoutubeThumbnailUrl(id){
+        var uri = 'https://img.youtube.com/vi/' + id + '/maxresdefault.jpg';
+        return uri;
+    };
+
+    /**
+     * Returns some information about the currently used IE
+     * @return {object}
+     */
 	ie(){
 		var ret, 
 			isTheBrowser,
@@ -50,6 +69,33 @@ class Util {
 	    }
 	    return ret;
 	}
+
+    /**
+     * Checks wether or not the currently used device is a mobile one
+     * @return {boolean}
+     */
+    isMobile(){
+        var Android = () => { return navigator.userAgent.match(/Android/i); };
+        var BlackBerry = () => { return navigator.userAgent.match(/BlackBerry/i); };
+        var iOS = () => { return navigator.userAgent.match(/iPhone|iPad|iPod/i); };
+        var Opera = () => { return navigator.userAgent.match(/Opera Mini/i); };
+        var Windows = () => { return navigator.userAgent.match(/IEMobile/i); };
+
+        return (Android() || BlackBerry() || iOS() || Opera() || Windows());
+    }
+
+    /**
+     * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
+     * @param obj1
+     * @param obj2
+     * @returns obj3 a new object based on obj1 and obj2
+     */
+    merge_objects(obj1,obj2){
+        var obj3 = {};
+        for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+        for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+        return obj3;
+    }
 
 }
 

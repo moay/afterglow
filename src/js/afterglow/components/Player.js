@@ -45,7 +45,8 @@ class Player {
 			}
 
 			// Fix youtube poster
-			if(Util.isYoutubePlayer(videoelement) && !options.poster && this.tech_.poster != ""){
+			let util = new Util();
+			if(util.isYoutubePlayer(videoelement) && !options.poster && this.tech_.poster != ""){
 				this.addClass('vjs-youtube-ready');
 				this.poster(this.tech_.poster);
 			}
@@ -96,7 +97,8 @@ class Player {
 		}
 
 		// Apply youtube class
-		if(Util.isYoutubePlayer(this.videoelement)){
+		let util = new Util();
+		if(util.isYoutubePlayer(this.videoelement)){
 			this.videoelement.addClass("vjs-youtube");
 			
 			// Check for native playback
