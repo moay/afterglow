@@ -205,12 +205,13 @@ describe("Afterglow Config", () => {
 			sinon.stub(AfterglowUtil.prototype, 'ie', () => { return { actualVersion:0 } });
 
 			a_config.setYoutubeOptions();
-			a_config.options.should.have.all.keys('showinfo','techOrder','sources');
+			a_config.options.should.have.all.keys('showinfo','techOrder','sources','youtube');
+			a_config.options.youtube['iv_load_policy'].should.exist;
 
 			AfterglowUtil.prototype.ie.restore();
 		});
 
-		it('should set `youtube` parameter if IE8 - IE11', () => {
+		it('should set `youtube` parameter with two attributes if IE8 - IE11', () => {
 			for(var i = 8; i >12; i++){
 				var ieMock = {
 					actualVersion : i
@@ -224,25 +225,10 @@ describe("Afterglow Config", () => {
 				a_config.setYoutubeOptions();
 				a_config.options.youtube.should.exist;
 				a_config.options.youtube.should.have.all.keys('ytControls','color');
+				a_config.options.youtube.should.have.length(2);
 
 				AfterglowUtil.prototype.ie.restore();
 			}
-		});
-
-		it('should not set `youtube` parameter if IE12', () => {
-			var ieMock = {
-				actualVersion : 7
-			};
-			sinon.stub(AfterglowUtil.prototype, 'ie', () => { return ieMock; });
-			sinon.stub(AfterglowConfig.prototype, 'setYoutubeOptions', () => {});
-
-			a_config = new AfterglowConfig(videoelement);
-			AfterglowConfig.prototype.setYoutubeOptions.restore();
-
-			a_config.setYoutubeOptions();
-			a_config.options.should.not.have.any.keys('youtube');
-
-			AfterglowUtil.prototype.ie.restore();
 		});
 	});
 

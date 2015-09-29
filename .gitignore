@@ -1,4 +1,4 @@
 
-coverage/coverage.json
+coverage/*
 
 .coverrun

@@ -134,6 +134,11 @@ class Config {
 				color : "white"
 			};
 		}
+		else{
+			this.options.youtube = {
+				'iv_load_policy' : 3
+			};
+		}
 	}
 
 	getSkinClass(){

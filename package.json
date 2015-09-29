@@ -49,6 +49,6 @@
     "traceur": "0.0.91"
   },
   "scripts": {
-    "test": "babel-node ./node_modules/.bin/isparta cover  --report text _mocha -- --reporter dot"
+    "test": "babel-node ./node_modules/.bin/isparta cover _mocha -- --reporter dot"
   }
 }
