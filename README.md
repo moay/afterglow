@@ -1,3 +1,6 @@
+[![GitHub version](https://badge.fury.io/gh/moay%2Fafterglow.svg)](http://badge.fury.io/gh/moay%2Fafterglow) ![Build status](https://travis-ci.org/moay/afterglow.svg) [![Coverage Status](https://coveralls.io/repos/moay/afterglow/badge.svg?branch=v0.3&service=github)](https://coveralls.io/github/moay/afterglow?branch=v0.3) [![Code Climate](https://codeclimate.com/github/moay/afterglow/badges/gpa.svg)](https://codeclimate.com/github/moay/afterglow)
+
+
 # afterglow
 
 afterglow is a tool to create fully responsive and totally awesome video players from HTML5 video elements with as little effort as possible.
@@ -8,17 +11,15 @@ Learn more about the project on the project website: [http://afterglowplayer.com
 
 This branch is under heavy development. The builds should be mostly working, but there is no point in using an unstable branch. Except if you want to, of course.
 
-## Documentation
-
-There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
-
 ## Build status
 
 Green is good (means: all unit tests are passing). Red is bad (means: think before you use it). Gray is nothing (means: test are running right now, come back in a second).
 
-The build status isn't reliable yet, as there is a major refactoring going on. 
+The build status isn't reliable yet, as there is a major refactoring going on.
 
-![Build status](https://codeship.com/projects/fe194d60-47f5-0133-2d73-1e85bf92c557/status)
+## Documentation
+
+There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
 
 ## Credits
 
