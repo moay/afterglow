@@ -96,6 +96,9 @@ class DOMElement{
 	hasAttribute(input){
 		return this.node.hasAttribute(input);
 	}
+	cloneNode(deep = false){
+		return this.node.cloneNode(deep);
+	}
 
 }
 

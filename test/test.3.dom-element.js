@@ -113,38 +113,50 @@ describe("DOMElement", () => {
 	});
 
 	describe('Proxy methods', () => {
-		it('should pass getAttribute to node', () => {
+		var domelement;
+
+		beforeEach(() => {
 			document.body.innerHTML = '<div></div>';
 			let rawnode = document.querySelector('div');
-			let domelement = new DOMElement(rawnode);
+			domelement = new DOMElement(rawnode);
+		});
+
+		it('should pass getAttribute to node', () => {
 			sinon.stub(domelement.node, 'getAttribute', (input) => { return input; });
 			
 			let res = domelement.getAttribute('something');
 
-			assert(domelement.node.getAttribute);
+			assert(domelement.node.getAttribute.calledOnce);
 			res.should.equal('something');
 		});
 		it('should pass setAttribute to node', () => {
-			document.body.innerHTML = '<div></div>';
-			let rawnode = document.querySelector('div');
-			let domelement = new DOMElement(rawnode);
 			sinon.stub(domelement.node, 'setAttribute', (input1, input2) => { return input1 + input2; });
 			
 			let res = domelement.setAttribute('something', 'someotherthing');
 
-			assert(domelement.node.setAttribute);
+			assert(domelement.node.setAttribute.calledOnce);
 			res.should.equal('somethingsomeotherthing');
 		});
 		it('should pass hasAttribute to node', () => {
-			document.body.innerHTML = '<div></div>';
-			let rawnode = document.querySelector('div');
-			let domelement = new DOMElement(rawnode);
 			sinon.stub(domelement.node, 'hasAttribute', (input1) => { return input1; });
 			
 			let res = domelement.hasAttribute('something', 'someotherthing');
 
-			assert(domelement.node.hasAttribute);
+			assert(domelement.node.hasAttribute.calledOnce);
 			res.should.equal('something');
+		});
+		it('should pass cloneNode to the node element', () => {
+			sinon.stub(domelement.node, 'cloneNode', (input = false) => { return input; });
+			
+			let res = domelement.cloneNode('somevalue');
+
+			assert(domelement.node.cloneNode.calledOnce);
+			res.should.equal('somevalue');
+
+			res = domelement.cloneNode();
+
+			assert(domelement.node.cloneNode.calledTwice);
+			res.should.be.false;
 		});
 	});
 

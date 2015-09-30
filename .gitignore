@@ -2,3 +2,5 @@
 coverage/*
 
 .coverrun
+
+npm-debug.log

@@ -18,14 +18,17 @@ class Lightbox {
 		Emitter(this);
 	}
 
+	/**
+	 * Prepares the lightbox elements which are needed to properly add them to the DOM
+	 * @return {void}
+	 */
 	build(){
-		// Prepare the lightbox element
+		// Prepare the lightbox elements
 		var wrapper = document.createElement('div').addClass("afterglow-lightbox-wrapper");
 		var cover = document.createElement('div').addClass("cover");
-		wrapper.appendChild(cover);
-
-		// Prepare the player element add push it to the lightbox holder
 		var lightbox = document.createElement('div').addClass("afterglow-lightbox");
+
+		wrapper.appendChild(cover);
 		wrapper.appendChild(lightbox);
 
 		this.wrapper = wrapper;
@@ -33,6 +36,11 @@ class Lightbox {
 		this.lightbox = lightbox;
 	}
 
+	/**
+	 * Appends the real videoElement to the wrapper.
+	 * @param  {[type]} videoelement [description]
+	 * @return {[type]}              [description]
+	 */
 	passVideoElement(videoelement){
 		this.playerid = videoelement.getAttribute("id");
 		this.lightbox.appendChild(videoelement);

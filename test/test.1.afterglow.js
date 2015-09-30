@@ -1,9 +1,9 @@
 import Afterglow from '../src/js/afterglow/Afterglow';
-import AfterglowPlayer from '../src/js/afterglow/components/Player';
-import AfterglowLightbox from '../src/js/afterglow/components/Lightbox';
-import AfterglowLightboxTrigger from '../src/js/afterglow/components/LightboxTrigger';
-import AfterglowConfig from '../src/js/afterglow/components/Config';
-import AfterglowUtil from '../src/js/afterglow/lib/Util';
+import Player from '../src/js/afterglow/components/Player';
+import Lightbox from '../src/js/afterglow/components/Lightbox';
+import LightboxTrigger from '../src/js/afterglow/components/LightboxTrigger';
+import Config from '../src/js/afterglow/components/Config';
+import Util from '../src/js/afterglow/lib/Util';
 
 var chai = require('chai');
 var sinon = require("sinon");
@@ -23,12 +23,12 @@ describe("Afterglow Core", () => {
 	var afterglow,
 		$;
 
-	before((done) => {
+	before(() => {
 		// Mocking the player methods that are called
-		sinon.stub(AfterglowPlayer.prototype, 'init', () => {} );
-		sinon.stub(AfterglowPlayer.prototype, 'setup', () => {} );
-		sinon.stub(AfterglowLightboxTrigger.prototype, 'init', () => {} );
-		done();
+		sinon.stub(Player.prototype, 'init', () => {} );
+		sinon.stub(Player.prototype, 'setup', () => {} );
+
+		sinon.stub(LightboxTrigger.prototype, 'init', () => {} );
 	});
 
 	beforeEach(() => {
@@ -37,12 +37,11 @@ describe("Afterglow Core", () => {
 		afterglow = new Afterglow();
 	});
 
-	after((done) => {
+	after(() => {
 		// Restore stubbed methods
-		AfterglowPlayer.prototype.init.restore();
-		AfterglowPlayer.prototype.setup.restore();
-		AfterglowLightboxTrigger.prototype.init.restore();
-		done();
+		Player.prototype.init.restore();
+		Player.prototype.setup.restore();
+		LightboxTrigger.prototype.init.restore();
 	});
 
 	describe("Bootup", () => {
@@ -98,7 +97,7 @@ describe("Afterglow Core", () => {
 			// Run the tests
 			let res = afterglow.initVideoElements();
 
-			sinon.assert.calledTwice(AfterglowPlayer.prototype.init);
+			sinon.assert.calledTwice(Player.prototype.init);
 		});
 
 		it('adds launched video players to the players object', () => {
@@ -129,7 +128,7 @@ describe("Afterglow Core", () => {
 			// Run the tests
 			let res = afterglow.prepareLightboxVideos();
 
-			sinon.assert.calledTwice(AfterglowLightboxTrigger.prototype.init);
+			sinon.assert.calledTwice(LightboxTrigger.prototype.init);
 			sinon.assert.calledTwice(afterglow.bindLightboxTriggerEvents);
 		});
 
