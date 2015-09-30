@@ -231,6 +231,32 @@ describe("Afterglow Config", () => {
 			}
 		});
 	});
+	
+	describe('CSS class getter', () => {
+		
+		beforeEach(() => {
+			sinon.stub(AfterglowConfig.prototype, 'setDefaultOptions', () => {});
+			sinon.stub(AfterglowConfig.prototype, 'setYoutubeOptions', () => {});
+			sinon.stub(AfterglowConfig.prototype, 'setSkinControls', () => {});
+		});
 
+		afterEach(() => {
+			AfterglowConfig.prototype.setDefaultOptions.restore();
+			AfterglowConfig.prototype.setYoutubeOptions.restore();
+			AfterglowConfig.prototype.setSkinControls.restore();
+		});
+
+		it('should return the proper afterglow base class by default', () => {
+			a_config = new AfterglowConfig(videoelement);
+			let providedClass = a_config.getSkinClass();
+			providedClass.should.equal('vjs-afterglow-skin');
+		});
+
+		it('should properly include the skin`s name into the class name', () => {
+			a_config = new AfterglowConfig(videoelement, 'someclass');
+			let providedClass = a_config.getSkinClass();
+			providedClass.should.equal('vjs-afterglow-skin afterglow-skin-someclass');
+		});
+	});
 
 });
