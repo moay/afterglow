@@ -3,6 +3,8 @@ engines:
     enabled: true
   csslint:
     enabled: true
+  fixme:
+    enabled: true
 
 ratings:
   paths:
