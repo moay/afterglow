@@ -8,7 +8,9 @@ engines:
 
 ratings:
   paths:
-  - src/**
+  - src/js/**
 
 exclude_paths:
 - vendor/**/*
+- sandbox/**/*
+- dist/**/*

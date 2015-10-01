@@ -14,6 +14,14 @@ import Emitter from '../../../../vendor/Emitter/Emitter';
 class Lightbox {
 
 	constructor(){
+		this.init();
+	}
+
+ 	/**
+ 	 * Initiating the Lightbox and enabling element binding
+ 	 * @return void
+ 	 */
+	init(){
 		this.build();
 		Emitter(this);
 	}
