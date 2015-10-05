@@ -75,7 +75,7 @@ describe("Afterglow Lightbox Trigger", () => {
 			sinon.stub(Emitter.prototype, 'on');
 			sinon.stub(Emitter.prototype, 'emit');
 			lightboxtrigger = new LightboxTrigger(triggerelement);
-			sinon.stub(Lightbox.prototype, 'init', function(){ this.on = () => { return {} } });
+			sinon.stub(Lightbox.prototype, 'init', function(){ this.on = () => { return 'test' } });
 			sinon.stub(Lightbox.prototype, 'passVideoElement', (input) => { return input });
 			sinon.stub(Lightbox.prototype, 'launch');
 			
@@ -108,6 +108,17 @@ describe("Afterglow Lightbox Trigger", () => {
 			assert(Lightbox.prototype.passVideoElement.calledOnce);
 			assert(lightboxtrigger.videoelement.cloneNode.calledOnce);
 			expect(Lightbox.prototype.passVideoElement).to.have.been.calledWith('test');
+		});
+
+		it('should launch the lightbox properly', () => {
+			lightboxtrigger.trigger();
+			assert(Lightbox.prototype.launch.calledOnce);
+		});
+
+		it('should trigger and bind the events', () => {
+			sinon.stub(lightboxtrigger, 'emit');
+			lightboxtrigger.trigger();
+			assert(lightboxtrigger.emit.calledOnce);
 		});
 	});
 

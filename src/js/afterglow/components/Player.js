@@ -132,6 +132,10 @@ class Player {
 		this.videojs.dispose();
 		this.alive = false;
 	}
+	
+	getPlayer(){
+		return this.player;
+	}
 }
 
 export default Player;

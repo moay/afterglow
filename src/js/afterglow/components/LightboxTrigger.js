@@ -18,6 +18,10 @@ class LightboxTrigger extends DOMElement {
 		this.init();
 	}
 
+	/**
+	 * Initializes all atributes and prepares the trigger element for further interaction
+	 * @return {void}
+	 */
 	init(){
 		// Get the playerid
 		this.playerid = this.node.getAttribute("href").replace('#','');
@@ -31,6 +35,10 @@ class LightboxTrigger extends DOMElement {
 		Emitter(this);
 	}
 
+	/**
+	 * Prepares the video element to be used for the lightbox player.
+	 * @return {void}
+	 */
 	prepare(){
 		// Add major class
 		this.videoelement.addClass("afterglow-lightboxplayer");
@@ -47,6 +55,10 @@ class LightboxTrigger extends DOMElement {
 		});
 	}
 
+	/**
+	 * Creates all elements needed for the lightbox and launches the player.
+	 * @return {void}
+	 */
 	trigger(){
 		this.lightbox = new Lightbox();
 
@@ -59,11 +71,16 @@ class LightboxTrigger extends DOMElement {
 		this.lightbox.launch();
 
 		// Pass event to afterglow core
+		// TODO: This must be tested. But it will break lightbox closing if it doesn't work, so that should be pretty obvious...
 		this.lightbox.on('close', () => {
 			this.emit('close');
 		});
 	}
 
+	/**
+	 * Closes the lightbox if possible and removes the player from the trigger element so that it gets reinitiated on next trigger
+	 * @return {void}
+	 */
 	closeLightbox(){
 		if(this.lightbox != undefined){
 			this.lightbox.close();
@@ -71,8 +88,11 @@ class LightboxTrigger extends DOMElement {
 		}
 	}
 
+	/**
+	 * @return {object} Returns the player from the lightbox.
+	 */
 	getPlayer(){
-		return this.lightbox.player;
+		return this.lightbox.getPlayer();
 	}
 
 }
