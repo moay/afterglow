@@ -122,4 +122,80 @@ describe("Afterglow Lightbox Trigger", () => {
 		});
 	});
 
+	describe('closeLightbox()', () => {
+		
+		beforeEach(() => {
+			sinon.stub(LightboxTrigger.prototype, 'prepare');
+			lightboxtrigger = new LightboxTrigger(triggerelement);
+
+			window.test = 1;
+
+			lightboxtrigger.lightbox = {
+				close : function(){
+					window.test = 2;
+				}
+			}
+
+			sinon.stub(lightboxtrigger.lightbox, 'close');
+			sinon.stub(lightboxtrigger, 'deleteLightbox');
+		});
+
+		afterEach(() => {
+			LightboxTrigger.prototype.prepare.restore();
+		});
+
+		it('should pass the closing to the related lightbox', () => {
+			lightboxtrigger.closeLightbox();
+			assert(lightboxtrigger.lightbox.close.calledOnce);
+		});
+
+		it('should delete the lightbox when closing it', () => {
+			lightboxtrigger.closeLightbox();
+			assert(lightboxtrigger.deleteLightbox.calledOnce);
+		});
+	});
+
+	describe('deleteLightbox()', () => {
+		
+		beforeEach(() => {
+			sinon.stub(LightboxTrigger.prototype, 'prepare');
+			lightboxtrigger = new LightboxTrigger(triggerelement);
+
+			lightboxtrigger.lightbox = {
+				close : () => {}
+			}
+		});
+
+		afterEach(() => {
+			LightboxTrigger.prototype.prepare.restore();
+		});
+
+		it('should delete the element from the current trigger', () => {
+			lightboxtrigger.lightbox.should.be.an('object');
+			lightboxtrigger.deleteLightbox();
+			assert.isUndefined(lightboxtrigger.lightbox);
+		});
+	});
+
+	describe('getPlayer()', () => {
+		
+		beforeEach(() => {
+			sinon.stub(LightboxTrigger.prototype, 'prepare');
+			lightboxtrigger = new LightboxTrigger(triggerelement);
+
+			lightboxtrigger.lightbox = {
+				getPlayer : () => { return 'test' }
+			}
+		});
+
+		afterEach(() => {
+			LightboxTrigger.prototype.prepare.restore();
+		});
+
+		it('should pass the get Player event to the underlying lightbox', () => {
+			var res = lightboxtrigger.getPlayer();
+			res.should.equal('test');
+		});
+	});
+
 });

@@ -84,6 +84,16 @@ class LightboxTrigger extends DOMElement {
 	closeLightbox(){
 		if(this.lightbox != undefined){
 			this.lightbox.close();
+			this.deleteLightbox();
+		}
+	}
+
+	/**
+	 * Deletes the lightbox element if there is one.
+	 * @return {void}
+	 */
+	deleteLightbox(){
+		if(this.lightbox != undefined){
 			delete this.lightbox;
 		}
 	}
