@@ -181,6 +181,18 @@ describe("Afterglow Core", () => {
 			lightboxPlayer.should.equal('test');
 		});
 
+		it('should return false when the id was not found', () => {
+			afterglow.players = [
+				{
+					id : 'testid'
+				}
+			];
+			let regularPlayer = afterglow.getPlayer('nonexistingtestid');
+			let lightboxPlayer = afterglow.getPlayer('nonexistingtestid2');
+			regularPlayer.should.be.false;
+			lightboxPlayer.should.be.false;
+		});
+
 		it('should delete players from the player container when deleting by id',() => {
 			let destroyTest = {
 				alert : () => {}
@@ -201,6 +213,19 @@ describe("Afterglow Core", () => {
 
 			assert(destroyTest.alert.calledOnce);
 			afterglow.players.should.be.length(0);
+		});
+
+		it('should return false if there was not lightbox to destroy', () => {
+			afterglow.players = [
+				{
+					id : 'testid'
+				}
+			];
+
+			afterglow.players.should.be.length(1);
+
+			let res = afterglow.destroyPlayer('nonexistingid');
+			res.should.be.false;
 		});
 
 		it('should close lightbox for lightbox players when deleting by id',() => {
