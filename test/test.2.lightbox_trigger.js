@@ -68,6 +68,41 @@ describe("Afterglow Lightbox Trigger", () => {
 		});
 	});
 
+	describe('prepare()', () => {
+		beforeEach(() => {
+			sinon.stub(LightboxTrigger.prototype, 'prepare');
+			lightboxtrigger = new LightboxTrigger(triggerelement);
+			LightboxTrigger.prototype.prepare.restore();
+
+			lightboxtrigger.videoelement = {
+				addClass : (input) => {},
+				setAttribute : (input1, input2) => {}
+			}
+		});
+
+		it('should make the video element have autoresize fit by default', () => {
+			sinon.stub(lightboxtrigger, 'bind');
+			sinon.spy(lightboxtrigger.videoelement, 'setAttribute');
+
+			lightboxtrigger.prepare();
+
+			expect(lightboxtrigger.videoelement.setAttribute).to.have.been.calledOnce;
+			expect(lightboxtrigger.videoelement.setAttribute).to.have.been.calledWith('data-autoresize', 'fit');
+
+		});
+
+		it('should add the CSS class properly', () => {
+			sinon.stub(lightboxtrigger, 'bind');
+			sinon.spy(lightboxtrigger.videoelement, 'addClass');
+
+			lightboxtrigger.prepare();
+
+			expect(lightboxtrigger.videoelement.addClass).to.have.been.calledOnce;
+			expect(lightboxtrigger.videoelement.addClass).to.have.been.calledWith('afterglow-lightboxplayer');
+
+		});
+	});
+
 	describe('trigger()', () => {
 		beforeEach(() => {
 

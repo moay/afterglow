@@ -1,4 +1,4 @@
-[![GitHub version](https://badge.fury.io/gh/moay%2Fafterglow.svg)](http://badge.fury.io/gh/moay%2Fafterglow) ![Build status](https://travis-ci.org/moay/afterglow.svg) [![Coverage Status](https://coveralls.io/repos/moay/afterglow/badge.svg?branch=v0.3&service=github)](https://coveralls.io/github/moay/afterglow?branch=v0.3)
+[![GitHub version](https://badge.fury.io/gh/moay%2Fafterglow.svg)](http://badge.fury.io/gh/moay%2Fafterglow) [![Build status](https://travis-ci.org/moay/afterglow.svg)](https://travis-ci.org/moay/afterglow) [![Coverage Status](https://coveralls.io/repos/moay/afterglow/badge.svg?branch=v0.3&service=github)](https://coveralls.io/github/moay/afterglow?branch=v0.3)
 
 
 # afterglow
