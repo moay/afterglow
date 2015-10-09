@@ -9,6 +9,8 @@
 import Player from './components/Player';
 import Lightbox from './components/Lightbox';
 import LightboxTrigger from './components/LightboxTrigger';
+import DOMElement from './lib/DOMElement';
+
 
 class Afterglow {
 
@@ -48,7 +50,8 @@ class Afterglow {
 
 		// Initialize players
 		for (var i = 0; i < players.length; i++){
-			var player = new Player(players[i]);
+			let videoelement = new DOMElement(players[i]);
+			var player = new Player(videoelement);
 			player.init();
 			this.players.push(player);
 		}

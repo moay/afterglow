@@ -110,7 +110,7 @@ describe("Afterglow Lightbox Trigger", () => {
 			sinon.stub(Emitter.prototype, 'on');
 			sinon.stub(Emitter.prototype, 'emit');
 			lightboxtrigger = new LightboxTrigger(triggerelement);
-			sinon.stub(Lightbox.prototype, 'init', function(){ this.on = () => { return 'test' } });
+			sinon.stub(Lightbox.prototype, 'build', function(){ this.on = () => { return 'test' } });
 			sinon.stub(Lightbox.prototype, 'passVideoElement', (input) => { return input });
 			sinon.stub(Lightbox.prototype, 'launch');
 			
@@ -124,7 +124,7 @@ describe("Afterglow Lightbox Trigger", () => {
 
 		afterEach(() => {
 			LightboxTrigger.prototype.init.restore();
-			Lightbox.prototype.init.restore();
+			Lightbox.prototype.build.restore();
 			Lightbox.prototype.passVideoElement.restore();
 			Lightbox.prototype.launch.restore();
 			Emitter.prototype.on.restore();

@@ -85,6 +85,17 @@ class DOMElement{
 	    return this;
 	}
 
+	/**
+	 * Appends another DOMElement to the current one
+	 * @param  {DOMElement object} element 
+	 * @param  {string} name       The accessor for the new element
+	 * @return void
+	 */
+	appendDomElement(element, name){
+		this[name] = element;
+		this.appendChild(element.node);
+	}
+
 	/** PROXY METHODS */
 
 	getAttribute(input){
@@ -96,8 +107,14 @@ class DOMElement{
 	hasAttribute(input){
 		return this.node.hasAttribute(input);
 	}
+	removeAttribute(key){
+		return this.node.removeAttribute(key);
+	}
 	cloneNode(deep = false){
 		return this.node.cloneNode(deep);
+	}
+	appendChild(node){
+		this.node.appendChild(node);
 	}
 
 }

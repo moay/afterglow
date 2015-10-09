@@ -26,7 +26,7 @@ class Player {
 	}
 
 	init(_callback){
-		let videoelement = this.videoelement;
+		let videoelement = this.videoelement.node;
 		let options = this.config.options;
 
 		// initiate videojs and do some post initiation stuff
@@ -90,7 +90,7 @@ class Player {
 			else{
 				var ratio = this.videoelement.getAttribute("height") / this.videoelement.getAttribute("width");
 			}
-			this.videoelement.style.paddingTop = (ratio * 100)+"%";
+			this.videoelement.node.style.paddingTop = (ratio * 100)+"%";
 			this.videoelement.removeAttribute("height");
 			this.videoelement.removeAttribute("width");
 			this.videoelement.setAttribute("data-ratio",ratio);

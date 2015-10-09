@@ -7,23 +7,18 @@
 
 import Player from './Player';
 import Util from '../lib/Util';
+import DOMElement from '../lib/DOMElement';
 
 // For emitting and receiving events
 import Emitter from '../../../../vendor/Emitter/Emitter';
 
-class Lightbox {
+class Lightbox extends DOMElement{
 
 	constructor(){
-		this.init();
-	}
-
- 	/**
- 	 * Initiating the Lightbox and enabling element binding
- 	 * @return void
- 	 */
-	init(){
+		super(document.createElement('div'));
+		this.addClass("afterglow-lightbox-wrapper");
 		this.build();
-		Emitter(this);
+		this.bindEmitter();
 	}
 
 	/**
@@ -32,16 +27,41 @@ class Lightbox {
 	 */
 	build(){
 		// Prepare the lightbox elements
-		var wrapper = document.createElement('div').addClass("afterglow-lightbox-wrapper");
-		var cover = document.createElement('div').addClass("cover");
-		var lightbox = document.createElement('div').addClass("afterglow-lightbox");
+		let cover = this.buildCover();
+		let lightbox = this.buildLightbox(); 
+		
+		this.appendDomElement(cover, 'cover');
+		this.appendDomElement(lightbox, 'lightbox');
+	}
 
-		wrapper.appendChild(cover);
-		wrapper.appendChild(lightbox);
+	/**
+	 * Builds the Cover element
+	 * @return {DOMElement object}
+	 */
+	buildCover(){
+		var cover = document.createElement('div');
+		cover = new DOMElement(cover);
+		cover.addClass("cover");
+		return cover;
+	}
 
-		this.wrapper = wrapper;
-		this.cover = cover;
-		this.lightbox = lightbox;
+	/**
+	 * Builds the Lightbox element
+	 * @return {DOMElement object}
+	 */
+	buildLightbox(){
+		var lightbox = document.createElement('div');
+		lightbox = new DOMElement(lightbox);
+		lightbox.addClass("afterglow-lightbox");
+		return lightbox;
+	}
+
+ 	/**
+ 	 * Initiating the Lightbox and enabling element binding
+ 	 * @return void
+ 	 */
+	bindEmitter(){
+		Emitter(this);
 	}
 
 	/**
@@ -51,15 +71,16 @@ class Lightbox {
 	 */
 	passVideoElement(videoelement){
 		this.playerid = videoelement.getAttribute("id");
-		this.lightbox.appendChild(videoelement);
-		this.videoelement = videoelement;
-		this.videoelement.setAttribute("autoplay","autoplay");
+		videoelement = new DOMElement(videoelement);
+		this.lightbox.appendDomElement(videoelement, 'videoelement');
+		this.lightbox.videoelement = videoelement;
+		this.lightbox.videoelement.setAttribute("autoplay","autoplay");
 
-		this.player = new Player(this.videoelement);
+		this.player = new Player(this.lightbox.videoelement);
 	}
 
 	launch(_callback){
-		document.body.appendChild(this.wrapper);
+		document.body.appendChild(this.node);
 
 		this.player.init(fn => {
 
@@ -75,7 +96,7 @@ class Lightbox {
 			}
 
 			// Adding autoclose functionality
-			if(this.videoelement.getAttribute("data-autoclose") == "true"){
+			if(this.lightbox.videoelement.getAttribute("data-autoclose") == "true"){
 				videojs.on('ended', () => {
 					this.close();
 				});
@@ -122,39 +143,36 @@ class Lightbox {
 	 * @return void
 	 */
 	resize(){
-		// Do if it exists
-		if(this.wrapper != undefined){
-			// Standard HTML5 player
-			if(this.videoelement !== undefined){			
-				var ratio = this.videoelement.getAttribute("data-ratio");
-				if(this.videoelement.getAttribute("data-overscale") == "false")
-				{
-					// Calculate the new size of the player with maxwidth
-					var sizes = this.calculateLightboxSizes(ratio, parseInt(this.videoelement.getAttribute("data-maxwidth")));
-				}
-				else{
-					// Calculate the new size of the player without maxwidth
-					var sizes = this.calculateLightboxSizes(ratio);
-				}
+		// Standard HTML5 player
+		if(this.lightbox.videoelement !== undefined){			
+			var ratio = this.lightbox.videoelement.getAttribute("data-ratio");
+			if(this.lightbox.videoelement.getAttribute("data-overscale") == "false")
+			{
+				// Calculate the new size of the player with maxwidth
+				var sizes = this.calculateLightboxSizes(ratio, parseInt(this.lightbox.videoelement.getAttribute("data-maxwidth")));
 			}
 			else{
-				// Youtube
-				if(document.querySelectorAll("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
-					playerelement = document.querySelector("div.afterglow-lightbox-wrapper .vjs-youtube");
-					var ratio = playerelement.getAttribute("data-ratio");
-					var sizes = this.calculateLightboxSizes(ratio);
-				}
+				// Calculate the new size of the player without maxwidth
+				var sizes = this.calculateLightboxSizes(ratio);
 			}
-			
-			// Apply the height and width
-			this.wrapper.style.width = sizes.width;
-			this.wrapper.style.height = sizes.height;
-
-			this.lightbox.style.height = sizes.playerheight + "px";
-			this.lightbox.style.width = sizes.playerwidth + "px";
-			this.lightbox.style.top = sizes.playeroffsettop + "px";
-			this.lightbox.style.left = sizes.playeroffsetleft + "px";
 		}
+		else{
+			// Youtube
+			if(document.querySelectorAll("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
+				playerelement = document.querySelector("div.afterglow-lightbox-wrapper .vjs-youtube");
+				var ratio = playerelement.getAttribute("data-ratio");
+				var sizes = this.calculateLightboxSizes(ratio);
+			}
+		}
+		
+		// Apply the height and width
+		this.node.style.width = sizes.width;
+		this.node.style.height = sizes.height;
+
+		this.lightbox.node.style.height = sizes.playerheight + "px";
+		this.lightbox.node.style.width = sizes.playerwidth + "px";
+		this.lightbox.node.style.top = sizes.playeroffsettop + "px";
+		this.lightbox.node.style.left = sizes.playeroffsetleft + "px";
 	}
 
 	/**
@@ -206,10 +224,22 @@ class Lightbox {
 		return sizes;
 	}
 
+	/**
+	 * Closes the lightbox and rmoves the nodes from the dom.
+	 * @return void
+	 */
 	close(){
 		this.player.destroy(true);
-		this.wrapper.parentNode.removeChild(this.wrapper);
+		this.node.parentNode.removeChild(this.node);
 		this.emit('close');
+	}
+
+	/**
+	 * Returns the player
+	 * @return {Player object}	
+	 */
+	getPlayer(){
+		return this.player;
 	}
 }
 

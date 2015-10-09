@@ -158,6 +158,48 @@ describe("DOMElement", () => {
 			assert(domelement.node.cloneNode.calledTwice);
 			res.should.be.false;
 		});
+		it('should pass removeAttribute to the node element', () => {
+			sinon.stub(domelement.node, 'removeAttribute', (input = false) => { return input; });
+			
+			let res = domelement.removeAttribute('somevalue');
+
+			assert(domelement.node.removeAttribute.calledOnce);
+			res.should.equal('somevalue');
+
+			res = domelement.removeAttribute();
+
+			assert(domelement.node.removeAttribute.calledTwice);
+			res.should.be.false;
+		});
+		it('should pass appendChild to the node element', () => {
+			sinon.stub(domelement.node, 'appendChild', (input = false) => { return input; });
+			domelement.appendChild('somevalue');
+			assert(domelement.node.appendChild.calledOnce);
+			domelement.appendChild();
+			assert(domelement.node.appendChild.calledTwice);
+		});
+		it('should append child node via appendChild when appendDomElement is called', () => {
+			document.body.innerHTML = '<p></p>';
+			let rawnode2 = document.querySelector('p');
+			var domelement2 = new DOMElement(rawnode2);
+
+			sinon.stub(domelement.node, 'appendChild', (input = false) => { return input; });
+			sinon.stub(domelement2.node, 'appendChild', (input = false) => { return input; });
+
+			domelement.appendDomElement(domelement2, 'somevalue');
+			assert(domelement.node.appendChild.calledOnce);;
+		});
+		it('should append the element properly to the DOMElement when appendDomElement is called', () => {
+			document.body.innerHTML = '<p></p>';
+			let rawnode2 = document.querySelector('p');
+			var domelement2 = new DOMElement(rawnode2);
+
+			sinon.stub(domelement.node, 'appendChild');
+			sinon.stub(domelement2.node, 'appendChild');
+
+			domelement.appendDomElement(domelement2, 'somevalue');
+			domelement.somevalue.should.equal(domelement2);
+		});
 	});
 
 
