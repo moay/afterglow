@@ -71,6 +71,7 @@ class Lightbox extends DOMElement{
 	 */
 	passVideoElement(videoelement){
 		this.playerid = videoelement.getAttribute("id");
+		// This is not easily testable. But the constructor of DOMElement is so simple, that we rely on the UTs that exist for DOMElement.
 		videoelement = new DOMElement(videoelement);
 		this.lightbox.appendDomElement(videoelement, 'videoelement');
 		this.lightbox.videoelement = videoelement;
@@ -79,53 +80,55 @@ class Lightbox extends DOMElement{
 		this.player = new Player(this.lightbox.videoelement);
 	}
 
+	/**
+	 * Method which will actually launch the player. Nodes will be appended to the DOM and all events will be bound.
+	 * @param  {closure} _callback A callback function which will be executed after having completed the launch if needed.
+	 * @return {void}
+	 */
 	launch(_callback){
+		var util = new Util;
 		document.body.appendChild(this.node);
 
-		this.player.init(fn => {
-
-			var videojs = this.player.videojs;
+		this.player.init(() => {
 
 			// Prevent autoplay for mobile devices, won't work anyways...
-			if(!isMobile){
+			if(!util.isMobile()){
 				// If autoplay didn't work
-				if(videojs.paused()){
-					videojs.posterImage.show();
-					videojs.bigPlayButton.show();
+				if(this.player.videojs.paused()){
+					this.player.videojs.posterImage.show();
+					this.player.videojs.bigPlayButton.show();
 				}
 			}
 
 			// Adding autoclose functionality
 			if(this.lightbox.videoelement.getAttribute("data-autoclose") == "true"){
-				videojs.on('ended', () => {
+				this.player.videojs.on('ended', () => {
 					this.close();
 				});
 			}
 			// Else show the poster frame on ended.
 			else{
-				videojs.on('ended', () => {
-					videojs.posterImage.show();
+				this.player.videojs.on('ended', () => {
+					this.player.videojs.posterImage.show();
 				});
 			}
 
-			videojs.TopControlBar.addChild("LightboxCloseButton");
+			this.player.videojs.TopControlBar.addChild("LightboxCloseButton");
 		});
 
 		// resize the lightbox and make it autoresize
 		this.resize();
-		addEventHandler(window,'resize',() => {
+		util.addEventListener(window,'resize',() => {
 			this.resize();
 		});
 
 		// bind the closing event
-		addEventHandler(this.cover,'click', () => { 
+		this.cover.on('click',() => { 
 			this.close(); 
 		});
 
 		// bind the escape key
-		addEventHandler(window,'keyup',(e) => {
-			// Fallback for IE8
-			e = e ? e : window.event;
+		util.addEventListener(window,'keyup',(e) => {
 			if(e.keyCode == 27)
 			{
 				this.close();
@@ -159,7 +162,7 @@ class Lightbox extends DOMElement{
 		else{
 			// Youtube
 			if(document.querySelectorAll("div.afterglow-lightbox-wrapper .vjs-youtube").length == 1){
-				playerelement = document.querySelector("div.afterglow-lightbox-wrapper .vjs-youtube");
+				var playerelement = document.querySelector("div.afterglow-lightbox-wrapper .vjs-youtube");
 				var ratio = playerelement.getAttribute("data-ratio");
 				var sizes = this.calculateLightboxSizes(ratio);
 			}

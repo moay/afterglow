@@ -2,6 +2,7 @@ import Player from '../src/js/afterglow/components/Player';
 import Lightbox from '../src/js/afterglow/components/Lightbox';
 import Emitter from '../vendor/Emitter/Emitter';
 import DOMElement from '../src/js/afterglow/lib/DOMElement';
+import Util from '../src/js/afterglow/lib/Util';
 
 var chai = require('chai');
 var sinon = require("sinon");
@@ -305,6 +306,377 @@ describe("Afterglow Lightbox", () => {
 			lightbox.player = 'test';
 			let res = lightbox.getPlayer();
 			res.should.equal('test');
+		});
+	});
+
+	describe('resize() with regular players', () => {
+		beforeEach(() => {
+			sinon.stub(Lightbox.prototype, 'build');
+			sinon.stub(Lightbox.prototype, 'bindEmitter');
+			sinon.stub(DOMElement.prototype, 'addClass');
+			lightbox = new Lightbox();
+			lightbox.lightbox = {
+				node : {
+					style: {}
+				}
+			};
+			lightbox.lightbox.videoelement = {
+				getAttribute : () => { return 0.6 }
+			};
+			sinon.stub(lightbox, 'calculateLightboxSizes', () => {
+				return {
+					playerwidth : 1,
+					playerheight : 2,
+					playeroffsettop: 3,
+					playeroffsetleft: 4,
+					width: 5,
+					height: 6
+				}
+			});
+			lightbox.node = {
+				style : {}
+			};
+			lightbox.emit = (input) => {};
+		});
+
+		afterEach(() => {
+			Lightbox.prototype.bindEmitter.restore();
+			DOMElement.prototype.addClass.restore();
+			Lightbox.prototype.build.restore();
+		});
+
+		it('should pass the ratio to the calculation function correctly', () => {
+			lightbox.resize();
+			expect(lightbox.calculateLightboxSizes).to.have.been.calledWith(0.6);
+		});
+
+		it('should pass correctly style the underlying elements', () => {
+			lightbox.resize();
+			lightbox.node.style.width.should.equal(5);
+			lightbox.node.style.height.should.equal(6);
+			lightbox.lightbox.node.style.height.should.equal("2px");
+			lightbox.lightbox.node.style.width.should.equal("1px");
+			lightbox.lightbox.node.style.top.should.equal("3px");
+			lightbox.lightbox.node.style.left.should.equal("4px");
+		});
+
+		it('should pass maxwidth to the scaling method if needed', () => {
+			lightbox.lightbox.videoelement = {
+				getAttribute : (input) => { 
+					if(input == 'data-maxwidth'){
+						return '123'
+					}
+					return 'false'
+				}
+			};
+			lightbox.resize();
+
+			expect(lightbox.calculateLightboxSizes).to.have.been.calledWith('false', 123);
+		});
+	});
+
+	describe('resize() with yt', () => {
+		beforeEach(() => {
+			sinon.stub(Lightbox.prototype, 'build');
+			sinon.stub(Lightbox.prototype, 'bindEmitter');
+			sinon.stub(DOMElement.prototype, 'addClass');
+			lightbox = new Lightbox();
+			lightbox.lightbox = {
+				node : {
+					style: {}
+				}
+			};
+			lightbox.lightbox.videoelement = undefined;
+			sinon.stub(lightbox, 'calculateLightboxSizes', () => {
+				return {
+					playerwidth : 1,
+					playerheight : 2,
+					playeroffsettop: 3,
+					playeroffsetleft: 4,
+					width: 5,
+					height: 6
+				}
+			});
+			lightbox.node = {
+				style : {}
+			};
+			lightbox.emit = (input) => {};
+
+			// Fake lightbox behaviour
+			document.body.innerHTML = '<div class="afterglow-lightbox-wrapper"><div class="vjs-youtube" data-ratio=".7"></div></div>';
+		});
+
+		afterEach(() => {
+			Lightbox.prototype.bindEmitter.restore();
+			DOMElement.prototype.addClass.restore();
+			Lightbox.prototype.build.restore();
+		});
+
+		it('should pass the ratio to the calculation function correctly', () => {
+			lightbox.resize();
+			expect(lightbox.calculateLightboxSizes).to.have.been.calledWith('.7');
+		});
+
+		it('should pass correctly style the underlying elements', () => {
+			lightbox.resize();
+			lightbox.node.style.width.should.equal(5);
+			lightbox.node.style.height.should.equal(6);
+			lightbox.lightbox.node.style.height.should.equal("2px");
+			lightbox.lightbox.node.style.width.should.equal("1px");
+			lightbox.lightbox.node.style.top.should.equal("3px");
+			lightbox.lightbox.node.style.left.should.equal("4px");
+		});
+	});
+
+	describe('passVideoElement()', () => {
+		
+		var lightbox,
+			mockelement;
+
+		beforeEach(() => {
+			sinon.stub(Lightbox.prototype, 'build');
+			sinon.stub(Lightbox.prototype, 'bindEmitter');
+			sinon.stub(DOMElement.prototype, 'addClass');
+			sinon.stub(Player.prototype, 'setup');
+
+			lightbox = new Lightbox();
+
+			document.body.innerHTML = '<video class="videoelement" id="sometestid"></video>';
+			mockelement = document.querySelector('.videoelement');
+
+			lightbox.lightbox = {
+				appendDomElement: (i1, i2) => {
+					return true;
+				}
+			};
+			sinon.spy(lightbox.lightbox, 'appendDomElement');
+		});
+
+		afterEach(() => {
+			Lightbox.prototype.bindEmitter.restore();
+			DOMElement.prototype.addClass.restore();
+			Lightbox.prototype.build.restore();
+			Player.prototype.setup.restore();
+		});
+
+		it('should pass the id to the element properly', () => {
+			lightbox.passVideoElement(mockelement);
+			lightbox.playerid.should.equal('sometestid');
+		});
+
+		it('should create a new DOMElement from the element and pass it to the lightbox', () => {
+			lightbox.passVideoElement(mockelement);
+			expect(lightbox.lightbox.videoelement.node).to.equal(mockelement);
+		});
+
+		it('should make the player autoplay', () => {
+			lightbox.passVideoElement(mockelement);
+			expect(lightbox.lightbox.videoelement.node.getAttribute('autoplay')).to.equal('autoplay');
+		});
+
+		it('should create a new player', () => {
+			lightbox.passVideoElement(mockelement);
+			expect(Player.prototype.setup).to.have.been.calledOnce;
+			expect(Player.prototype.setup).to.have.been.calledWith(lightbox.lightbox.videoelement);
+		});
+	});
+
+	describe('launch (except player init callback)', () => {
+		beforeEach(() => {
+			sinon.stub(Lightbox.prototype, 'build');
+			sinon.stub(Lightbox.prototype, 'bindEmitter');
+			sinon.stub(DOMElement.prototype, 'addClass');
+			document.body.innerHTML = '';
+
+			//,  
+			//			sinon.stub(Util.prototype, 'isMobile');
+			// sinon.stub(Util.prototype, 'addEventListener');
+
+			lightbox = new Lightbox();
+			lightbox.player = {
+				init : () => {}
+			}
+			lightbox.cover = {
+				on : () => {}
+			}
+			sinon.stub(lightbox.player, 'init', (_callback) => {
+
+			});
+			sinon.stub(lightbox, 'resize');
+			sinon.stub(lightbox, 'close');
+			sinon.stub(lightbox.cover, 'on');
+		});
+
+		afterEach(() => {
+			Lightbox.prototype.bindEmitter.restore();
+			DOMElement.prototype.addClass.restore();
+			Lightbox.prototype.build.restore();
+		});
+
+		it('should pass the element node to the dom correctly', () => {
+			expect(document.body.innerHTML).to.equal('');
+			lightbox.launch();
+			expect(document.body.innerHTML).to.equal('<div></div>');
+		});
+
+		it('should init the player', () => {
+			lightbox.launch();
+			expect(lightbox.player.init).to.have.been.calledOnce;
+		});
+
+		it('should resize the event and bind resizing to windows resize event', () => {
+			sinon.stub(Util.prototype, 'addEventListener', (i1,i2,i3) => { return i3({keyCode:0}); });
+			lightbox.launch();
+			expect(lightbox.resize).to.have.been.calledTwice;
+			Util.prototype.addEventListener.restore();
+		});
+
+		it('should pass close() to cover on click event', () => {
+			lightbox.cover.on.restore();
+			sinon.stub(lightbox.cover, 'on', (i1, i2) => { i2(); });
+			lightbox.launch();
+			expect(lightbox.close).to.have.been.calledOnce;
+		});
+
+		it('should pass the closing event on escape key properly', () => {
+			sinon.stub(Util.prototype, 'addEventListener', (i1,i2,i3) => { return i3({keyCode:0}); });
+			lightbox.launch();
+			expect(lightbox.close).to.not.have.been.called;
+			Util.prototype.addEventListener.restore();
+
+			sinon.stub(Util.prototype, 'addEventListener', (i1,i2,i3) => { return i3({keyCode:27}); });
+			lightbox.launch();
+			expect(lightbox.close).to.have.been.calledOnce;
+			Util.prototype.addEventListener.restore();
+		});
+
+		it('should call the callback function when done', () => {
+			var test = 1;
+			lightbox.launch();
+			expect(test).to.equal(1);
+			lightbox.launch(() => {test++});
+			expect(test).to.equal(2);
+			lightbox.launch(test);
+			expect(test).to.equal(2);
+			lightbox.launch(() => {test++});
+			expect(test).to.equal(3);
+		});
+	});
+
+	describe('launch (only player init callback)', () => {
+		beforeEach(() => {
+			sinon.stub(Lightbox.prototype, 'build');
+			sinon.stub(Lightbox.prototype, 'bindEmitter');
+			sinon.stub(DOMElement.prototype, 'addClass');
+			sinon.stub(Util.prototype, 'isMobile');
+			document.body.innerHTML = '';
+
+			let videojs = {
+				paused : () => { return false; },
+				on : (i1, i2) => {},
+				posterImage : {
+					show : () => {}
+				},
+				bigPlayButton : {
+					show : () => {}
+				},
+				TopControlBar: {
+					addChild : () => {}
+				}
+			}
+
+			lightbox = new Lightbox();
+			lightbox.player = {
+				init : () => {},
+				videojs: videojs
+			}
+			lightbox.cover = {
+				on : () => {}
+			}
+			lightbox.lightbox = {};
+			lightbox.lightbox.videoelement = document.createElement('div');
+			sinon.stub(lightbox.player, 'init', (_callback) => {
+				_callback();
+			});
+			sinon.stub(lightbox, 'resize');
+			sinon.stub(lightbox, 'close');
+		});
+
+		afterEach(() => {
+			Lightbox.prototype.bindEmitter.restore();
+			DOMElement.prototype.addClass.restore();
+			Lightbox.prototype.build.restore();
+			Util.prototype.isMobile.restore();
+		});
+
+		it('should pass LightboxCloseButton to the TopControlBar', () => {
+			sinon.spy(lightbox.player.videojs.TopControlBar, "addChild");
+			lightbox.launch();
+			expect(lightbox.player.videojs.TopControlBar.addChild).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.TopControlBar.addChild).to.have.been.calledWith("LightboxCloseButton");
+		});
+
+		it('should make the poster show if autoclose has not been requested (by default)', () => {
+			sinon.stub(lightbox.player.videojs, "on", (i1, i2) => {
+				i2();
+			});
+			sinon.spy(lightbox.player.videojs.posterImage, "show");
+			lightbox.launch();
+			expect(lightbox.player.videojs.posterImage.show).to.have.been.calledOnce;
+		});
+
+		it('should make the lightbox autoclose if autoclose has been requested', () => {
+			sinon.stub(lightbox.player.videojs, "on", (i1, i2) => {
+				i2();
+			});
+			sinon.stub(lightbox.lightbox.videoelement, "getAttribute", () => {
+				return "true"
+			});
+			lightbox.launch();
+			expect(lightbox.close).to.have.been.calledOnce;
+		});
+
+		it('should trigger the section to show poster and playbutton only if not mobile', () => {
+			sinon.spy(lightbox.player.videojs,"paused");
+			sinon.spy(lightbox.player.videojs.posterImage, "show");
+			sinon.spy(lightbox.player.videojs.bigPlayButton, "show");
+
+			Util.prototype.isMobile.restore();
+			sinon.stub(Util.prototype, "isMobile", () => { return true});
+			lightbox.launch();
+
+			expect(Util.prototype.isMobile).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.paused).to.not.have.been.called;
+			expect(lightbox.player.videojs.posterImage.show).to.not.have.been.called;
+			expect(lightbox.player.videojs.bigPlayButton.show).to.not.have.been.called;
+		});
+
+		it('should not display poster and playbutton if autoplay did not fail but check for it', () => {
+			sinon.spy(lightbox.player.videojs,"paused");
+			sinon.spy(lightbox.player.videojs.posterImage, "show");
+			sinon.spy(lightbox.player.videojs.bigPlayButton, "show");
+			Util.prototype.isMobile.restore();
+			sinon.stub(Util.prototype, "isMobile", () => { return false});
+
+			lightbox.launch();
+			expect(Util.prototype.isMobile).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.paused).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.posterImage.show).to.not.have.been.called;
+			expect(lightbox.player.videojs.bigPlayButton.show).to.not.have.been.called;
+		});
+
+		it('should show poster and playbutton if autoplay failed', () => {
+			sinon.stub(lightbox.player.videojs,"paused",() => { return true});
+			sinon.spy(lightbox.player.videojs.posterImage, "show");
+			sinon.spy(lightbox.player.videojs.bigPlayButton, "show");
+			Util.prototype.isMobile.restore();
+			sinon.stub(Util.prototype, "isMobile", () => { return false});
+
+			lightbox.launch();
+			expect(Util.prototype.isMobile).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.paused).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.posterImage.show).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.bigPlayButton.show).to.have.been.calledOnce;
 		});
 	});
 });

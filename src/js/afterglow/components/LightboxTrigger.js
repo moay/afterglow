@@ -46,8 +46,6 @@ class LightboxTrigger extends DOMElement {
 		this.videoelement.setAttribute("data-autoresize","fit");
 
 		this.bind('click', (e) => {
-			// Prevent the click event, IE8 compatible
-			e = e ? e : window.event;
 			e.preventDefault();
 
 			// Launch the lightbox

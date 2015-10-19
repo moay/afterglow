@@ -97,6 +97,23 @@ class Util {
         return obj3;
     }
 
+    /**
+     * Adds an event to some node object
+     * @param {node}  object      The DOM node that should be bound
+     * @param {string}   type     The event to bind
+     * @param {Function} callback 
+     */
+    addEventListener(object, type, callback) {
+        if (object == null || typeof(object) == 'undefined') return;
+        if (object.addEventListener) {
+            object.addEventListener(type, callback, false);
+        } else if (object.attachEvent) {
+            object.attachEvent("on" + type, callback);
+        } else {
+            object["on"+type] = callback;
+        }
+    };
+
 }
 
 export default Util;
