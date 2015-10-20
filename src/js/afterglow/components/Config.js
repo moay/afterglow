@@ -10,6 +10,10 @@ import Util from '../lib/Util';
 class Config {
 
 	constructor(videoelement, skin = 'afterglow'){
+		return this.init(videoelement, skin);
+	}
+
+	init(videoelement, skin = 'afterglow'){
 
 		// Check for the video element
 		if(videoelement == undefined){
@@ -141,6 +145,10 @@ class Config {
 		}
 	}
 
+	/**
+	 * Returns the CSS class for the video element
+	 * @return {string}
+	 */
 	getSkinClass(){
 		var cssclass="vjs-afterglow-skin";
 		if(this.skin !== 'afterglow'){

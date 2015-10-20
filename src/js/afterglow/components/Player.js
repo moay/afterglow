@@ -16,13 +16,36 @@ class Player {
 		this.setup(videoelement);
 	}
 
+	/**
+	 * Sets the player up and prepares the video element
+	 * @param  {DOMElement object} videoelement 	The videoelement which shall be transformed
+	 */
 	setup(videoelement){
 		this.videoelement = videoelement;
 		this.id = videoelement.getAttribute('id');
+
+		// Prepare needed dependencies
 		this.config = new Config(videoelement);
+		this.util = new Util();
+
+		// Prepare the element
 		this.prepareVideoElement();
+
 		// Set an activity variable to be able to detect if the player can be deleted
 		this.alive = true;
+	}
+
+	/**
+	 * Shortcut method which will apply some classes and parameters to the video element via some other methods
+	 * @return
+	 */
+	prepareVideoElement(){
+		this.applyDefaultClasses();
+		this.applyParameters();
+
+		if(this.util.isYoutubePlayer(this.videoelement)){
+			this.applyYoutubeClasses();
+		}
 	}
 
 	init(_callback){
@@ -62,22 +85,33 @@ class Player {
 		this.videojs = player;
 	}
 
-	prepareVideoElement(){
+	/**
+	 * Applies the default classes to the videoelement and removes sublime's class
+	 * @return {void}
+	 */
+	applyDefaultClasses(){
 		// Add some classes
 		this.videoelement.addClass("video-js");
 		this.videoelement.addClass("afterglow");
-
 		this.videoelement.addClass(this.config.getSkinClass());
 
 		// Remove sublime stuff
 		this.videoelement.removeClass("sublime");
+		
+		// Check for IE9 - IE11
+		let ie = this.util.ie().actualVersion;
+		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
+			this.videoelement.addClass('vjs-IE');
+		}
+	}
 
+	applyParameters(){
 		// Make lightboxplayer not overscale
 		if(this.videoelement.getAttribute("data-overscale") == "false"){
 			this.videoelement.setAttribute("data-maxwidth",this.videoelement.getAttribute("width"));
 		}
 
-		// Apply some stylings
+		// Apply some responsive stylings
 		if(this.videoelement.getAttribute("data-autoresize") === 'fit' || this.videoelement.hasClass("responsive")){
 			this.videoelement.addClass("vjs-responsive");
 			if(this.videoelement.getAttribute("data-ratio")){
@@ -95,30 +129,25 @@ class Player {
 			this.videoelement.removeAttribute("width");
 			this.videoelement.setAttribute("data-ratio",ratio);
 		}
+	}
 
-		// Apply youtube class
-		let util = new Util();
-		if(util.isYoutubePlayer(this.videoelement)){
-			this.videoelement.addClass("vjs-youtube");
-			
-			// Check for native playback
-			if(document.querySelector('video').controls){
-				this.videoelement.addClass("vjs-using-native-controls");
-			}
-			// Add iOS class, just if is iPad
-			if(/iPad|iPhone|iPod/.test(navigator.platform)){
-				this.videoelement.addClass("vjs-iOS");
-			}
+	applyYoutubeClasses(){
+		let ie = this.util.ie().actualVersion;
 
-			// Check for IE9 - IE11
-			if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
-				this.videoelement.addClass("vjs-using-native-controls");
-			}
+		this.videoelement.addClass("vjs-youtube");
+		
+		// Check for native playback
+		if(document.querySelector('video').controls){
+			this.videoelement.addClass("vjs-using-native-controls");
+		}
+		// Add iOS class, just if is iPad
+		if(/iPad|iPhone|iPod/.test(navigator.platform)){
+			this.videoelement.addClass("vjs-iOS");
 		}
 
 		// Check for IE9 - IE11
 		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
-			this.videoelement.addClass('vjs-IE');
+			this.videoelement.addClass("vjs-using-native-controls");
 		}
 	}
 
@@ -133,6 +162,9 @@ class Player {
 		this.alive = false;
 	}
 	
+	/**
+	 * Getter for the player
+	 */
 	getPlayer(){
 		return this.player;
 	}
