@@ -302,8 +302,11 @@ describe("Afterglow Lightbox", () => {
 			Lightbox.prototype.build.restore();
 		});
 
-		it('should properly return the player', () => {
-			lightbox.player = 'test';
+		it('should properly return the players videojs instance', () => {
+			lightbox.player = {
+				getPlayer: function(){ return this.videojs}
+			};
+			lightbox.player.videojs = 'test';
 			let res = lightbox.getPlayer();
 			res.should.equal('test');
 		});
@@ -497,14 +500,14 @@ describe("Afterglow Lightbox", () => {
 				init : () => {}
 			}
 			lightbox.cover = {
-				on : () => {}
+				bind : () => {}
 			}
 			sinon.stub(lightbox.player, 'init', (_callback) => {
 
 			});
 			sinon.stub(lightbox, 'resize');
 			sinon.stub(lightbox, 'close');
-			sinon.stub(lightbox.cover, 'on');
+			sinon.stub(lightbox.cover, 'bind');
 		});
 
 		afterEach(() => {
@@ -532,8 +535,8 @@ describe("Afterglow Lightbox", () => {
 		});
 
 		it('should pass close() to cover on click event', () => {
-			lightbox.cover.on.restore();
-			sinon.stub(lightbox.cover, 'on', (i1, i2) => { i2(); });
+			lightbox.cover.bind.restore();
+			sinon.stub(lightbox.cover, 'bind', (i1, i2) => { i2(); });
 			lightbox.launch();
 			expect(lightbox.close).to.have.been.calledOnce;
 		});
@@ -564,12 +567,19 @@ describe("Afterglow Lightbox", () => {
 	});
 
 	describe('launch (only player init callback)', () => {
+
+		var mockObject;
+
 		beforeEach(() => {
 			sinon.stub(Lightbox.prototype, 'build');
 			sinon.stub(Lightbox.prototype, 'bindEmitter');
 			sinon.stub(DOMElement.prototype, 'addClass');
 			sinon.stub(Util.prototype, 'isMobile');
 			document.body.innerHTML = '';
+
+			mockObject = {
+				addChild : () => {}
+			}
 
 			let videojs = {
 				paused : () => { return false; },
@@ -580,8 +590,8 @@ describe("Afterglow Lightbox", () => {
 				bigPlayButton : {
 					show : () => {}
 				},
-				TopControlBar: {
-					addChild : () => {}
+				getChild : () => { 
+					return mockObject;
 				}
 			}
 
@@ -591,7 +601,7 @@ describe("Afterglow Lightbox", () => {
 				videojs: videojs
 			}
 			lightbox.cover = {
-				on : () => {}
+				bind : () => {}
 			}
 			lightbox.lightbox = {};
 			lightbox.lightbox.videoelement = document.createElement('div');
@@ -610,10 +620,13 @@ describe("Afterglow Lightbox", () => {
 		});
 
 		it('should pass LightboxCloseButton to the TopControlBar', () => {
-			sinon.spy(lightbox.player.videojs.TopControlBar, "addChild");
+			sinon.spy(lightbox.player.videojs, "getChild");
+			sinon.spy(mockObject, "addChild");
 			lightbox.launch();
-			expect(lightbox.player.videojs.TopControlBar.addChild).to.have.been.calledOnce;
-			expect(lightbox.player.videojs.TopControlBar.addChild).to.have.been.calledWith("LightboxCloseButton");
+			expect(mockObject.addChild).to.have.been.calledOnce;
+			expect(lightbox.player.videojs.getChild).to.have.been.calledOnce;
+			expect(mockObject.addChild).to.have.been.calledWith("LightboxCloseButton");
+			mockObject.addChild.restore();
 		});
 
 		it('should make the poster show if autoclose has not been requested (by default)', () => {

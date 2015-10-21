@@ -202,15 +202,9 @@ describe("Afterglow Config", () => {
 			Config.prototype.init.restore();
 		});
 
-		it('should add the children attribute to the options container', () => {
+		it('should contain ControlBar', () => {
 			a_config.setSkinControls();
-			a_config.options.children.should.exist;
-		});
-
-		it('should contain TopControlBar and ControlBar', () => {
-			a_config.setSkinControls();
-			a_config.options.children.TopControlBar.should.exist;
-			a_config.options.children.controlBar.should.exist;
+			a_config.options.controlBar.children.should.exist;
 		});
 	});
 

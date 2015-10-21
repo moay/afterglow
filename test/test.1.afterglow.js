@@ -158,10 +158,11 @@ describe("Afterglow Core", () => {
 	});
 
 	describe("API methods", () => {
-		it('should return the player when getting by id',() => {
+		it('should return the players videojs instance when getting by id',() => {
 			afterglow.players = [
 				{
-					id : 'testid'
+					id : 'testid',
+					getPlayer: ()=>{ return 'test1' }
 				}
 			];
 
@@ -169,7 +170,7 @@ describe("Afterglow Core", () => {
 				{
 					playerid : 'testid2',
 					getPlayer: () => {
-						return 'test';
+						return 'test2';
 					}
 				}
 			];
@@ -177,8 +178,8 @@ describe("Afterglow Core", () => {
 			let regularPlayer = afterglow.getPlayer('testid');
 			let lightboxPlayer = afterglow.getPlayer('testid2');
 
-			regularPlayer.id.should.equal('testid');
-			lightboxPlayer.should.equal('test');
+			regularPlayer.should.equal('test1');
+			lightboxPlayer.should.equal('test2');
 		});
 
 		it('should return false when the id was not found', () => {

@@ -100,7 +100,9 @@ class LightboxTrigger extends DOMElement {
 	 * @return {object} Returns the player from the lightbox.
 	 */
 	getPlayer(){
-		return this.lightbox.getPlayer();
+		if(this.lightbox !== undefined){
+			return this.lightbox.getPlayer();
+		}
 	}
 
 }

@@ -9,7 +9,7 @@ class Util {
 
     /**
      * Checks wether or not the given video element should be converted into a video element
-     * @param  {node}  videoelement
+     * @param  {DOMElement object || DOM node}  videoelement
      * @return {Boolean}
      */
 	isYoutubePlayer(videoelement){

@@ -224,6 +224,8 @@ const VjsButtonResBBase = videojs.getComponent('Button');
     		techName = this.player_.techName_;
     		tech     = window['videojs'].getComponent(techName);
 
+    		console.log(techName);
+
 	        // Check if the browser supports this technology
 	        if (tech.isSupported()) {
 				// Loop through each source object

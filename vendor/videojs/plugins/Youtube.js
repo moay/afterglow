@@ -28,13 +28,25 @@ THE SOFTWARE. */
 
     constructor: function(options, ready) {
       Tech.call(this, options, ready);
+
+      this.setPoster(options.poster);
       this.setSrc(this.options_.source, true);
+
+      // Set the vjs-youtube class to the player
+      // Parent is not set yet so we have to wait a tick
+      setTimeout(function() {
+        this.el_.parentNode.className += ' vjs-youtube';
+      }.bind(this));
+    },
+
+    dispose: function() {
+      this.el_.parentNode.className = this.el_.parentNode.className.replace(' vjs-youtube', '');
     },
 
     createEl: function() {
       var div = document.createElement('div');
       div.setAttribute('id', this.options_.techId);
-      div.setAttribute('style', 'width:100%;height:100%');
+      div.setAttribute('style', 'width:100%;height:100%;top:0;left:0;position:absolute');
 
       var divWrapper = document.createElement('div');
       divWrapper.setAttribute('style', 'width:100%;height:100%;position:relative');
@@ -44,7 +56,7 @@ THE SOFTWARE. */
         var divBlocker = document.createElement('div');
         divBlocker.setAttribute('class', 'vjs-iframe-blocker');
         divBlocker.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%;display:block');
-        
+
         divWrapper.appendChild(divBlocker);
       }
 
@@ -65,8 +77,7 @@ THE SOFTWARE. */
         modestbranding: 1,
         rel: 0,
         showinfo: 0,
-        loop: this.options_.loop ? 1 : 0,
-        wmode: 'transparent'
+        loop: this.options_.loop ? 1 : 0
       };
 
       // Let the user set any YouTube parameter
@@ -98,7 +109,10 @@ THE SOFTWARE. */
         playerVars.color = this.options_.color;
       }
 
-      if (typeof this.options_.fs !== 'undefined') {
+      if (!playerVars.controls) {
+        // Let video.js handle the fullscreen unless it is the YouTube native controls
+        playerVars.fs = 0;
+      } else if (typeof this.options_.fs !== 'undefined') {
         playerVars.fs = this.options_.fs;
       }
 
@@ -119,7 +133,7 @@ THE SOFTWARE. */
 
       if (typeof this.options_.list !== 'undefined') {
         playerVars.list = this.options_.list;
-      } else if (typeof this.url.listId !== 'undefined') {
+      } else if (this.url && typeof this.url.listId !== 'undefined') {
         playerVars.list = this.url.listId;
       }
 
@@ -155,12 +169,7 @@ THE SOFTWARE. */
         playerVars.theme = this.options_.theme;
       }
 
-      // FORCE HTML5 FOR FIREFOX
-      if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
-        playerVars.html5 = 1;
-      }
-
-      this.activeVideoId = this.url.videoId;
+      this.activeVideoId = this.url ? this.url.videoId : null;
       this.activeList = playerVars.list;
       this.playerVars = playerVars;
 
@@ -170,23 +179,25 @@ THE SOFTWARE. */
           this.launchPlayer();
           clearInterval(this.launchCheck);
         }
-      }.bind(this), 50);     
-    },
+      }.bind(this), 50); 
+
+    },   
 
     launchPlayer: function(){
-        this.ytPlayer = new YT.Player(this.options_.techId, {
-          videoId: this.url.videoId,
-          playerVars: this.playerVars,
-          events: {
-            onReady: this.onPlayerReady.bind(this),
-            onPlaybackQualityChange: this.onPlayerPlaybackQualityChange.bind(this),
-            onStateChange: this.onPlayerStateChange.bind(this),
-            onError: this.onPlayerError.bind(this)
-          }
-        });
+      this.ytPlayer = new YT.Player(this.options_.techId, {
+        videoId: this.activeVideoId,
+        playerVars: this.playerVars,
+        events: {
+          onReady: this.onPlayerReady.bind(this),
+          onPlaybackQualityChange: this.onPlayerPlaybackQualityChange.bind(this),
+          onStateChange: this.onPlayerStateChange.bind(this),
+          onError: this.onPlayerError.bind(this)
+        }
+      });
     },
 
     onPlayerReady: function() {
+      this.playerReady_ = true;
       this.triggerReady();
 
       if (this.playOnReady) {
@@ -278,11 +289,11 @@ THE SOFTWARE. */
     },
 
     poster: function() {
-      return this.poster;
+      return this.poster_;
     },
 
     setPoster: function(poster) {
-      this.poster = poster;
+      this.poster_ = poster;
     },
 
     setSrc: function(source) {
@@ -294,10 +305,13 @@ THE SOFTWARE. */
       this.url = Youtube.parseUrl(source.src);
 
       if (!this.options_.poster) {
-        Youtube.loadThumbnailUrl(this.url.videoId, function(poster) {
-          this.setPoster(poster);
-          this.trigger('posterchange');
-        }.bind(this));
+        if (this.url.videoId) {
+          // Set the low resolution first
+          this.poster_ = 'https://img.youtube.com/vi/' + this.url.videoId + '/0.jpg';
+
+          // Check if their is a high res
+          this.checkHighResPoster();
+        }
       }
 
       if (this.options_.autoplay && !_isOnMobile) {
@@ -420,7 +434,22 @@ THE SOFTWARE. */
       this.setTimeout( function(){
         this.trigger('volumechange');
       }, 50);
-      
+
+    },
+
+    readyState: function() {      
+      if(!this.ytPlayer || !this.ytPlayer.getVideoLoadedFraction){
+        return 0;   
+      }   
+      else if(this.ytPlayer.getVideoLoadedFraction() > .1){   
+        return 4;   
+      }   
+      else if(this.ytPlayer.getVideoLoadedFraction() > .01){    
+        return 2;   
+      }   
+      else{   
+        return 1;   
+      }   
     },
 
     muted: function() {
@@ -467,32 +496,36 @@ THE SOFTWARE. */
       };
     },
 
-    readyState: function() {
-      if(!this.ytPlayer || !this.ytPlayer.getVideoLoadedFraction){
-        return 0;
-      }
-      else if(this.ytPlayer.getVideoLoadedFraction() > .1){
-        return 4;
-      }
-      else if(this.ytPlayer.getVideoLoadedFraction() > .01){
-        return 2;
-      }
-      else{
-        return 1;
-      }
+    supportsFullScreen: function() {
+      return true;
     },
 
-    supportsFullScreen: function() {
-      if (typeof this.el_.webkitEnterFullScreen === 'function') {
-        // Seems to be broken in Chromium/Chrome && Safari in Leopard
-        if (/Android/.test(videojs.USER_AGENT) || !/Chrome|Mac OS X 10.5/.test(videojs.USER_AGENT)) {
-          return true;
-        }
+    // Tries to get the highest resolution thumbnail available for the video
+    checkHighResPoster: function(){
+      var uri = 'https://img.youtube.com/vi/' + this.url.videoId + '/maxresdefault.jpg';
+
+      try {
+        var image = new Image();
+        image.onload = function(){
+          // Onload may still be called if YouTube returns the 120x90 error thumbnail
+          if('naturalHeight' in this){
+            if(this.naturalHeight <= 90 || this.naturalWidth <= 120) {
+              this.onerror();
+              return;
+            }
+          } else if(this.height <= 90 || this.width <= 120) {
+            this.onerror();
+            return;
+          }
+
+          this.poster_ = uri;
+          this.trigger('posterchange');
+        }.bind(this);
+        image.onerror = function(){};
+        image.src = uri;
       }
-
-      return false;
+      catch(e){}
     }
-
   });
 
   Youtube.isSupported = function() {
@@ -527,36 +560,6 @@ THE SOFTWARE. */
     return result;
   };
 
-  // Tries to get the highest resolution thumbnail available for the video
-  Youtube.loadThumbnailUrl = function(id, callback){
-
-    var uri = 'https://img.youtube.com/vi/' + id + '/maxresdefault.jpg';
-    var fallback = 'https://img.youtube.com/vi/' + id + '/0.jpg';
-
-    try {
-      var image = new Image();
-      image.onload = function(){
-        // Onload may still be called if YouTube returns the 120x90 error thumbnail
-        if('naturalHeight' in this){
-          if(this.naturalHeight <= 90 || this.naturalWidth <= 120) {
-            this.onerror();
-            return;
-          }
-        } else if(this.height <= 90 || this.width <= 120) {
-          this.onerror();
-          return;
-        }
-
-        callback(uri);
-      };
-      image.onerror = function(){
-        callback(fallback);
-      };
-      image.src = uri;
-    }
-    catch(e){ callback(fallback); }
-  };
-
   function loadApi() {
     var tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
@@ -565,8 +568,10 @@ THE SOFTWARE. */
   }
 
   function injectCss() {
-    var css = '.vjs-iframe-blocker { display: none; }' +
-              '.vjs-user-inactive .vjs-iframe-blocker { display: block; }';
+    var css = // iframe blocker to catch mouse events
+              '.vjs-youtube .vjs-iframe-blocker { display: none; }' +
+              '.vjs-youtube.vjs-user-inactive .vjs-iframe-blocker { display: block; }' +
+              '.vjs-youtube .vjs-poster { background-size: cover; }';
 
     var head = document.head || document.getElementsByTagName('head')[0];
 

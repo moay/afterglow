@@ -6,20 +6,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.3">
 	
 	<!-- STYLES -->
-	<link rel="stylesheet" type="text/css" href="../src/videojs/video-js.css">
-	<link rel="stylesheet/less" type="text/css" href="../src/videojs/skin/afterglow/vjs-afterglow.less">
-	<link rel="stylesheet/less" type="text/css" href="../src/lightbox/afterglow-lightbox.less">
+	<link rel="stylesheet" type="text/css" href="../vendor/videojs/video-js.css">
+	<link rel="stylesheet/less" type="text/css" href="../src/less/skins/afterglow-default.less">
+	<link rel="stylesheet/less" type="text/css" href="../src/less/components/lightbox.less">
 
 	<!-- SCRIPTS -->
 	<script src="js/less.min.js" type="text/javascript"></script>
-	<script src="../src/lib/afterglow-lib.js" type="text/javascript"></script>
-	<script type="text/javascript" src="../src/videojs/video.min.js"></script>
-	<!-- <script type="text/javascript" src="../src/videojs/plugins/vjs.vimeo.js"></script> -->
-	<script type="text/javascript" src="../src/videojs/components/TopControlBar.js"></script>
-	<script type="text/javascript" src="../src/videojs/components/LightboxCloseButton.js"></script>
-	<script type="text/javascript" src="../src/videojs/components/ResolutionSwitchingButton.js"></script>
-	<script type="text/javascript" src="../src/videojs/plugins/Youtube.js"></script>
-	<script type="text/javascript" src="../src/videojs/plugins/videojs.hotkeys.js"></script>
+	<script type="text/javascript" src="../vendor/videojs/video.js"></script>
+	<script type="text/javascript" src="../vendor/videojs/plugins/Youtube.js"></script>
+	<script type="text/javascript" src="../vendor/videojs/plugins/videojs.hotkeys.js"></script>
 	<script type="text/javascript" src="../dist/tmp/afterglow-bundle.js"></script>
 
 	<style>
@@ -43,15 +38,13 @@
 
 	<!-- LOCAL TEST -->
 	<h2>Local video with poster and resolution test</h2>
-	<video id="video-subtitles" class="sublime" width="640" height="360" src="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-volume="0.7" data-autoresize="fit" preload="none">
+	<video id="video-subtitles" class="sublime" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-volume="0.7" data-autoresize="fit" preload="none">
 		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
 		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4"/>
 		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local_hd.webm" type="video/webm" data-quality="hd" />
 		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
 		<source src="http://afterglowplayer.com/sandbox/video/OGV/afterglow_local_hd.ogv" type="video/ogv" data-quality="hd" />
 		<source src="http://afterglowplayer.com/sandbox/video/OGV/afterglow_local.ogv" type="video/ogv" />
-
-		<track kind="subtitles" src="text/subtitles-demo.vtt" srclang="en" label="English" default>
 	</video>
 
 	<!-- LIGHTBOX TEST -->

@@ -67,15 +67,8 @@ class Player {
 				this.volume(volume);
 			}
 
-			// Fix youtube poster
-			let util = new Util();
-			if(util.isYoutubePlayer(videoelement) && !options.poster && this.tech_.poster != ""){
-				this.addClass('vjs-youtube-ready');
-				this.poster(this.tech_.poster);
-			}
-
-			// Add resolution switching
-			// this.controlBar.addChild("ResolutionSwitchingButton");
+			// Add top control Bar
+			this.addChild("TopControlBar");
 
 			// Launch the callback if there is one
 			if(typeof _callback == "function"){
@@ -166,7 +159,7 @@ class Player {
 	 * Getter for the player
 	 */
 	getPlayer(){
-		return this.player;
+		return this.videojs;
 	}
 }
 

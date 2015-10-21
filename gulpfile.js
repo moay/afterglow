@@ -7,7 +7,7 @@ var gulp = require('gulp');
 var del = require('del');
 var fs = require('fs');
 var browserify = require('browserify');
-var babelify = require("babelify")
+var babelify = require("babelify");
 var release = require('gulp-github-release');
 var getPackageJson = function () {
 	return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -66,7 +66,6 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 		'./vendor/videojs/video.min.js',
 		]))
 	.pipe(plugins.addSrc.append([
-		'./dist/tmp/components/*.js',
 		'./vendor/videojs/plugins/videojs.hotkeys.js',
 		'./vendor/videojs/plugins/Youtube.js',
 		]))
@@ -95,9 +94,11 @@ gulp.task('compileES6', function(){
 		.pipe(gulp.dest(__dirname+'/dist/tmp/components'));
 
 	// Create empty file
-	plugins.file('afterglow-bundle.js','', { src: true })
-		.pipe(gulp.dest(__dirname+'/dist/tmp/'));
-	
+	gulp.src(__dirname+'/dist/tmp/components/*.js')
+		.pipe(plugins.concat("afterglow-bundle.js"))
+		.pipe(gulp.dest(__dirname+"/dist/tmp/"));
+
+
 	// Compile
 	var extensions = ['.js','.json','.es6'];
 	return browserify({ debug: true, extensions:extensions })
@@ -107,7 +108,7 @@ gulp.task('compileES6', function(){
 	    .require(__dirname+"/src/js/init.js", { entry: true })
 	    .bundle()
 	    .on("error", function (err) { console.log("Error : " + err.message); })
-	    .pipe(fs.createWriteStream(__dirname+"/dist/tmp/afterglow-bundle.js",{flags: 'w'}));
+	    .pipe(fs.createWriteStream(__dirname+"/dist/tmp/afterglow-bundle.js",{flags: 'a'}));
 });
 
 // Patch version bump

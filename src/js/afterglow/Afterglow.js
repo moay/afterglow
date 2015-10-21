@@ -82,7 +82,6 @@ class Afterglow {
 	 */
 	bindLightboxTriggerEvents(trigger){
 		trigger.on('trigger',() => {
-			this.players.push(trigger.getPlayer());
 			this.consolidatePlayers;
 		});
 		trigger.on('close',() => {
@@ -99,12 +98,12 @@ class Afterglow {
 		// Try to get regular player
 	 	for (var i = this.players.length - 1; i >= 0; i--) {
 			if(this.players[i].id === playerid){
-	 			return this.players[i];
+	 			return this.players[i].getPlayer();
 			}
 	 	};
 		// Else try to find lightbox player
 	 	for (var i = this.lightboxtriggers.length - 1; i >= 0; i--) {
-			if(this.lightboxtriggers[i].playerid === playerid){
+	 		if(this.lightboxtriggers[i].playerid === playerid){
 	 			return this.lightboxtriggers[i].getPlayer();
 			}
 	 	};

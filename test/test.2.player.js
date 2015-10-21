@@ -325,7 +325,7 @@ describe("Afterglow Player", () => {
 		});
 
 		it('should return the player instance properly', () => {
-			player.player = 'test';
+			player.videojs = 'test';
 			expect(player.getPlayer()).to.equal('test');
 		});
 	});

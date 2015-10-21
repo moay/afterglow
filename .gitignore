@@ -4,3 +4,5 @@ coverage/*
 .coverrun
 
 npm-debug.log
+
+dist/tmp

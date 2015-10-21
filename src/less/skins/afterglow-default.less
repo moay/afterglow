@@ -1341,20 +1341,8 @@
 		}
 	}
 
-	&.vjs-youtube-ready{
-		iframe{
-			display:none;
-			visibility:visible;
-		}
-
-		&.vjs-IE{
-			iframe{
-				display:block;
-				visibility:visible;
-			}
-		}
-
-		&.vjs-has-started{
+	&.vjs-has-started, &.vjs-IE{
+		&.vjs-youtube{
 			iframe{
 				display:block;
 				visibility:visible;

@@ -113,7 +113,7 @@ class Lightbox extends DOMElement{
 				});
 			}
 
-			this.player.videojs.TopControlBar.addChild("LightboxCloseButton");
+			this.player.videojs.getChild('TopControlBar').addChild("LightboxCloseButton");
 		});
 
 		// resize the lightbox and make it autoresize
@@ -123,7 +123,7 @@ class Lightbox extends DOMElement{
 		});
 
 		// bind the closing event
-		this.cover.on('click',() => { 
+		this.cover.bind('click',() => { 
 			this.close(); 
 		});
 
@@ -242,7 +242,10 @@ class Lightbox extends DOMElement{
 	 * @return {Player object}	
 	 */
 	getPlayer(){
-		return this.player;
+		if(this.player !== undefined){
+			return this.player.getPlayer();
+		}
+		return undefined;
 	}
 }
 

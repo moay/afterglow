@@ -79,45 +79,45 @@ class Config {
 	 */
 	setSkinControls(){
 		// For now, we just output the default 'afterglow' skin children, as there isn't any other skin defined yet
-		let children = {
-			TopControlBar: {
-				children: [
-					{
-						name: "fullscreenToggle"
-					}
-				]
-			},
-			controlBar: {
-				children: [
-					{
-						name: "currentTimeDisplay"
-					},
-					{
-						name: "playToggle"
-					},
-					{
-						name: "durationDisplay"
-					},
-					{
-						name: "progressControl"
-					},
-					{
-						name: "ResolutionSwitchingButton"
-					},
-					{
-						name: "volumeMenuButton",
-						inline:true
-					},
-					{
-						name: "subtitlesButton"
-					},
-					{
-						name: "captionsButton"
-					}
-				]
-			}
+		let TopControlBar ={
+			children: [
+				{
+					name: "fullscreenToggle"
+				}
+			]
 		};
-		this.options.children = children;
+		this.options.TopControlBar = TopControlBar;
+
+		let controlBar = {
+			children: [
+				{
+					name: "currentTimeDisplay"
+				},
+				{
+					name: "playToggle"
+				},
+				{
+					name: "durationDisplay"
+				},
+				{
+					name: "progressControl"
+				},
+				// {
+				// 	name: "ResolutionSwitchingButton"
+				// },
+				{
+					name: "volumeMenuButton",
+					inline:true
+				},
+				{
+					name: "subtitlesButton"
+				},
+				{
+					name: "captionsButton"
+				}
+			]
+		};
+		this.options.controlBar = controlBar;
 	}
 
 	/**
