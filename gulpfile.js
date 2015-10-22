@@ -9,6 +9,7 @@ var fs = require('fs');
 var browserify = require('browserify');
 var babelify = require("babelify");
 var release = require('gulp-github-release');
+var notifierReporter = require('mocha-notifier-reporter');
 var getPackageJson = function () {
 	return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 };
@@ -191,5 +192,7 @@ gulp.task('release', function(){
 
 gulp.task('test', function(){
 	return gulp.src('./test/*.js')
-		.pipe(plugins.mocha());
+		.pipe(plugins.mocha({
+			reporter: notifierReporter.decorate('spec')
+		}));
 });

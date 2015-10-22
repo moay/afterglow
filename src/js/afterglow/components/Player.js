@@ -98,6 +98,10 @@ class Player {
 		}
 	}
 
+	/**
+	 * Applies basic parameters to the videoelement to make it well usable for video.js
+	 * @return {void}
+	 */
 	applyParameters(){
 		// Make lightboxplayer not overscale
 		if(this.videoelement.getAttribute("data-overscale") == "false"){
@@ -107,16 +111,7 @@ class Player {
 		// Apply some responsive stylings
 		if(this.videoelement.getAttribute("data-autoresize") === 'fit' || this.videoelement.hasClass("responsive")){
 			this.videoelement.addClass("vjs-responsive");
-			if(this.videoelement.getAttribute("data-ratio")){
-				var ratio = this.videoelement.getAttribute("data-ratio");
-			}
-			else if(!this.videoelement.getAttribute("height") || !this.videoelement.getAttribute("width"))
-			{
-				console.error("Please provide witdh and height for your video element.")
-			}
-			else{
-				var ratio = this.videoelement.getAttribute("height") / this.videoelement.getAttribute("width");
-			}
+			let ratio = this.calculateRatio();
 			this.videoelement.node.style.paddingTop = (ratio * 100)+"%";
 			this.videoelement.removeAttribute("height");
 			this.videoelement.removeAttribute("width");
@@ -124,26 +119,52 @@ class Player {
 		}
 	}
 
+	/**
+	 * Applies all needed classes to the videoelement in order to provide proper youtube playback
+	 * @return {void}
+	 */
 	applyYoutubeClasses(){
-		let ie = this.util.ie().actualVersion;
-
 		this.videoelement.addClass("vjs-youtube");
 		
 		// Check for native playback
 		if(document.querySelector('video').controls){
 			this.videoelement.addClass("vjs-using-native-controls");
 		}
-		// Add iOS class, just if is iPad
+		// Add iOS class for iOS. Should affect only iPad
 		if(/iPad|iPhone|iPod/.test(navigator.platform)){
 			this.videoelement.addClass("vjs-iOS");
 		}
 
 		// Check for IE9 - IE11
+		let ie = this.util.ie().actualVersion;
 		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
 			this.videoelement.addClass("vjs-using-native-controls");
 		}
 	}
 
+	/**
+	 * Calculates the players ratio based on the given value or on width/height
+	 * @return {float}
+	 */
+	calculateRatio(){
+		if(this.videoelement.getAttribute("data-ratio")){
+			var ratio = this.videoelement.getAttribute("data-ratio");
+		}
+		else if(!this.videoelement.getAttribute("height") || !this.videoelement.getAttribute("width"))
+		{
+			console.error("Please provide witdh and height for your video element.");
+			return 0;
+		}
+		else{
+			var ratio = this.videoelement.getAttribute("height") / this.videoelement.getAttribute("width");
+		}
+		return parseFloat(ratio);
+	}
+
+	/**
+	 * Destroys the player instance and disposes it.
+	 * @return {void}
+	 */
 	destroy(){
 		if(!this.videojs.paused()){
 			this.videojs.pause();

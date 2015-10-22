@@ -154,7 +154,7 @@ describe("Afterglow Player", () => {
 		});
 	});
 
-	describe('applayDefaultClasses noIE', () => {
+	describe('applyDefaultClasses noIE', () => {
 		var videoelement;
 
 		beforeEach(() => {
@@ -205,7 +205,7 @@ describe("Afterglow Player", () => {
 		});
 	});
 
-	describe('applayDefaultClasses IE', () => {
+	describe('applyDefaultClasses IE', () => {
 		var videoelement;
 
 		beforeEach(() => {
@@ -240,6 +240,306 @@ describe("Afterglow Player", () => {
 			player.applyDefaultClasses();
 			expect(player.videoelement.addClass).callCount(4);
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-IE');
+		});
+	});
+
+	describe('applyParameters()', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			sinon.stub(Player.prototype, 'calculateRatio', () => { return 0.5; });
+			player = new Player();
+
+			player.videoelement = {
+				addClass : () => {},
+				removeClass : () => {},
+				hasClass : () => { return false },
+				getAttribute : () => { return false },
+				removeAttribute : () => {},
+				setAttribute : () => {},
+				node : {
+					style: {}
+				}
+			};
+
+			sinon.spy(player.videoelement, 'addClass');
+			sinon.spy(player.videoelement, 'removeClass');
+			sinon.spy(player.videoelement, 'hasClass');
+			sinon.spy(player.videoelement, 'getAttribute');
+			sinon.spy(player.videoelement, 'removeAttribute');
+			sinon.spy(player.videoelement, 'setAttribute');
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+			Player.prototype.calculateRatio.restore();
+
+			player.videoelement.addClass;
+			player.videoelement.removeClass;
+			player.videoelement.hasClass;
+			player.videoelement.getAttribute;
+			player.videoelement.removeAttribute;
+			player.videoelement.setAttribute;
+		});
+
+		it('should set data-maxwidth if data-overscale is set', () => {
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', () => { return "false" });
+			player.applyParameters();
+			expect(player.videoelement.setAttribute).to.have.been.calledOnce;
+			expect(player.videoelement.setAttribute).to.have.been.calledWith('data-maxwidth', 'false');
+		});
+
+		it('should not set data-maxwidth if data-overscale is not set or not false', () => {
+			player.applyParameters();
+			expect(player.videoelement.setAttribute).to.not.have.been.called;
+		});
+
+		it('should trigger responsivity stuff if has data-autoresize', () => {
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', () => { return "fit" });
+			player.applyParameters();
+			expect(player.videoelement.addClass).to.have.been.calledWith("vjs-responsive");
+		});
+
+		it('should trigger responsivity stuff if has class responsive', () => {
+			player.videoelement.hasClass.restore();
+			sinon.stub(player.videoelement, 'hasClass', () => { return true });
+			player.applyParameters();
+			expect(player.videoelement.addClass).to.have.been.calledWith("vjs-responsive");
+		});
+
+		it('should get the ratio correctly and pass it to the correct places', () => {
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', () => { return "fit" });
+			player.applyParameters();
+			expect(player.calculateRatio).to.have.been.calledOnce;
+			player.videoelement.node.style.paddingTop.should.equal("50%");
+			expect(player.videoelement.setAttribute).to.have.been.calledOnce;
+			expect(player.videoelement.setAttribute).to.have.been.calledWith("data-ratio",0.5);
+		});
+
+		it('should remove width and height properly when responsive', () => {
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', () => { return "fit" });
+			player.applyParameters();
+			expect(player.videoelement.removeAttribute).to.have.been.calledTwice;
+			expect(player.videoelement.removeAttribute).to.have.been.calledWith('height');
+			expect(player.videoelement.removeAttribute).to.have.been.calledWith('width');
+		});
+	});
+
+	describe('applyYoutubeClasses()', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			sinon.stub(Util.prototype, 'ie', () => {
+				return {
+					actualVersion : 0
+				}
+			});
+			sinon.stub(document, 'querySelector', () => {
+				return {
+					controls: false
+				}
+			});
+			
+			player = new Player();
+			player.util = new Util;
+
+			player.videoelement = {
+				addClass : () => {}
+			};
+
+			// Prevent iIOS Tests by default
+			navigator.__defineGetter__('platform', function(){
+			    return 'none' // customized user agent
+			});
+
+			sinon.spy(player.videoelement, 'addClass');
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+			Util.prototype.ie.restore();
+			document.querySelector.restore();
+
+			player.videoelement.addClass;
+		});
+
+		it('should add the youtube class properly', () => {
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledOnce;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-youtube');
+		});
+
+		it('should add the native controls class if needed', () => {
+			document.querySelector.restore();
+			sinon.stub(document, 'querySelector', () => {
+				return {
+					controls: true
+				}
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
+		});
+
+		it('should add class vjs-iOS for iPad devices', function(){
+			navigator.__defineGetter__('platform', function(){
+			    return 'somthing120e7 19827e1982iPada8d7a928z8dhn' // customized user agent
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-iOS');
+		});
+
+		it('should add class vjs-iOS for iPod devices', function(){
+			navigator.__defineGetter__('platform', function(){
+			    return 'somthing120e7 19827e1982iPoda8d7a928z8dhn' // customized user agent
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-iOS');
+		});
+
+		it('should add class vjs-iOS for iPhone devices', function(){
+			navigator.__defineGetter__('platform', function(){
+			    return 'somthing120e9827e1982iPhonea8d7a928z8dhn' // customized user agent
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-iOS');
+		});
+
+		it('should not add class vjs-using-native-controls if not ie and not controls', () => {
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.not.have.been.calledWith('vjs-using-native-controls');
+		});
+
+		it('should add the native controls class if ie 8', () => {
+			Util.prototype.ie.restore();
+			sinon.stub(Util.prototype, 'ie', () => {
+				return {
+					actualVersion : 8
+				}
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
+		});
+
+		it('should add the native controls class if ie 9', () => {
+			Util.prototype.ie.restore();
+			sinon.stub(Util.prototype, 'ie', () => {
+				return {
+					actualVersion : 9
+				}
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
+		});
+
+		it('should add the native controls class if ie 10', () => {
+			Util.prototype.ie.restore();
+			sinon.stub(Util.prototype, 'ie', () => {
+				return {
+					actualVersion : 10
+				}
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
+		});
+
+		it('should add the native controls class if ie 11', () => {
+			Util.prototype.ie.restore();
+			sinon.stub(Util.prototype, 'ie', () => {
+				return {
+					actualVersion : 11
+				}
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
+		});
+
+		it('should not add the native controls class if ie 12', () => {
+			Util.prototype.ie.restore();
+			sinon.stub(Util.prototype, 'ie', () => {
+				return {
+					actualVersion : 12
+				}
+			});
+			player.applyYoutubeClasses();
+			expect(player.videoelement.addClass).to.not.have.been.calledWith('vjs-using-native-controls');
+		});
+	});
+
+	describe('calculateRatio()', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			player = new Player();
+
+			player.videoelement = {
+				getAttribute : (input) => { 
+					return false;
+				}
+			};
+
+			sinon.spy(player.videoelement, 'getAttribute');
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+			player.videoelement.getAttribute.restore();
+		});
+
+		it('should log an error and return 0 if calculation is not possible', () => {
+			sinon.stub(window.console, 'error');
+
+			let ratio = player.calculateRatio();
+
+			expect(ratio).to.be.float;
+			ratio.should.equal(0);
+			expect(window.console.error).to.have.been.calledOnce;
+			window.console.error.restore();
+		});
+
+		it('should return the correct ratio if it is already set', () => {
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', () => { return 0.243 });
+			let ratio = player.calculateRatio();
+			expect(ratio).to.be.float;
+			expect(ratio).to.equal(0.243);
+			expect(player.videoelement.getAttribute).to.have.been.calledTwice;
+			expect(player.videoelement.getAttribute).to.have.been.calledWith("data-ratio");
+		});
+
+		it('should return the correct ratio if widht and height are set', () => {
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', (input) => { 
+				switch(input){
+					case "height":
+						return 1;
+					case "width":
+						return 2;
+					default:
+						return null;
+				}
+			});
+			let ratio = player.calculateRatio();
+			expect(ratio).to.be.float;
+			expect(ratio).to.equal(0.5);
+			expect(player.videoelement.getAttribute).to.have.callCount(5);
+			expect(player.videoelement.getAttribute).to.have.been.calledWith("data-ratio");
+			expect(player.videoelement.getAttribute).to.have.been.calledWith("height");
+			expect(player.videoelement.getAttribute).to.have.been.calledWith("width");
 		});
 	});
 

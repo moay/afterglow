@@ -310,6 +310,11 @@ describe("Afterglow Lightbox", () => {
 			let res = lightbox.getPlayer();
 			res.should.equal('test');
 		});
+
+		it('should return undefined if the player does not exist', () => {
+			let res = lightbox.getPlayer();
+			expect(res).to.be.undefined;
+		})
 	});
 
 	describe('resize() with regular players', () => {
