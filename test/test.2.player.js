@@ -90,6 +90,130 @@ describe("Afterglow Player", () => {
 		});
 	});
 
+	describe('init() only outside of video.js', () => {
+
+		beforeEach(() => {
+			window.videojs = () => {
+				return {ready : (input) => {}};
+			};
+			sinon.stub(Player.prototype, 'setup');
+			player = new Player();
+			player.videoelement = {
+				node : 'testnode'
+			}
+			player.config = {
+				options : 'testoptions'
+			}
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+		});
+
+		it('should pass the videoelement and the options to videojs properly', () => {
+			sinon.stub(window, 'videojs',() => {
+				return {ready : (input) => {}};
+			});
+			player.init();
+			expect(window.videojs).to.have.been.calledOnce;
+			expect(window.videojs).to.have.been.calledWith('testnode','testoptions');
+			window.videojs.restore();
+		});
+
+		it('should properly store videojs in its own videojs attribute', () => {
+			sinon.stub(window, 'videojs',() => {
+				return {ready : (input) => { return 'test' }};
+			});
+			player.init();
+			expect(player.videojs).to.equal('test');
+			window.videojs.restore();
+		});
+	});
+
+	describe('init() only inside of video.js ready()', () => {
+		var videojsBaseObject;
+		var callback;
+
+		beforeEach(() => {
+			videojsBaseObject = {
+				hotkeys : () => {}
+			}
+			callback = 'test';
+			window.videojs = function(videoelement, options) {
+				return { 
+					ready : (action) => {
+						this.hotkeys = (input) => {
+							videoelement.hotkeysInput = input;
+						};
+						this.addChild = (input) => {
+							videoelement.addChildInput = input;
+						};
+						this.volume = (input) => {
+							videoelement.volumeInput = input;
+						};
+						this.setCallbackReturnValue = (input) => {
+							videoelement.callbackReturnValue = input;
+						}
+						this.action = action;
+						this.action(); 
+					}
+				};
+			};
+			sinon.stub(Player.prototype, 'setup');
+			player = new Player();
+			player.videoelement = {
+				node:{
+					getAttribute : () => { return null }
+				}
+			}
+			player.config = {}
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+		});
+
+		it('should add hotkey options properly', () => {
+			player.init();
+			expect(player.videoelement.node.hotkeysInput).to.be.an('object');
+			expect(player.videoelement.node.hotkeysInput).to.have.keys("enableFullscreen","enableNumbers");
+		});
+
+		it('should add the TopControlBar properly', () => {
+			player.init();
+			expect(player.videoelement.node.addChildInput).to.be.a('string');
+			expect(player.videoelement.node.addChildInput).to.equal('TopControlBar');
+		});
+
+		it('should not call the callback if it is not a function', () => {
+			player.init(callback);
+			expect(player.videoelement.node.callbackReturnValue).to.be.undefined;
+		});
+
+		it('should call the callback if it is a function', () => {
+			callback = (inputobject) => {
+				inputobject.setCallbackReturnValue('test');
+			};
+			player.init(callback);
+			expect(player.videoelement.node.callbackReturnValue).to.equal('test');
+		});
+
+		it('should set the volume properly if needed', () => {
+			player.videoelement = {
+				node:{
+					getAttribute : () => { return '0.5' }
+				}
+			}
+			player.init();
+			expect(player.videoelement.node.volumeInput).to.be.float;
+			expect(player.videoelement.node.volumeInput).to.equal(0.5);
+		});
+
+		it('should not set the volume if not needed', () => {
+			expect(player.videoelement.node.volumeInput).to.be.undefined;
+		});
+	});
+
 	describe('prepareVideoElement no youtube', () => {
 		var videoelement;
 

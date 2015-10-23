@@ -81,7 +81,7 @@ class Util {
         var Opera = () => { return navigator.userAgent.match(/Opera Mini/i); };
         var Windows = () => { return navigator.userAgent.match(/IEMobile/i); };
 
-        return (Android() || BlackBerry() || iOS() || Opera() || Windows());
+        return (Android() || BlackBerry() || iOS() || Opera() || Windows()) ? true : false;
     }
 
     /**

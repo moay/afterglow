@@ -48,12 +48,17 @@ class Player {
 		}
 	}
 
+	/**
+	 * Initializes the player and applies all needed stuff.
+	 * @param  {function} _callback   Callback function to be called when the player is ready
+	 * @return {void}
+	 */
 	init(_callback){
 		let videoelement = this.videoelement.node;
 		let options = this.config.options;
 
 		// initiate videojs and do some post initiation stuff
-		var player = videojs(videoelement, options).ready(function(){
+		var player = window.videojs(videoelement, options).ready(function(){
 
 			// Enable hotkeys
 			this.hotkeys({
