@@ -329,7 +329,8 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 	 * Updates the button display the currently active quality.
 	 */
 	updateButton(){
-		var buttonEl = this.el_;
+		var buttonEl = this.prepareButtonElement(this.el_);
+
 		if(!this.resolutionsNeeded){
 			buttonEl.addClass("vjs-hidden");
 		}
@@ -346,6 +347,34 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 
 		// Get rid of the focus when having clicked the button
 		this.el_.blur();
+	}
+
+	prepareButtonElement(buttonEl){
+		if(typeof buttonEl.addClass !== 'function'){
+			buttonEl.addClass = function(className){
+				if(this.classList) {
+			        this.classList.add(className);
+			    } else if (!this.hasClass(className)) {
+			        var classes = this.className.split(" ");
+			        classes.push(className);
+			        this.className = classes.join(" ");
+			    }
+			    return this;
+			}
+		}
+		if(typeof buttonEl.removeClass !== 'function'){
+			buttonEl.removeClass = function(className){
+			    if (this.classList) {
+			        this.classList.remove(className);
+			    } else {
+			        var classes = this.className.split(" ");
+			        classes.splice(classes.indexOf(className), 1);
+			        this.className = classes.join(" ");
+			    }
+			    return this;
+			}
+		}
+		return buttonEl;
 	}
 }
 

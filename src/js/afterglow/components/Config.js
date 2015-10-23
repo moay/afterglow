@@ -102,9 +102,9 @@ class Config {
 				{
 					name: "progressControl"
 				},
-				// {
-				// 	name: "ResolutionSwitchingButton"
-				// },
+				{
+					name: "ResolutionSwitchingButton"
+				},
 				{
 					name: "volumeMenuButton",
 					inline:true

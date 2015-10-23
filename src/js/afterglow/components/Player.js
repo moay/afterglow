@@ -72,8 +72,17 @@ class Player {
 				this.volume(volume);
 			}
 
-			// Add top control Bar
+			// Add TopControBar
 			this.addChild("TopControlBar");
+
+			this.on('play', () => {
+				// Stop all other players if there are any on play
+				for( player in window.videojs.players ) {
+				    if(window.videojs.players[player].id_ !== this.id_ ){
+				    	window.videojs.players[player].pause();
+				    }
+				}
+			});
 
 			// Launch the callback if there is one
 			if(typeof _callback == "function"){

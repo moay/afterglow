@@ -154,10 +154,30 @@ describe("Afterglow Player", () => {
 						this.setCallbackReturnValue = (input) => {
 							videoelement.callbackReturnValue = input;
 						}
+						this.on = (triggeredOnEvent, onAction) => {
+							videoelement.triggeredOnEvent = triggeredOnEvent;
+							onAction();
+						}
 						this.action = action;
 						this.action(); 
 					}
 				};
+			};
+			window.videojs.players = {
+				video1 : {
+					id_ : 'video1',
+					paused:false,
+					pause: () => {
+						window.videojs.players['video1'].paused = true;
+					}
+				},
+				video2 : {
+					id_ : 'video2',
+					paused:false,
+					pause: () => {
+						window.videojs.players['video2'].paused = true;
+					}
+				}
 			};
 			sinon.stub(Player.prototype, 'setup');
 			player = new Player();
@@ -210,7 +230,17 @@ describe("Afterglow Player", () => {
 		});
 
 		it('should not set the volume if not needed', () => {
+			player.init();
 			expect(player.videoelement.node.volumeInput).to.be.undefined;
+		});
+
+		it('should stop all other videos when playing', () => {
+			expect(window.videojs.players['video1'].paused).to.be.false;
+			expect(window.videojs.players['video2'].paused).to.be.false;
+			player.init();
+			expect(player.videoelement.node.triggeredOnEvent).to.equal('play');
+			expect(window.videojs.players['video1'].paused).to.be.true;
+			expect(window.videojs.players['video2'].paused).to.be.true;
 		});
 	});
 
