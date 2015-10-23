@@ -496,6 +496,23 @@ describe("Afterglow Lightbox", () => {
 			sinon.stub(DOMElement.prototype, 'addClass');
 			document.body.innerHTML = '';
 
+			window['videojs'] = { players : {
+				video1 : {
+					id_ : 'video1',
+					paused:false,
+					pause: () => {
+						window.videojs.players['video1'].paused = true;
+					}
+				},
+				video2 : {
+					id_ : 'video2',
+					paused:false,
+					pause: () => {
+						window.videojs.players['video2'].paused = true;
+					}
+				}
+			}};
+
 			//,  
 			//			sinon.stub(Util.prototype, 'isMobile');
 			// sinon.stub(Util.prototype, 'addEventListener');
@@ -568,6 +585,14 @@ describe("Afterglow Lightbox", () => {
 			expect(test).to.equal(2);
 			lightbox.launch(() => {test++});
 			expect(test).to.equal(3);
+		});
+
+		it('should stop all other videos when launching', () => {
+			expect(window.videojs.players['video1'].paused).to.be.false;
+			expect(window.videojs.players['video2'].paused).to.be.false;
+			lightbox.launch();
+			expect(window.videojs.players['video1'].paused).to.be.true;
+			expect(window.videojs.players['video2'].paused).to.be.true;
 		});
 	});
 

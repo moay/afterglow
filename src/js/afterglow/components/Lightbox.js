@@ -116,6 +116,13 @@ class Lightbox extends DOMElement{
 			this.player.videojs.getChild('TopControlBar').addChild("LightboxCloseButton");
 		});
 
+		// Stop all active players if there are any playing
+		for(let key in window.videojs.players) {
+		    if(window.videojs.players[key].id_ !== this.playerid){
+		    	window.videojs.players[key].pause();
+		    }
+		}
+
 		// resize the lightbox and make it autoresize
 		this.resize();
 		util.addEventListener(window,'resize',() => {
