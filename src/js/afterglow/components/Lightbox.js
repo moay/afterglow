@@ -118,7 +118,7 @@ class Lightbox extends DOMElement{
 
 		// Stop all active players if there are any playing
 		for(let key in window.videojs.players) {
-		    if(window.videojs.players[key].id_ !== this.playerid){
+		    if(window.videojs.players[key] !== null && window.videojs.players[key].id_ !== this.playerid){
 		    	window.videojs.players[key].pause();
 		    }
 		}

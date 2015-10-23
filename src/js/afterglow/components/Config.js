@@ -26,6 +26,9 @@ class Config {
 			// Prepare the options container
 			this.options = {};
 
+			// Set the skin
+			this.skin = skin;
+
 			// Prepare option variables
 			this.setDefaultOptions();
 			this.setSkinControls();
@@ -35,9 +38,6 @@ class Config {
 			if(util.isYoutubePlayer(this.videoelement)){
 				this.setYoutubeOptions();	
 			}
-
-			// Set the skin
-			this.skin = skin;
 		}
 	}
 

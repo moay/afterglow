@@ -25,7 +25,7 @@ class Player {
 		this.id = videoelement.getAttribute('id');
 
 		// Prepare needed dependencies
-		this.config = new Config(videoelement);
+		this.config = new Config(videoelement, this.getSkinName());
 		this.util = new Util();
 
 		// Prepare the element
@@ -78,7 +78,7 @@ class Player {
 			this.on('play', () => {
 				// Stop all other players if there are any on play
 				for( let key in window.videojs.players ) {
-				    if(window.videojs.players[key].id_ !== this.id_){
+				    if(window.videojs.players[key] !== null && window.videojs.players[key].id_ !== this.id_){
 				    	window.videojs.players[key].pause();
 				    }
 				}
@@ -100,7 +100,11 @@ class Player {
 		// Add some classes
 		this.videoelement.addClass("video-js");
 		this.videoelement.addClass("afterglow");
-		this.videoelement.addClass(this.config.getSkinClass());
+
+		let classNames = this.config.getSkinClass().split(" ");
+		classNames.forEach((className) => {
+			this.videoelement.addClass(className);
+		});
 
 		// Remove sublime stuff
 		this.videoelement.removeClass("sublime");
@@ -173,6 +177,17 @@ class Player {
 			var ratio = this.videoelement.getAttribute("height") / this.videoelement.getAttribute("width");
 		}
 		return parseFloat(ratio);
+	}
+
+	/** 
+	 * Gets the current player's skin name for further use in css variables and so on.
+	 * @return {string}
+	 */
+	getSkinName(){
+		if(this.videoelement.getAttribute('data-skin')){
+			return this.videoelement.getAttribute('data-skin');
+		}
+		return 'afterglow';
 	}
 
 	/**

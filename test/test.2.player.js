@@ -52,6 +52,7 @@ describe("Afterglow Player", () => {
 		beforeEach(() => {
 			sinon.stub(Player.prototype, 'prepareVideoElement');
 			sinon.stub(Config.prototype, 'init');
+			sinon.stub(Player.prototype, 'getSkinName');
 
 			videoelement = {
 				getAttribute : () => {return 'someid'},
@@ -63,6 +64,7 @@ describe("Afterglow Player", () => {
 
 		afterEach(() => {
 			Player.prototype.prepareVideoElement.restore();
+			Player.prototype.getSkinName.restore();
 			Config.prototype.init.restore();
 		});
 
@@ -75,6 +77,13 @@ describe("Afterglow Player", () => {
 			player.config.should.be.an('object');
 			expect(Config.prototype.init).to.have.been.calledOnce;
 			expect(Config.prototype.init).to.have.been.calledWith(videoelement,'afterglow');
+		});
+
+		it('should pass the skin name properly', () => {
+			Player.prototype.getSkinName.restore();
+			sinon.stub(Player.prototype, 'getSkinName', () => { return 'testskinname' });
+			player = new Player(videoelement);
+			expect(Config.prototype.init).to.have.been.calledWith(videoelement,'testskinname');
 		});
 
 		it('should create a new Util and store it', () => {
@@ -765,6 +774,39 @@ describe("Afterglow Player", () => {
 			expect(player.videojs.isFullscreen).to.have.been.calledOnce;
 			player.videojs.exitFullscreen.restore();
 			player.videojs.isFullscreen.restore();
+		});
+	});
+
+	describe('getSkinName', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			player = new Player();
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+		});
+
+		it('should return the data-skin parameter if it is set', () => {
+			player.videoelement = {
+				getAttribute : (input) => { 
+					return 'somevalue';
+				}
+			};
+			var res = player.getSkinName();
+			expect(res).to.eql('somevalue');
+		});
+
+		it('should return afterglow if no skin is set', () => {
+			player.videoelement = {
+				getAttribute : (input) => { 
+					return null;
+				}
+			};
+			var res = player.getSkinName();
+			expect(res).to.eql('afterglow');
 		});
 	});
 
