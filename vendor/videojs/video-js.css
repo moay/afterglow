@@ -30,11 +30,11 @@
   .vjs-icon-play-circle:before {
     content: '\f102'; }
 
-.vjs-icon-pause, .video-js.vjs-playing .vjs-play-control {
+.vjs-icon-pause, .video-js .vjs-play-control.vjs-playing {
   font-family: VideoJS;
   font-weight: normal;
   font-style: normal; }
-  .vjs-icon-pause:before, .video-js.vjs-playing .vjs-play-control:before {
+  .vjs-icon-pause:before, .video-js .vjs-play-control.vjs-playing:before {
     content: '\f103'; }
 
 .vjs-icon-volume-mute, .video-js .vjs-mute-control.vjs-vol-0, .video-js .vjs-volume-menu-button.vjs-vol-0 {
@@ -207,16 +207,17 @@
 
 /* Fill the width of the containing element and use padding to create the
    desired aspect ratio. Default to 16x9 unless another ratio is given. */
-.video-js.vjs-fluid, .video-js.vjs-16-9 {
+/* Not including a default AR in vjs-fluid because it would override
+   the user set AR injected into the header. */
+.video-js.vjs-fluid, .video-js.vjs-16-9, .video-js.vjs-4-3 {
   width: 100%;
   max-width: 100%;
-  height: 0;
+  height: 0; }
+
+.video-js.vjs-16-9 {
   padding-top: 56.25%; }
 
 .video-js.vjs-4-3 {
-  width: 100%;
-  max-width: 100%;
-  height: 0;
   padding-top: 75%; }
 
 .video-js.vjs-fill {
@@ -283,7 +284,7 @@ about what's required to play video. */
   margin: 0px auto; }
 
 .vjs-no-js a, .vjs-no-js a:visited {
-  color: #F4A460; }
+  color: #66A8CC; }
 
 .video-js .vjs-big-play-button {
   font-size: 3em;
@@ -298,10 +299,10 @@ about what's required to play video. */
   padding: 0;
   cursor: pointer;
   opacity: 1;
-  border: 2px solid #fff;
+  border: 0.06666em solid #fff;
   /* Need a slightly gray bg so it can be seen on black backgrounds */
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #2B333F;
+  background-color: rgba(43, 51, 63, 0.7);
   -webkit-border-radius: 0.3em;
   -moz-border-radius: 0.3em;
   border-radius: 0.3em;
@@ -319,8 +320,8 @@ about what's required to play video. */
 .video-js:hover .vjs-big-play-button, .video-js .vjs-big-play-button:focus {
   outline: 0;
   border-color: #fff;
-  background-color: #595959;
-  background-color: rgba(89, 89, 89, 0.75);
+  background-color: #73859f;
+  background-color: rgba(115, 133, 159, 0.5);
   -webkit-transition: all 0s;
   -moz-transition: all 0s;
   -o-transition: all 0s;
@@ -332,7 +333,7 @@ about what's required to play video. */
 .video-js button {
   background: none;
   border: none;
-  color: #fff;
+  color: inherit;
   display: inline-block;
   overflow: visible;
   font-size: inherit;
@@ -366,14 +367,14 @@ about what's required to play video. */
   text-align: center;
   text-transform: lowercase; }
 
-.vjs-menu li.vjs-selected {
-  background-color: #000; }
-
-.vjs-menu li:focus, .vjs-menu li:hover, .vjs-menu li.vjs-selected:focus, .vjs-menu li.vjs-selected:hover {
+.vjs-menu li:focus, .vjs-menu li:hover {
   outline: 0;
-  color: #000;
+  background-color: #73859f;
+  background-color: rgba(115, 133, 159, 0.5); }
+
+.vjs-menu li.vjs-selected, .vjs-menu li.vjs-selected:focus, .vjs-menu li.vjs-selected:hover {
   background-color: #fff;
-  background-color: rgba(255, 255, 255, 0.75); }
+  color: #2B333F; }
 
 .vjs-menu li.vjs-menu-title {
   text-align: center;
@@ -394,13 +395,13 @@ about what's required to play video. */
   /* (Width of vjs-menu - width of button) / 2 */
   height: 0em;
   margin-bottom: 1.5em;
-  border-top-color: rgba(7, 40, 50, 0.5);
+  border-top-color: rgba(43, 51, 63, 0.7);
   /* Same as ul background */ }
 
 /* Button Pop-up Menu */
 .vjs-menu-button-popup .vjs-menu ul {
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: #2B333F;
+  background-color: rgba(43, 51, 63, 0.7);
   position: absolute;
   width: 100%;
   bottom: 1.5em;
@@ -471,7 +472,7 @@ about what's required to play video. */
   right: 0;
   height: 3em;
   background-color: #2B333F;
-  background-color: rgba(43, 51, 63, 0.5); }
+  background-color: rgba(43, 51, 63, 0.7); }
 
 .vjs-has-started .vjs-control-bar {
   display: -webkit-box;
@@ -654,14 +655,18 @@ fonts to show/hide properly.
   z-index: 1; }
 
 .video-js .vjs-load-progress {
-  background: #646464;
-  /* IE8- Fallback */
-  background: rgba(255, 255, 255, 0.2); }
+  /* For IE8 we'll lighten the color */
+  background: ligthen(#73859f, 25%);
+  /* Otherwise we'll rely on stacked opacities */
+  background: rgba(115, 133, 159, 0.5); }
 
 /* there are child elements of the load progress bar that represent the
 specific time ranges that have been buffered */
 .video-js .vjs-load-progress div {
-  background: rgba(89, 89, 89, 0.1); }
+  /* For IE8 we'll lighten the color */
+  background: ligthen(#73859f, 50%);
+  /* Otherwise we'll rely on stacked opacities */
+  background: rgba(115, 133, 159, 0.75); }
 
 .video-js.vjs-no-flex .vjs-progress-control {
   width: auto; }
@@ -702,8 +707,8 @@ specific time ranges that have been buffered */
   cursor: pointer;
   padding: 0;
   margin: 0 0.45em 0 0.45em;
-  background-color: #595959;
-  background-color: rgba(89, 89, 89, 0.9); }
+  background-color: #73859f;
+  background-color: rgba(115, 133, 159, 0.5); }
 
 .video-js .vjs-slider:focus {
   text-shadow: 0em 0em 1em white;
@@ -804,6 +809,11 @@ width and height to zero. */
 .vjs-volume-menu-button-horizontal:hover .vjs-menu-content, .vjs-volume-menu-button-horizontal .vjs-lock-showing .vjs-menu-content {
   height: 2.9em;
   width: 8em; }
+
+.vjs-volume-menu-button.vjs-menu-button-inline .vjs-menu-content {
+  /* An inline volume should never have a menu background color.
+     This protects it from external changes to background colors. */
+  background-color: transparent !important; }
 
 .vjs-poster {
   display: inline-block;
@@ -974,7 +984,7 @@ and the native poster can take over */
   content: 'X';
   font-family: Arial, Helvetica, sans-serif;
   font-size: 4em;
-  color: #595959;
+  color: #fff;
   /* In order to center the play icon vertically we need to set the line height
   to the same as the button height */
   line-height: 1;
@@ -1000,7 +1010,7 @@ and the native poster can take over */
   background-color: rgba(0, 0, 0, 0.5); }
 
 .vjs-error-display a, .vjs-error-display a:visited {
-  color: #F4A460; }
+  color: #66A8CC; }
 
 .vjs-loading-spinner {
   display: none;
@@ -1009,7 +1019,9 @@ and the native poster can take over */
   left: 50%;
   margin: -25px 0 0 -25px;
   opacity: 0.85;
-  border: 6px solid rgba(113, 119, 129, 0.75);
+  /* Need to fix centered page layouts */
+  text-align: left;
+  border: 6px solid rgba(43, 51, 63, 0.7);
   box-sizing: border-box;
   background-clip: padding-box;
   width: 50px;
@@ -1056,35 +1068,35 @@ and the native poster can take over */
 
 @keyframes vjs-spinner-fade {
   0% {
-    border-top-color: #a6aab0; }
+    border-top-color: #73859f; }
 
   20% {
-    border-top-color: #a6aab0; }
+    border-top-color: #73859f; }
 
   35% {
     border-top-color: white; }
 
   60% {
-    border-top-color: #a6aab0; }
+    border-top-color: #73859f; }
 
   100% {
-    border-top-color: #a6aab0; } }
+    border-top-color: #73859f; } }
 
 @-webkit-keyframes vjs-spinner-fade {
   0% {
-    border-top-color: #a6aab0; }
+    border-top-color: #73859f; }
 
   20% {
-    border-top-color: #a6aab0; }
+    border-top-color: #73859f; }
 
   35% {
     border-top-color: white; }
 
   60% {
-    border-top-color: #a6aab0; }
+    border-top-color: #73859f; }
 
   100% {
-    border-top-color: #a6aab0; } }
+    border-top-color: #73859f; } }
 
 .vjs-chapters-button .vjs-menu {
   left: -10em;
@@ -1114,13 +1126,12 @@ and the native poster can take over */
 .vjs-caption-settings {
   position: relative;
   top: 1em;
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: #2B333F;
+  background-color: rgba(43, 51, 63, 0.75);
   color: #fff;
   margin: 0 auto;
   padding: 0.5em;
   height: 15em;
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   width: 40em; }
 

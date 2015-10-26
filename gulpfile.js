@@ -1,25 +1,35 @@
 'use strict';
 
+require('babel/register');
+
 var plugins = require('gulp-load-plugins')();
 var gulp = require('gulp');
 var del = require('del');
 var fs = require('fs');
+var browserify = require('browserify');
+var babelify = require("babelify");
 var release = require('gulp-github-release');
+var notifierReporter = require('mocha-notifier-reporter');
 var getPackageJson = function () {
 	return JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 };
 
-// General build task, cleans up after real build
-gulp.task('build', ['build-afterglow'], function(){
-	del(['./dist/tmp']);
+// Shortcut to the build task
+gulp.task('build', ['package-build'], function(){});
 
+// General build task, cleans up after real build
+gulp.task('cleanup-tmp',['build-afterglow'], function(){
+	del(['./dist/tmp']);
+});
+
+gulp.task('package-build', ['cleanup-tmp'], function(){
 	return gulp.src('./dist/afterglow.min.js')
         .pipe(plugins.zip('afterglow.zip'))
         .pipe(gulp.dest('dist'));
 });
 
 // Helper task for building the release
-gulp.task('build-afterglow', ['compilecomponents'], function(){
+gulp.task('build-afterglow', ['compileES6'], function(){
 
 	var pkg = getPackageJson();
 	var banner = ['/**',
@@ -34,15 +44,15 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 
 	// Loading LESS files 
 	return gulp.src([
-		"./src/videojs/skin/afterglow/vjs-afterglow.less",
-		"./src/lightbox/afterglow-lightbox.less"
+		"./src/less/skins/*.less",
+		"./src/less/components/*.less"
 		])
 
 	// Convert LESS files to CSS 
 	.pipe(plugins.less())
 
 	// Add normal css which doesn't need to be compiled
-	.pipe(plugins.addSrc.prepend('./src/videojs/video-js.css'))
+	.pipe(plugins.addSrc.prepend('./vendor/videojs/video-js.css'))
 	
 	// Minify the CSS 
 	.pipe(plugins.cssmin())
@@ -54,17 +64,14 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 
 	// Add all the javascript files in the correct order
 	.pipe(plugins.addSrc.append([
-		'./src/dollardom/dollardom.min.js',
-		'./src/lib/afterglow-lib.js',
-		'./src/videojs/video.min.js',
+		'./vendor/videojs/video.min.js',
 		]))
 	.pipe(plugins.addSrc.append([
-		'./dist/tmp/*.js',
-		'./src/videojs/plugins/videojs.hotkeys.js',
-		'./src/videojs/plugins/Youtube.js',
+		'./vendor/videojs/plugins/videojs.hotkeys.js',
+		'./vendor/videojs/plugins/Youtube.js',
 		]))
 	.pipe(plugins.addSrc.append([
-		'./src/afterglow.js'
+		'./dist/tmp/afterglow-bundle.js'
 		]))
 
 	// Concatenate into a single large file 
@@ -80,10 +87,29 @@ gulp.task('build-afterglow', ['compilecomponents'], function(){
 });
 
 // Task to compile ES6 components
-gulp.task('compilecomponents', function(){
-	return gulp.src('./src/videojs/components/*.js')
-	.pipe(plugins.babel())
-	.pipe(gulp.dest('dist/tmp/'));
+gulp.task('compileES6', function(){
+
+	// Compile VIDEO.js components
+	gulp.src('./src/js/vjs-components/*.js')
+		.pipe(plugins.babel())
+		.pipe(gulp.dest(__dirname+'/dist/tmp/components'));
+
+	// Create empty file
+	gulp.src(__dirname+'/dist/tmp/components/*.js')
+		.pipe(plugins.concat("afterglow-bundle.js"))
+		.pipe(gulp.dest(__dirname+"/dist/tmp/"));
+
+
+	// Compile
+	var extensions = ['.js','.json','.es6'];
+	return browserify({ debug: true, extensions:extensions })
+	    .transform(babelify.configure({
+	      extensions: extensions
+	    }))
+	    .require(__dirname+"/src/js/init.js", { entry: true })
+	    .bundle()
+	    .on("error", function (err) { console.log("Error : " + err.message); })
+	    .pipe(fs.createWriteStream(__dirname+"/dist/tmp/afterglow-bundle.js",{flags: 'a'}));
 });
 
 // Patch version bump
@@ -162,4 +188,11 @@ gulp.task('release', function(){
 	    }))
 		.pipe(release(releaseoptions));    	
     }));
+});
+
+gulp.task('test', function(){
+	return gulp.src('./test/*.js')
+		.pipe(plugins.mocha({
+			reporter: notifierReporter.decorate('spec')
+		}));
 });

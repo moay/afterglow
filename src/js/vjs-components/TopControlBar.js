@@ -10,6 +10,10 @@ const VjsComponent = videojs.getComponent('Component');
  */
 class TopControlBar extends VjsComponent {
 
+	constructor(player, options){
+		super(player, options);
+	}
+
 	/**
 	 * Create the component's DOM element
 	 *
@@ -33,5 +37,4 @@ TopControlBar.prototype.options_ = {
 
 (function(){
 	videojs.registerComponent('TopControlBar', TopControlBar);
-
 })();

@@ -1,0 +1,16 @@
+engines:
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+  fixme:
+    enabled: true
+
+ratings:
+  paths:
+  - src/js/**
+
+exclude_paths:
+- vendor/**/*
+- sandbox/**/*
+- dist/**/*
