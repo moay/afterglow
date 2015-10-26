@@ -1034,7 +1034,7 @@
 		display: none;
 		position: relative;
 		bottom: auto;
-		left: auto; /* (Width of vjs-menu - width of button) / 2 */
+		left: -50px; /* (Width of vjs-menu - width of button) / 2 */
 		width: 0;
 		height: 0;
 		margin-bottom: 0;
@@ -1050,18 +1050,18 @@
 		width: 100px;
 		max-height: none;
 		overflow: auto;
-		left: 28px;
+		left: 12px;
 		font-family: 'Open Sans', Helvetica Light, Helvetica, sans-serif;
 		background: transparent;
 
 		@media(max-width:768px){
-			left:24px;
+			left:12px;
 			bottom:-40px;
 			padding-bottom: 60px;
 		}
 
 		@media(max-width:512px){
-			left:23px;
+			left:11px;
 			bottom:-30px;
 			padding-bottom: 50px;
 		}
@@ -1089,7 +1089,8 @@
 		&.vjs-selected {
 			text-shadow: 0 0 5px rgba(255, 255, 255, .6);
 			opacity:1;
-			background:transparent
+			background:transparent;
+			color:#fff;
 		}
 
 		&:hover,

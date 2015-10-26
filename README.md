@@ -1,4 +1,4 @@
-[![GitHub version](https://badge.fury.io/gh/moay%2Fafterglow.svg)](http://badge.fury.io/gh/moay%2Fafterglow) [![Build status](https://travis-ci.org/moay/afterglow.svg)](https://travis-ci.org/moay/afterglow) [![Coverage Status](https://coveralls.io/repos/moay/afterglow/badge.svg?branch=v0.3&service=github)](https://coveralls.io/github/moay/afterglow?branch=v0.3)
+[![GitHub version](https://badge.fury.io/gh/moay%2Fafterglow.svg)](http://badge.fury.io/gh/moay%2Fafterglow) [![Build status](https://travis-ci.org/moay/afterglow.svg)](https://travis-ci.org/moay/afterglow) [![Coverage Status](https://coveralls.io/repos/moay/afterglow/badge.svg?branch=master&service=github)](https://coveralls.io/github/moay/afterglow?branch=master)
 
 
 # afterglow
@@ -6,16 +6,6 @@
 afterglow is a tool to create fully responsive and totally awesome video players from HTML5 video elements with as little effort as possible.
 
 Learn more about the project on the project website: [http://afterglowplayer.com](http://afterglowplayer.com).
-
-# Don't use this branch!
-
-This branch is under heavy development. The builds should be mostly working, but there is no point in using an unstable branch. Except if you want to, of course.
-
-## Build status
-
-Green is good (means: all unit tests are passing). Red is bad (means: think before you use it). Gray is nothing (means: test are running right now, come back in a second).
-
-The build status isn't reliable yet, as there is a major refactoring going on.
 
 ## Documentation
 
