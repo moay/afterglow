@@ -14,10 +14,8 @@ class DOMElement{
 	addClass(className){
 		if(this.node.classList) {
 	        this.node.classList.add(className);
-	    } else if (!this.node.hasClass(className)) {
-	        var classes = this.node.className.split(" ");
-	        classes.push(className);
-	        this.node.className = classes.join(" ");
+	    } else if (!this.hasClass(className)) {
+	        this.node.className += ' ' + className;
 	    }
 	    return this;
 	}

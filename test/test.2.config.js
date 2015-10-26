@@ -257,10 +257,12 @@ describe("Afterglow Config", () => {
 		
 		beforeEach(() => {
 			sinon.stub(Config.prototype, 'init', () => {});
+			sinon.stub(Util.prototype, 'ie', () => { return { actualVersion: 0 } });
 		});
 
 		afterEach(() => {
 			Config.prototype.init.restore();
+			Util.prototype.ie.restore();
 		});
 
 		it('should return the proper afterglow base class by default', () => {
@@ -277,6 +279,16 @@ describe("Afterglow Config", () => {
 			a_config.skin = 'someclass';
 			let providedClass = a_config.getSkinClass();
 			providedClass.should.equal('vjs-afterglow-skin afterglow-skin-someclass');
+		});
+
+		it('should add a dummy class if IE9', () => {
+			Util.prototype.ie.restore();
+			sinon.stub(Util.prototype, 'ie', () => { return { actualVersion: 9 } });
+			a_config = new Config(videoelement);
+			a_config.videoelement = videoelement;
+			a_config.skin = 'afterglow';
+			let providedClass = a_config.getSkinClass();
+			providedClass.should.equal('vjs-afterglow-skin ie9-is-bad');
 		});
 	});
 

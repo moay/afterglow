@@ -152,8 +152,15 @@ class Config {
 	getSkinClass(){
 		var cssclass="vjs-afterglow-skin";
 		if(this.skin !== 'afterglow'){
-			cssclass = cssclass + " afterglow-skin-"+this.skin;
+			cssclass += " afterglow-skin-"+this.skin;
 		}
+
+		// Fix for IE9. Somehow, this is necessary. Won't hurt anyone, so this hack is installed.
+		let util = new Util;
+		if(util.ie().actualVersion == 9){
+			cssclass += ' ie9-is-bad';
+		}
+
 		return cssclass;
 	}
 }

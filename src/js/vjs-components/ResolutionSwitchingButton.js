@@ -352,7 +352,7 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 			buttonEl.addClass = function(className){
 				if(this.classList) {
 			        this.classList.add(className);
-			    } else if (!this.hasClass(className)) {
+			    } else if (-1 == this.className.indexOf(className)) {
 			        var classes = this.className.split(" ");
 			        classes.push(className);
 			        this.className = classes.join(" ");
