@@ -79,15 +79,6 @@ class Config {
 	 */
 	setSkinControls(){
 		// For now, we just output the default 'afterglow' skin children, as there isn't any other skin defined yet
-		let TopControlBar ={
-			children: [
-				{
-					name: "fullscreenToggle"
-				}
-			]
-		};
-		this.options.TopControlBar = TopControlBar;
-
 		let controlBar = {
 			children: [
 				{
