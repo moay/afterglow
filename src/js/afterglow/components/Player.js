@@ -63,7 +63,8 @@ class Player {
 			// Enable hotkeys
 			this.hotkeys({
 				enableFullscreen: false,
-				enableNumbers: false
+				enableNumbers: false,
+				enableVolumeScroll: false
 			});
 
 			// Set initial volume if needed

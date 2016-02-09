@@ -208,7 +208,8 @@ describe("Afterglow Player", () => {
 		it('should add hotkey options properly', () => {
 			player.init();
 			expect(player.videoelement.node.hotkeysInput).to.be.an('object');
-			expect(player.videoelement.node.hotkeysInput).to.have.keys("enableFullscreen","enableNumbers");
+			expect(player.videoelement.node.hotkeysInput).to.have.keys("enableFullscreen","enableNumbers","enableVolumeScroll");
+			expect(player.videoelement.node.hotkeysInput.enableVolumeScroll).to.be.a('boolean');
 		});
 
 		it('should add the TopControlBar properly', () => {
