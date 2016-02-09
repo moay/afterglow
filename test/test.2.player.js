@@ -168,7 +168,7 @@ describe("Afterglow Player", () => {
 							onAction();
 						}
 						this.action = action;
-						this.action(); 
+						this.action();
 					}
 				};
 			};
@@ -188,6 +188,9 @@ describe("Afterglow Player", () => {
 					}
 				}
 			};
+			window.videojs.getPlayers = function(){
+				return window.videojs.players;
+			}
 			sinon.stub(Player.prototype, 'setup');
 			player = new Player();
 			player.videoelement = {
