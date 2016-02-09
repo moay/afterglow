@@ -50,7 +50,7 @@ class Config {
 		this.options.controls = true;
 		
 		// Default tech order
-		this.options.techOrder = ["html5","flash"];
+		this.options.techOrder = ["Html5","Flash"];
 	
 		// Some default player parameters
 		this.options.preload = this.getPlayerAttributeFromVideoElement('preload','auto');
@@ -125,7 +125,7 @@ class Config {
 	 */
 	setYoutubeOptions(){
 		this.options.showinfo = 0;
-		this.options.techOrder = ["youtube"];
+		this.options.techOrder = ["Youtube"];
 		this.options.sources = [{
 			"type": "video/youtube",
 			"src": "https://www.youtube.com/watch?v="+this.getPlayerAttributeFromVideoElement('youtube-id')

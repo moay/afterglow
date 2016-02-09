@@ -15,17 +15,19 @@
     factory(root, root.videojs);
   }
 
-})(this, function(window, videojs) {
+})(window, function(window, videojs) {
   "use strict";
-  window['videojs_hotkeys'] = { version: "0.2.10" };
+  window['videojs_hotkeys'] = { version: "0.2.13" };
 
   var hotkeys = function(options) {
     var player = this;
     var pEl = player.el();
+    var doc = document;
     var def_options = {
       volumeStep: 0.1,
       seekStep: 5,
       enableMute: true,
+      enableVolumeScroll: true,
       enableFullscreen: true,
       enableNumbers: true,
       enableJogStyle: false,
@@ -55,6 +57,7 @@
     var volumeStep = options.volumeStep,
       seekStep = options.seekStep,
       enableMute = options.enableMute,
+      enableVolumeScroll = options.enableVolumeScroll,
       enableFull = options.enableFullscreen,
       enableNumbers = options.enableNumbers,
       enableJogStyle = options.enableJogStyle,
@@ -71,6 +74,21 @@
       });
     }
 
+    player.on('userinactive', function() {
+      // When the control bar fades, re-apply focus to the player if last focus was a control button
+      var cancelFocusingPlayer = function() {
+        clearTimeout(focusingPlayerTimeout);
+      };
+      var focusingPlayerTimeout = setTimeout(function() {
+        player.off('useractive', cancelFocusingPlayer);
+        if (doc.activeElement.parentElement == pEl.querySelector('.vjs-control-bar')) {
+          pEl.focus();
+        }
+      }, 10);
+
+      player.one('useractive', cancelFocusingPlayer);
+    });
+
     player.on('play', function() {
       // Fix allowing the YouTube plugin to have hotkey support.
       var ifblocker = pEl.querySelector('.iframeblocker');
@@ -81,14 +99,13 @@
     });
 
     var keyDown = function keyDown(event) {
-
       var ewhich = event.which, curTime;
       var ePreventDefault = event.preventDefault;
       // When controls are disabled, hotkeys will be disabled as well
       if (player.controls()) {
 
         // Don't catch keys if any control buttons are focused, unless alwaysCaptureHotkeys is true
-        var activeEl = document.activeElement;
+        var activeEl = doc.activeElement;
         if (alwaysCaptureHotkeys ||
             activeEl == pEl ||
             activeEl == pEl.querySelector('.vjs-tech') ||
@@ -200,12 +217,11 @@
     };
 
     var doubleClick = function doubleClick(event) {
-
       // When controls are disabled, hotkeys will be disabled as well
       if (player.controls()) {
 
         // Don't catch clicks if any control buttons are focused
-        var activeEl = event.relatedTarget || event.toElement || document.activeElement;
+        var activeEl = event.relatedTarget || event.toElement || doc.activeElement;
         if (activeEl == pEl ||
             activeEl == pEl.querySelector('.vjs-tech') ||
             activeEl == pEl.querySelector('.iframeblocker')) {
@@ -215,6 +231,31 @@
               player.exitFullscreen();
             } else {
               player.requestFullscreen();
+            }
+          }
+        }
+      }
+    };
+
+    var mouseScroll = function mouseScroll(event) {
+      // When controls are disabled, hotkeys will be disabled as well
+      if (player.controls()) {
+        var activeEl = event.relatedTarget || event.toElement || doc.activeElement;
+        if (alwaysCaptureHotkeys ||
+            activeEl == pEl ||
+            activeEl == pEl.querySelector('.vjs-tech') ||
+            activeEl == pEl.querySelector('.iframeblocker') ||
+            activeEl == pEl.querySelector('.vjs-control-bar')) {
+
+          if (enableVolumeScroll) {
+            event = window.event || event;
+            var delta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
+            event.preventDefault();
+
+            if (delta == 1) {
+              player.volume(player.volume() + volumeStep);
+            } else if (delta == -1) {
+              player.volume(player.volume() - volumeStep);
             }
           }
         }
@@ -297,9 +338,11 @@
 
     player.on('keydown', keyDown);
     player.on('dblclick', doubleClick);
+    player.on('mousewheel', mouseScroll);
+    player.on("DOMMouseScroll", mouseScroll);
 
     return this;
   };
-
+  
   videojs.plugin('hotkeys', hotkeys);
 });

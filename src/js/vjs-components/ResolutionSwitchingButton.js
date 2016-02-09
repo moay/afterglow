@@ -222,7 +222,7 @@ const VjsButtonResBBase = videojs.getComponent('Button');
 
     	for (var i=0,j=this.player_.options_['techOrder'];i<j.length;i++) {
     		techName = this.player_.techName_;
-    		tech     = window['videojs'].getComponent(techName);
+    		tech     = window.videojs.getTech(techName);
 
 	        // Check if the browser supports this technology
 	        if (tech.isSupported()) {

@@ -56,7 +56,7 @@ class Player {
 	init(_callback){
 		let videoelement = this.videoelement.node;
 		let options = this.config.options;
-
+		
 		// initiate videojs and do some post initiation stuff
 		var player = window.videojs(videoelement, options).ready(function(){
 

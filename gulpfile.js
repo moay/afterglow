@@ -64,11 +64,11 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 
 	// Add all the javascript files in the correct order
 	.pipe(plugins.addSrc.append([
-		'./vendor/videojs/video.min.js',
+		'./vendor/videojs/video.js',
 		]))
 	.pipe(plugins.addSrc.append([
 		'./vendor/videojs/plugins/videojs.hotkeys.js',
-		'./vendor/videojs/plugins/Youtube.js',
+		'./vendor/videojs/plugins/Youtube.js'
 		]))
 	.pipe(plugins.addSrc.append([
 		'./dist/tmp/afterglow-bundle.js'

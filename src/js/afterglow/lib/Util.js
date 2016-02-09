@@ -27,6 +27,15 @@ class Util {
     };
 
     /**
+     * Checks wether or not the given video element should trigger the dailymotion tech
+     * @param  {DOMElement object || DOM node}  videoelement
+     * @return {Boolean}
+     */
+    isDailymotionPlayer(videoelement){
+        return videoelement.hasAttribute("data-dailymotion-id");
+    }
+
+    /**
      * Returns some information about the currently used IE
      * @return {object}
      */
