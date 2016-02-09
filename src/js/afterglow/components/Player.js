@@ -78,8 +78,8 @@ class Player {
 			this.on('play', () => {
 				// Stop all other players if there are any on play
 				for( let key in window.videojs.players ) {
-				    if(window.videojs.players[key] !== null && window.videojs.players[key].id_ !== this.id_){
-				    	window.videojs.players[key].pause();
+				    if(window.videojs.getPlayers()[key] !== null && window.videojs.getPlayers()[key].id_ !== this.id_){
+				    	window.videojs.getPlayers()[key].pause();
 				    }
 				}
 			});
