@@ -26,6 +26,8 @@ THE SOFTWARE. */
 
   var Youtube = videojs.extend(Tech, {
 
+    apiLoaded: false,
+
     constructor: function(options, ready) {
       Tech.call(this, options, ready);
 
@@ -44,6 +46,9 @@ THE SOFTWARE. */
     },
 
     createEl: function() {
+      loadApi();
+      injectCss();
+
       var div = document.createElement('div');
       div.setAttribute('id', this.options_.techId);
       div.setAttribute('style', 'width:100%;height:100%;top:0;left:0;position:absolute');
@@ -561,10 +566,13 @@ THE SOFTWARE. */
   };
 
   function loadApi() {
-    var tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    if(!Youtube.apiLoaded){
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      Youtube.apiLoaded = true;
+    }
   }
 
   function injectCss() {
@@ -596,9 +604,6 @@ THE SOFTWARE. */
       Youtube.apiReadyQueue[i].initYTPlayer();
     }
   };
-
-  loadApi();
-  injectCss();
 
   videojs.registerTech('Youtube', Youtube);
 })();
