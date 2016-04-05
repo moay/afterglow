@@ -116,7 +116,7 @@ class Config {
 	 */
 	setYoutubeOptions(){
 		this.options.showinfo = 0;
-		this.options.techOrder = ["Youtube"];
+		this.options.techOrder = ["youtube"];
 		this.options.sources = [{
 			"type": "video/youtube",
 			"src": "https://www.youtube.com/watch?v="+this.getPlayerAttributeFromVideoElement('youtube-id')

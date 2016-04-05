@@ -149,8 +149,8 @@ class Player {
 		if(document.querySelector('video').controls){
 			this.videoelement.addClass("vjs-using-native-controls");
 		}
-		// Add iOS class for iOS. Should affect only iPad
-		if(/iPad|iPhone|iPod/.test(navigator.platform)){
+		// Add iOS class for iOS.
+		if(/iPad|iPhone|iPod|iOS/.test(navigator.platform)){
 			this.videoelement.addClass("vjs-iOS");
 		}
 
