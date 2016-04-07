@@ -232,6 +232,18 @@
 			height:30px;
 		}
 
+		&.vjs-subtitles-button.vjs-control,
+		&.vjs-captions-button.vjs-control{
+			width:40px;
+
+			@media(max-width:768px){
+				width:30px;
+			}
+			@media(max-width:512px){
+				width:20px;
+			}
+		}
+
 		/* Font button icons */
 		&:before {
 			font-family: 'afterglow-icon';
@@ -347,8 +359,8 @@
 		cursor: pointer;
 		float: right;
 		width: auto;
-		padding-left:32px;
-		margin-left:40px;
+		padding-left: 32px;
+		margin-left: 10px;
 
 		&:before{
 			content: @volume-high-icon;
@@ -368,13 +380,12 @@
 		}
 
 		@media(max-width:768px){
-			margin-left:29px;
+			margin-left:0;
 		}
 
 		@media(max-width:512px){
 			height:26px;
 			padding-left:27px;
-			margin-left:18px;
 		}
 	}
 
@@ -1034,10 +1045,16 @@
 		display: none;
 		position: relative;
 		bottom: auto;
-		left: -50px; /* (Width of vjs-menu - width of button) / 2 */
+		left: -85px; /* (Width of vjs-menu - width of button) / 2 */
 		width: 0;
 		height: 0;
 		margin-bottom: 0;
+		@media(max-width:768px){
+			left: -75px;
+		}
+		@media(max-width:512px){
+			left: -70px;
+		}
 	}
 
 	/* Button Pop-up Menu */

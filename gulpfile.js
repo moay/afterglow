@@ -19,7 +19,7 @@ gulp.task('build', ['package-build'], function(){});
 
 // General build task, cleans up after real build
 gulp.task('cleanup-tmp',['build-afterglow'], function(){
-	del(['./dist/tmp']);
+	return del(['./dist/tmp']);
 });
 
 gulp.task('package-build', ['cleanup-tmp'], function(){
@@ -87,18 +87,11 @@ gulp.task('build-afterglow', ['compileES6'], function(){
 });
 
 // Task to compile ES6 components
-gulp.task('compileES6', function(){
-
-	// Compile VIDEO.js components
-	gulp.src('./src/js/vjs-components/*.js')
-		.pipe(plugins.babel())
-		.pipe(gulp.dest(__dirname+'/dist/tmp/components'));
-
+gulp.task('compileES6',['compileVJSComponents'], function(){
 	// Create empty file
 	gulp.src(__dirname+'/dist/tmp/components/*.js')
 		.pipe(plugins.concat("afterglow-bundle.js"))
 		.pipe(gulp.dest(__dirname+"/dist/tmp/"));
-
 
 	// Compile
 	var extensions = ['.js','.json','.es6'];
@@ -112,9 +105,16 @@ gulp.task('compileES6', function(){
 	    .pipe(fs.createWriteStream(__dirname+"/dist/tmp/afterglow-bundle.js",{flags: 'a'}));
 });
 
+gulp.task('compileVJSComponents', function(){
+  // Compile VIDEO.js components
+  return gulp.src('./src/js/vjs-components/*.js')
+    .pipe(plugins.babel())
+    .pipe(gulp.dest(__dirname+'/dist/tmp/components'));
+})
+
 // Patch version bump
 gulp.task('bump', function(){
-	gulp.src('.')
+	return gulp.src('.')
 	.pipe(plugins.prompt.prompt({
         type: 'list',
         name: 'bump',
@@ -126,8 +126,8 @@ gulp.task('bump', function(){
     	}
     	else{
     		gulp.src('./package.json')
-			.pipe(plugins.bump({type:res.bump}))
-			.pipe(gulp.dest('./'));
+  			.pipe(plugins.bump({type:res.bump}))
+  			.pipe(gulp.dest('./'));
     	}
     }));
 });
