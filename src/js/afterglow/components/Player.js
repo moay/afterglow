@@ -66,7 +66,7 @@ class Player {
 
 			// Enable hotkeys
 			this.hotkeys({
-				enableFullscreen: false,
+				enableFullscreen: true,
 				enableNumbers: false,
 				enableVolumeScroll: false
 			});
