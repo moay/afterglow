@@ -46,6 +46,10 @@ class Player {
 		if(this.util.isYoutubePlayer(this.videoelement)){
 			this.applyYoutubeClasses();
 		}
+
+		else if(this.util.isVimeoPlayer(this.videoelement)){
+			this.applyVimeoClasses();
+		}
 	}
 
 	/**
@@ -159,6 +163,14 @@ class Player {
 		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
 			this.videoelement.addClass("vjs-using-native-controls");
 		}
+	}
+
+	/**
+	 * Applies all needed classes to the videoelement in order to provide proper vimeo playback
+	 * @return {void}
+	 */
+	applyVimeoClasses(){
+		this.videoelement.addClass("vjs-vimeo");
 	}
 
 	/**

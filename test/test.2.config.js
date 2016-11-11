@@ -69,12 +69,14 @@ describe("Afterglow Config", () => {
 		beforeEach(() => {
 			sinon.stub(Config.prototype, 'setDefaultOptions', () => {});
 			sinon.stub(Config.prototype, 'setYoutubeOptions', () => {});
+			sinon.stub(Config.prototype, 'setVimeoOptions', () => {});
 			sinon.stub(Config.prototype, 'setSkinControls', () => {});
 		});
 
 		afterEach(() => {
 			Config.prototype.setDefaultOptions.restore();
 			Config.prototype.setYoutubeOptions.restore();
+			Config.prototype.setVimeoOptions.restore();
 			Config.prototype.setSkinControls.restore();
 		});
 
@@ -116,6 +118,13 @@ describe("Afterglow Config", () => {
 			a_config = new Config(videoelement);
 			sinon.assert.calledOnce(a_config.setYoutubeOptions);
 			Util.prototype.isYoutubePlayer.restore();
+		});
+
+		it('should set the vimeo options if needed', () => {
+			sinon.stub(Util.prototype, 'isVimeoPlayer', () => { return true; });
+			a_config = new Config(videoelement);
+			sinon.assert.calledOnce(a_config.setVimeoOptions);
+			Util.prototype.isVimeoPlayer.restore();
 		});
 	});
 

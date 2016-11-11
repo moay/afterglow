@@ -11,7 +11,7 @@ chai.should();
 var assert = chai.assert;
 var expect = chai.expect;
 
-describe("DOMElement", () => {	
+describe("Util", () => {	
 	// Initiate the DOM
 	jsdom();
 
@@ -49,6 +49,21 @@ describe("DOMElement", () => {
 		it('should return a youtube file properly', () => {
 			var res = util.loadYoutubeThumbnailUrl('sometestid');
 			expect(res).to.eql('https://img.youtube.com/vi/sometestid/maxresdefault.jpg');
+		});
+	});
+
+	describe('isVimeoPlayer()', () => {
+		it('should properly check if the videoelement is a Vimeo player or not', () => {
+			var videoelement = {
+				hasAttribute: () => {
+					return 'somevalue'
+				}
+			}
+			sinon.spy(videoelement, 'hasAttribute');
+			var res = util.isVimeoPlayer(videoelement);
+			expect(videoelement.hasAttribute).to.have.been.calledOnce;
+			expect(videoelement.hasAttribute).to.have.been.calledWith('data-vimeo-id');
+			expect(res).to.equal('somevalue');
 		});
 	});
 

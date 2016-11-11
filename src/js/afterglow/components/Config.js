@@ -38,6 +38,10 @@ class Config {
 			if(util.isYoutubePlayer(this.videoelement)){
 				this.setYoutubeOptions();	
 			}
+			// Initialize vimeo if the current player is a vimeo player
+			if(util.isVimeoPlayer(this.videoelement)){
+				this.setVimeoOptions();	
+			}
 		}
 	}
 
@@ -134,6 +138,17 @@ class Config {
 				'iv_load_policy' : 3
 			};
 		}
+	}
+
+	/**
+	 * Sets options needed for vimeo to work and replaces the sources with the correct vimeo source
+	 */
+	setVimeoOptions(){
+		this.options.techOrder = ["vimeo"];
+		this.options.sources = [{
+			"type": "video/vimeo",
+			"src": "https://vimeo.com/"+this.getPlayerAttributeFromVideoElement('vimeo-id')
+		}];
 	}
 
 	/**

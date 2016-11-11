@@ -257,7 +257,7 @@ describe("Afterglow Player", () => {
 		});
 	});
 
-	describe('prepareVideoElement no youtube', () => {
+	describe('prepareVideoElement regular', () => {
 		var videoelement;
 
 		beforeEach(() => {
@@ -266,6 +266,8 @@ describe("Afterglow Player", () => {
 			sinon.stub(Player.prototype, 'applyParameters');
 			sinon.stub(Player.prototype, 'applyYoutubeClasses');
 			sinon.stub(Util.prototype, 'isYoutubePlayer', () => { return false });
+			sinon.stub(Player.prototype, 'applyVimeoClasses');
+			sinon.stub(Util.prototype, 'isVimeoPlayer', () => { return false });
 			player = new Player();
 			player.util = new Util;
 		});
@@ -276,6 +278,8 @@ describe("Afterglow Player", () => {
 			Player.prototype.applyParameters.restore();
 			Player.prototype.applyYoutubeClasses.restore();
 			Util.prototype.isYoutubePlayer.restore();
+			Player.prototype.applyVimeoClasses.restore();
+			Util.prototype.isVimeoPlayer.restore();
 		});
 
 		it('should call applyDefaultClasses() once', () => {
@@ -303,6 +307,8 @@ describe("Afterglow Player", () => {
 			sinon.stub(Player.prototype, 'applyParameters');
 			sinon.stub(Player.prototype, 'applyYoutubeClasses');
 			sinon.stub(Util.prototype, 'isYoutubePlayer', () => { return true });
+			sinon.stub(Player.prototype, 'applyVimeoClasses');
+			sinon.stub(Util.prototype, 'isVimeoPlayer', () => { return false });
 			player = new Player();
 			player.util = new Util;
 		});
@@ -313,11 +319,49 @@ describe("Afterglow Player", () => {
 			Player.prototype.applyParameters.restore();
 			Player.prototype.applyYoutubeClasses.restore();
 			Util.prototype.isYoutubePlayer.restore();
+			Player.prototype.applyVimeoClasses.restore();
+			Util.prototype.isVimeoPlayer.restore();
 		});
 
 		it('should call applyYoutubeClasses() once', () => {
 			player.prepareVideoElement();
 			expect(Player.prototype.applyYoutubeClasses).to.have.been.calledOnce;
+		});
+
+		it('should not call applyVimeoClasses() once', () => {
+			player.prepareVideoElement();
+			expect(Player.prototype.applyVimeoClasses).to.not.have.been.called;
+		});
+	});
+
+	describe('prepareVideoElement vimeo', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			sinon.stub(Player.prototype, 'applyDefaultClasses');
+			sinon.stub(Player.prototype, 'applyParameters');
+			sinon.stub(Player.prototype, 'applyYoutubeClasses');
+			sinon.stub(Util.prototype, 'isYoutubePlayer', () => { return false });
+			sinon.stub(Player.prototype, 'applyVimeoClasses');
+			sinon.stub(Util.prototype, 'isVimeoPlayer', () => { return true });
+			player = new Player();
+			player.util = new Util;
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+			Player.prototype.applyDefaultClasses.restore();
+			Player.prototype.applyParameters.restore();
+			Player.prototype.applyYoutubeClasses.restore();
+			Util.prototype.isYoutubePlayer.restore();
+			Player.prototype.applyVimeoClasses.restore();
+			Util.prototype.isVimeoPlayer.restore();
+		});
+
+		it('should call applyVimeoClasses() once', () => {
+			player.prepareVideoElement();
+			expect(Player.prototype.applyVimeoClasses).to.have.been.calledOnce;
 		});
 	});
 
@@ -643,6 +687,40 @@ describe("Afterglow Player", () => {
 			});
 			player.applyYoutubeClasses();
 			expect(player.videoelement.addClass).to.not.have.been.calledWith('vjs-using-native-controls');
+		});
+	});
+
+	describe('applyVimeoClasses()', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			
+			player = new Player();
+			player.util = new Util;
+
+			player.videoelement = {
+				addClass : () => {}
+			};
+
+			// Prevent iIOS Tests by default
+			navigator.__defineGetter__('platform', function(){
+			    return 'none' // customized user agent
+			});
+
+			sinon.spy(player.videoelement, 'addClass');
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+
+			player.videoelement.addClass;
+		});
+
+		it('should add the vimeo class properly', () => {
+			player.applyVimeoClasses();
+			expect(player.videoelement.addClass).to.have.been.calledOnce;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-vimeo');
 		});
 	});
 
