@@ -512,6 +512,9 @@ describe("Afterglow Lightbox", () => {
 					}
 				}
 			}};
+			window.videojs.getPlayers = function(){
+				return window.videojs.players;
+			}
 
 			//,  
 			//			sinon.stub(Util.prototype, 'isMobile');
