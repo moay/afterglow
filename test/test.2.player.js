@@ -503,22 +503,24 @@ describe("Afterglow Player", () => {
 		});
 
 		it('should not set data-maxwidth if data-overscale is not set or not false', () => {
-			player.applyParameters();
-			expect(player.videoelement.setAttribute).to.not.have.been.called;
-		});
-
-		it('should trigger responsivity stuff if has data-autoresize', () => {
 			player.videoelement.getAttribute.restore();
-			sinon.stub(player.videoelement, 'getAttribute', () => { return "fit" });
+			player.applyParameters();
+			expect(player.videoelement.setAttribute).to.have.been.calledOnce;
+			expect(player.videoelement.setAttribute).to.have.been.calledWith("data-ratio");
+		});
+
+		it('should trigger responsivity stuff if hasn\'t data-autoresize none or false', () => {
+			player.videoelement.getAttribute.restore();
 			player.applyParameters();
 			expect(player.videoelement.addClass).to.have.been.calledWith("vjs-responsive");
 		});
 
-		it('should trigger responsivity stuff if has class responsive', () => {
+		it('should not trigger responsivity stuff if has data-autoresize none', () => {
 			player.videoelement.hasClass.restore();
-			sinon.stub(player.videoelement, 'hasClass', () => { return true });
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', () => { return "none" });
 			player.applyParameters();
-			expect(player.videoelement.addClass).to.have.been.calledWith("vjs-responsive");
+			expect(player.videoelement.addClass).to.not.have.been.called;
 		});
 
 		it('should get the ratio correctly and pass it to the correct places', () => {

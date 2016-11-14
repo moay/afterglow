@@ -132,7 +132,7 @@ class Player {
 		}
 
 		// Apply some responsive stylings
-		if(this.videoelement.getAttribute("data-autoresize") === 'fit' || this.videoelement.hasClass("responsive")){
+		if(this.videoelement.getAttribute("data-autoresize") != 'none' && this.videoelement.getAttribute("data-autoresize") != 'false'){
 			this.videoelement.addClass("vjs-responsive");
 			let ratio = this.calculateRatio();
 			this.videoelement.node.style.paddingTop = (ratio * 100)+"%";
