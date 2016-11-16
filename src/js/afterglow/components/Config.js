@@ -130,7 +130,8 @@ class Config {
 		if(util.ie().actualVersion >= 8 && util.ie().actualVersion <= 11){
 			this.options.youtube = {
 				ytControls : 2,
-				color : "white"
+				color : "white",
+				modestbranding : 1
 			};
 		}
 		else{

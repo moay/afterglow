@@ -1,6 +1,6 @@
 /**
  * @license
- * Video.js 5.13.1 <http://videojs.com/>
+ * Video.js 5.12.6 <http://videojs.com/>
  * Copyright Brightcove, Inc. <https://www.brightcove.com/>
  * Available under Apache License Version 2.0
  * <https://github.com/videojs/video.js/blob/master/LICENSE>
@@ -46,10 +46,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var BigPlayButton = function (_Button) {
   _inherits(BigPlayButton, _Button);
 
-  function BigPlayButton() {
+  function BigPlayButton(player, options) {
     _classCallCheck(this, BigPlayButton);
 
-    return _possibleConstructorReturn(this, _Button.apply(this, arguments));
+    return _possibleConstructorReturn(this, _Button.call(this, player, options));
   }
 
   /**
@@ -58,6 +58,8 @@ var BigPlayButton = function (_Button) {
    * @return {String} The constructed class name
    * @method buildCSSClass
    */
+
+
   BigPlayButton.prototype.buildCSSClass = function buildCSSClass() {
     return 'vjs-big-play-button';
   };
@@ -94,11 +96,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -124,10 +126,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Button = function (_ClickableComponent) {
   _inherits(Button, _ClickableComponent);
 
-  function Button() {
+  function Button(player, options) {
     _classCallCheck(this, Button);
 
-    return _possibleConstructorReturn(this, _ClickableComponent.apply(this, arguments));
+    return _possibleConstructorReturn(this, _ClickableComponent.call(this, player, options));
   }
 
   /**
@@ -139,6 +141,8 @@ var Button = function (_ClickableComponent) {
    * @return {Element}
    * @method createEl
    */
+
+
   Button.prototype.createEl = function createEl() {
     var tag = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'button';
     var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -202,32 +206,6 @@ var Button = function (_ClickableComponent) {
   };
 
   /**
-   * Enable the button element
-   *
-   * @return {Component}
-   * @method enable
-   */
-
-
-  Button.prototype.enable = function enable() {
-    _ClickableComponent.prototype.enable.call(this);
-    this.el_.removeAttribute('disabled');
-  };
-
-  /**
-   * Disable the button element
-   *
-   * @return {Component}
-   * @method disable
-   */
-
-
-  Button.prototype.disable = function disable() {
-    _ClickableComponent.prototype.disable.call(this);
-    this.el_.setAttribute('disabled', 'disabled');
-  };
-
-  /**
    * Handle KeyPress (document level) - Extend with specific functionality for button
    *
    * @method handleKeyPress
@@ -251,7 +229,7 @@ var Button = function (_ClickableComponent) {
 _component2['default'].registerComponent('Button', Button);
 exports['default'] = Button;
 
-},{"139":139,"3":3,"5":5,"87":87}],3:[function(_dereq_,module,exports){
+},{"136":136,"3":3,"5":5,"85":85}],3:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -260,27 +238,27 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -315,7 +293,10 @@ var ClickableComponent = function (_Component) {
 
     _this.emitTapEvents();
 
-    _this.enable();
+    _this.on('tap', _this.handleClick);
+    _this.on('click', _this.handleClick);
+    _this.on('focus', _this.handleFocus);
+    _this.on('blur', _this.handleBlur);
     return _this;
   }
 
@@ -351,8 +332,6 @@ var ClickableComponent = function (_Component) {
       // let the screen reader user know that the text of the element may change
       'aria-live': 'polite'
     }, attributes);
-
-    this.tabIndex_ = props.tabIndex;
 
     var el = _Component.prototype.createEl.call(this, tag, props, attributes);
 
@@ -423,6 +402,30 @@ var ClickableComponent = function (_Component) {
   };
 
   /**
+   * Adds a child component inside this clickable-component
+   *
+   * @param {String|Component} child The class name or instance of a child to add
+   * @param {Object=} options Options, including options to be passed to children of the child.
+   * @return {Component} The child component (created by this process if a string was used)
+   * @method addChild
+   */
+
+
+  ClickableComponent.prototype.addChild = function addChild(child) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    // TODO: Fix adding an actionable child to a ClickableComponent; currently
+    // it will cause issues with assistive technology (e.g. screen readers)
+    // which support ARIA, since an element with role="button" cannot have
+    // actionable child elements.
+
+    // let className = this.constructor.name;
+    // log.warn(`Adding a child to a ClickableComponent (${className}) can cause issues with assistive technology which supports ARIA, since an element with role="button" cannot have actionable child elements.`);
+
+    return _Component.prototype.addChild.call(this, child, options);
+  };
+
+  /**
    * Enable the component element
    *
    * @return {Component}
@@ -433,13 +436,6 @@ var ClickableComponent = function (_Component) {
   ClickableComponent.prototype.enable = function enable() {
     this.removeClass('vjs-disabled');
     this.el_.setAttribute('aria-disabled', 'false');
-    if (typeof this.tabIndex_ !== 'undefined') {
-      this.el_.setAttribute('tabIndex', this.tabIndex_);
-    }
-    this.on('tap', this.handleClick);
-    this.on('click', this.handleClick);
-    this.on('focus', this.handleFocus);
-    this.on('blur', this.handleBlur);
     return this;
   };
 
@@ -454,13 +450,6 @@ var ClickableComponent = function (_Component) {
   ClickableComponent.prototype.disable = function disable() {
     this.addClass('vjs-disabled');
     this.el_.setAttribute('aria-disabled', 'true');
-    if (typeof this.tabIndex_ !== 'undefined') {
-      this.el_.removeAttribute('tabIndex');
-    }
-    this.off('tap', this.handleClick);
-    this.off('click', this.handleClick);
-    this.off('focus', this.handleFocus);
-    this.off('blur', this.handleBlur);
     return this;
   };
 
@@ -521,7 +510,7 @@ var ClickableComponent = function (_Component) {
 _component2['default'].registerComponent('ClickableComponent', ClickableComponent);
 exports['default'] = ClickableComponent;
 
-},{"139":139,"5":5,"82":82,"83":83,"84":84,"87":87,"95":95}],4:[function(_dereq_,module,exports){
+},{"136":136,"5":5,"80":80,"81":81,"82":82,"85":85,"92":92}],4:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -580,35 +569,35 @@ exports['default'] = CloseButton;
 
 exports.__esModule = true;
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _guid = _dereq_(86);
+var _guid = _dereq_(84);
 
 var Guid = _interopRequireWildcard(_guid);
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _toTitleCase = _dereq_(92);
+var _toTitleCase = _dereq_(89);
 
 var _toTitleCase2 = _interopRequireDefault(_toTitleCase);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
@@ -939,12 +928,6 @@ var Component = function () {
 
 
   Component.prototype.getChild = function getChild(name) {
-    if (!name) {
-      return;
-    }
-
-    name = (0, _toTitleCase2['default'])(name);
-
     return this.childNameIndex_[name];
   };
 
@@ -985,9 +968,9 @@ var Component = function () {
     var component = void 0;
     var componentName = void 0;
 
-    // If child is a string, create component with options
+    // If child is a string, create nt with options
     if (typeof child === 'string') {
-      componentName = (0, _toTitleCase2['default'])(child);
+      componentName = child;
 
       // Options can also be specified as a boolean, so convert to an empty object if false.
       if (!options) {
@@ -1000,7 +983,9 @@ var Component = function () {
         options = {};
       }
 
-      var componentClassName = options.componentClass || componentName;
+      // If no componentClass in options, assume componentClass is the name lowercased
+      // (e.g. playButton)
+      var componentClassName = options.componentClass || (0, _toTitleCase2['default'])(componentName);
 
       // Set name through options
       options.name = componentName;
@@ -1676,48 +1661,6 @@ var Component = function () {
   };
 
   /**
-   * Get the value of an attribute on the component's element
-   *
-   * @param {String} attribute Attribute to get
-   * @return {String}
-   * @method getAttribute
-   */
-
-
-  Component.prototype.getAttribute = function getAttribute(attribute) {
-    return Dom.getAttribute(this.el_, attribute);
-  };
-
-  /**
-   * Set the value of an attribute on the component's element
-   *
-   * @param {String} attribute Attribute to set
-   * @param {String} value Value to set the attribute to
-   * @return {Component}
-   * @method setAttribute
-   */
-
-
-  Component.prototype.setAttribute = function setAttribute(attribute, value) {
-    Dom.setAttribute(this.el_, attribute, value);
-    return this;
-  };
-
-  /**
-   * Remove an attribute from the component's element
-   *
-   * @param {String} attribute Attribute to remove
-   * @return {Component}
-   * @method removeAttribute
-   */
-
-
-  Component.prototype.removeAttribute = function removeAttribute(attribute) {
-    Dom.removeAttribute(this.el_, attribute);
-    return this;
-  };
-
-  /**
    * Set or get the width of the component (CSS values)
    * Setting the video tag dimension values only works with values in pixels.
    * Percent values will not work.
@@ -1854,20 +1797,16 @@ var Component = function () {
       var computedStyle = _window2['default'].getComputedStyle(this.el_);
 
       computedWidthOrHeight = computedStyle.getPropertyValue(widthOrHeight) || computedStyle[widthOrHeight];
-    }
-
-    // remove 'px' from variable and parse as integer
-    computedWidthOrHeight = parseFloat(computedWidthOrHeight);
-
-    // if the computed value is still 0, it's possible that the browser is lying
-    // and we want to check the offset values.
-    // This code also runs on IE8 and wherever getComputedStyle doesn't exist.
-    if (computedWidthOrHeight === 0) {
+    } else if (this.el_.currentStyle) {
+      // ie 8 doesn't support computed style, shim it
+      // return clientWidth or clientHeight instead for better accuracy
       var rule = 'offset' + (0, _toTitleCase2['default'])(widthOrHeight);
 
       computedWidthOrHeight = this.el_[rule];
     }
 
+    // remove 'px' from variable and parse as integer
+    computedWidthOrHeight = parseFloat(computedWidthOrHeight);
     return computedWidthOrHeight;
   };
 
@@ -2156,18 +2095,11 @@ var Component = function () {
 
 
   Component.registerComponent = function registerComponent(name, comp) {
-    if (!name) {
-      return;
-    }
-
-    name = (0, _toTitleCase2['default'])(name);
-
     if (!Component.components_) {
       Component.components_ = {};
     }
 
     Component.components_[name] = comp;
-
     return comp;
   };
 
@@ -2182,19 +2114,12 @@ var Component = function () {
 
 
   Component.getComponent = function getComponent(name) {
-    if (!name) {
-      return;
-    }
-
-    name = (0, _toTitleCase2['default'])(name);
-
     if (Component.components_ && Component.components_[name]) {
       return Component.components_[name];
     }
 
     if (_window2['default'] && _window2['default'].videojs && _window2['default'].videojs[name]) {
       _log2['default'].warn('The ' + name + ' component was added to the videojs object when it should be registered using videojs.registerComponent(name, component)');
-
       return _window2['default'].videojs[name];
     }
   };
@@ -2257,7 +2182,7 @@ var Component = function () {
 Component.registerComponent('Component', Component);
 exports['default'] = Component;
 
-},{"82":82,"83":83,"84":84,"86":86,"87":87,"88":88,"92":92,"96":96}],6:[function(_dereq_,module,exports){
+},{"80":80,"81":81,"82":82,"84":84,"85":85,"86":86,"89":89,"93":93}],6:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2371,7 +2296,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
@@ -2466,7 +2391,7 @@ var AudioTrackMenuItem = function (_MenuItem) {
 _component2['default'].registerComponent('AudioTrackMenuItem', AudioTrackMenuItem);
 exports['default'] = AudioTrackMenuItem;
 
-},{"48":48,"5":5,"84":84}],8:[function(_dereq_,module,exports){
+},{"48":48,"5":5,"82":82}],8:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2665,7 +2590,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
@@ -2740,7 +2665,7 @@ var LiveDisplay = function (_Component) {
 _component2['default'].registerComponent('LiveDisplay', LiveDisplay);
 exports['default'] = LiveDisplay;
 
-},{"5":5,"82":82}],11:[function(_dereq_,module,exports){
+},{"5":5,"80":80}],11:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2753,7 +2678,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
@@ -2872,7 +2797,7 @@ MuteToggle.prototype.controlText_ = 'Mute';
 _component2['default'].registerComponent('MuteToggle', MuteToggle);
 exports['default'] = MuteToggle;
 
-},{"2":2,"5":5,"82":82}],12:[function(_dereq_,module,exports){
+},{"2":2,"5":5,"80":80}],12:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3001,7 +2926,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
@@ -3193,7 +3118,7 @@ PlaybackRateMenuButton.prototype.controlText_ = 'Playback Rate';
 _component2['default'].registerComponent('PlaybackRateMenuButton', PlaybackRateMenuButton);
 exports['default'] = PlaybackRateMenuButton;
 
-},{"14":14,"47":47,"49":49,"5":5,"82":82}],14:[function(_dereq_,module,exports){
+},{"14":14,"47":47,"49":49,"5":5,"80":80}],14:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3287,7 +3212,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
@@ -3393,34 +3318,34 @@ var LoadProgressBar = function (_Component) {
 _component2['default'].registerComponent('LoadProgressBar', LoadProgressBar);
 exports['default'] = LoadProgressBar;
 
-},{"5":5,"82":82}],16:[function(_dereq_,module,exports){
+},{"5":5,"80":80}],16:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
+
+var _window = _dereq_(93);
+
+var _window2 = _interopRequireDefault(_window);
 
 var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
 
-var _throttle = _dereq_(101);
+var _throttle = _dereq_(98);
 
 var _throttle2 = _interopRequireDefault(_throttle);
-
-var _computedStyle = _dereq_(81);
-
-var _computedStyle2 = _interopRequireDefault(_computedStyle);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
@@ -3501,7 +3426,7 @@ var MouseTimeDisplay = function (_Component) {
     if (this.keepTooltipsInside) {
       var clampedPosition = this.clampPosition_(position);
       var difference = position - clampedPosition + 1;
-      var tooltipWidth = parseFloat((0, _computedStyle2['default'])(this.tooltip, 'width'));
+      var tooltipWidth = parseFloat(_window2['default'].getComputedStyle(this.tooltip).width);
       var tooltipWidthHalf = tooltipWidth / 2;
 
       this.tooltip.innerHTML = time;
@@ -3530,8 +3455,8 @@ var MouseTimeDisplay = function (_Component) {
       return position;
     }
 
-    var playerWidth = parseFloat((0, _computedStyle2['default'])(this.player().el(), 'width'));
-    var tooltipWidth = parseFloat((0, _computedStyle2['default'])(this.tooltip, 'width'));
+    var playerWidth = parseFloat(_window2['default'].getComputedStyle(this.player().el()).width);
+    var tooltipWidth = parseFloat(_window2['default'].getComputedStyle(this.tooltip).width);
     var tooltipWidthHalf = tooltipWidth / 2;
     var actualPosition = position;
 
@@ -3550,7 +3475,7 @@ var MouseTimeDisplay = function (_Component) {
 _component2['default'].registerComponent('MouseTimeDisplay', MouseTimeDisplay);
 exports['default'] = MouseTimeDisplay;
 
-},{"101":101,"5":5,"81":81,"82":82,"84":84,"85":85}],17:[function(_dereq_,module,exports){
+},{"5":5,"80":80,"82":82,"83":83,"93":93,"98":98}],17:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3559,11 +3484,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
 
@@ -3637,7 +3562,7 @@ var PlayProgressBar = function (_Component) {
 _component2['default'].registerComponent('PlayProgressBar', PlayProgressBar);
 exports['default'] = PlayProgressBar;
 
-},{"5":5,"84":84,"85":85}],18:[function(_dereq_,module,exports){
+},{"5":5,"82":82,"83":83}],18:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3706,6 +3631,10 @@ exports['default'] = ProgressControl;
 
 exports.__esModule = true;
 
+var _window = _dereq_(93);
+
+var _window2 = _interopRequireDefault(_window);
+
 var _slider = _dereq_(57);
 
 var _slider2 = _interopRequireDefault(_slider);
@@ -3714,17 +3643,13 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
-
-var _computedStyle = _dereq_(81);
-
-var _computedStyle2 = _interopRequireDefault(_computedStyle);
 
 _dereq_(15);
 
@@ -3805,8 +3730,8 @@ var SeekBar = function (_Slider) {
       this.updateAriaAttributes(this.tooltipProgressBar.el_);
       this.tooltipProgressBar.el_.style.width = this.bar.el_.style.width;
 
-      var playerWidth = parseFloat((0, _computedStyle2['default'])(this.player().el(), 'width'));
-      var tooltipWidth = parseFloat((0, _computedStyle2['default'])(this.tooltipProgressBar.tooltip, 'width'));
+      var playerWidth = parseFloat(_window2['default'].getComputedStyle(this.player().el()).width);
+      var tooltipWidth = parseFloat(_window2['default'].getComputedStyle(this.tooltipProgressBar.tooltip).width);
       var tooltipStyle = this.tooltipProgressBar.el().style;
 
       tooltipStyle.maxWidth = Math.floor(playerWidth - tooltipWidth / 2) + 'px';
@@ -3927,7 +3852,7 @@ SeekBar.prototype.playerEvent = 'timeupdate';
 _component2['default'].registerComponent('SeekBar', SeekBar);
 exports['default'] = SeekBar;
 
-},{"15":15,"17":17,"20":20,"5":5,"57":57,"81":81,"84":84,"85":85}],20:[function(_dereq_,module,exports){
+},{"15":15,"17":17,"20":20,"5":5,"57":57,"82":82,"83":83,"93":93}],20:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -3936,11 +3861,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
 
@@ -4012,7 +3937,7 @@ var TooltipProgressBar = function (_Component) {
 _component2['default'].registerComponent('TooltipProgressBar', TooltipProgressBar);
 exports['default'] = TooltipProgressBar;
 
-},{"5":5,"84":84,"85":85}],21:[function(_dereq_,module,exports){
+},{"5":5,"82":82,"83":83}],21:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4365,11 +4290,11 @@ var _menu = _dereq_(49);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _toTitleCase = _dereq_(92);
+var _toTitleCase = _dereq_(89);
 
 var _toTitleCase2 = _interopRequireDefault(_toTitleCase);
 
@@ -4544,7 +4469,7 @@ ChaptersButton.prototype.controlText_ = 'Chapters';
 _component2['default'].registerComponent('ChaptersButton', ChaptersButton);
 exports['default'] = ChaptersButton;
 
-},{"26":26,"30":30,"31":31,"49":49,"5":5,"82":82,"92":92}],26:[function(_dereq_,module,exports){
+},{"26":26,"30":30,"31":31,"49":49,"5":5,"80":80,"89":89}],26:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4557,7 +4482,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
@@ -4638,7 +4563,7 @@ var ChaptersTrackMenuItem = function (_MenuItem) {
 _component2['default'].registerComponent('ChaptersTrackMenuItem', ChaptersTrackMenuItem);
 exports['default'] = ChaptersTrackMenuItem;
 
-},{"48":48,"5":5,"84":84}],27:[function(_dereq_,module,exports){
+},{"48":48,"5":5,"82":82}],27:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -4651,7 +4576,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
@@ -4752,7 +4677,7 @@ DescriptionsButton.prototype.controlText_ = 'Descriptions';
 _component2['default'].registerComponent('DescriptionsButton', DescriptionsButton);
 exports['default'] = DescriptionsButton;
 
-},{"30":30,"5":5,"84":84}],28:[function(_dereq_,module,exports){
+},{"30":30,"5":5,"82":82}],28:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5015,15 +4940,15 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -5157,7 +5082,7 @@ var TextTrackMenuItem = function (_MenuItem) {
 _component2['default'].registerComponent('TextTrackMenuItem', TextTrackMenuItem);
 exports['default'] = TextTrackMenuItem;
 
-},{"48":48,"5":5,"84":84,"95":95,"96":96}],32:[function(_dereq_,module,exports){
+},{"48":48,"5":5,"82":82,"92":92,"93":93}],32:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5166,11 +5091,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
 
@@ -5258,7 +5183,7 @@ var CurrentTimeDisplay = function (_Component) {
 _component2['default'].registerComponent('CurrentTimeDisplay', CurrentTimeDisplay);
 exports['default'] = CurrentTimeDisplay;
 
-},{"5":5,"82":82,"85":85}],33:[function(_dereq_,module,exports){
+},{"5":5,"80":80,"83":83}],33:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5267,11 +5192,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
 
@@ -5366,7 +5291,7 @@ var DurationDisplay = function (_Component) {
 _component2['default'].registerComponent('DurationDisplay', DurationDisplay);
 exports['default'] = DurationDisplay;
 
-},{"5":5,"82":82,"85":85}],34:[function(_dereq_,module,exports){
+},{"5":5,"80":80,"83":83}],34:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5375,11 +5300,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
 
@@ -5472,7 +5397,7 @@ var RemainingTimeDisplay = function (_Component) {
 _component2['default'].registerComponent('RemainingTimeDisplay', RemainingTimeDisplay);
 exports['default'] = RemainingTimeDisplay;
 
-},{"5":5,"82":82,"85":85}],35:[function(_dereq_,module,exports){
+},{"5":5,"80":80,"83":83}],35:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5542,7 +5467,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
@@ -5603,7 +5528,7 @@ var TrackButton = function (_MenuButton) {
 _component2['default'].registerComponent('TrackButton', TrackButton);
 exports['default'] = TrackButton;
 
-},{"47":47,"5":5,"84":84}],37:[function(_dereq_,module,exports){
+},{"47":47,"5":5,"82":82}],37:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5616,7 +5541,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
@@ -5760,7 +5685,7 @@ VolumeBar.prototype.playerEvent = 'volumechange';
 _component2['default'].registerComponent('VolumeBar', VolumeBar);
 exports['default'] = VolumeBar;
 
-},{"39":39,"5":5,"57":57,"84":84}],38:[function(_dereq_,module,exports){
+},{"39":39,"5":5,"57":57,"82":82}],38:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -5900,7 +5825,7 @@ exports['default'] = VolumeLevel;
 
 exports.__esModule = true;
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
@@ -6089,7 +6014,7 @@ VolumeMenuButton.prototype.controlText_ = 'Mute';
 _component2['default'].registerComponent('VolumeMenuButton', VolumeMenuButton);
 exports['default'] = VolumeMenuButton;
 
-},{"11":11,"37":37,"5":5,"53":53,"54":54,"84":84}],41:[function(_dereq_,module,exports){
+},{"11":11,"37":37,"5":5,"53":53,"54":54,"82":82}],41:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -6102,7 +6027,7 @@ var _modalDialog = _dereq_(50);
 
 var _modalDialog2 = _interopRequireDefault(_modalDialog);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
@@ -6181,12 +6106,12 @@ ErrorDisplay.prototype.options_ = (0, _mergeOptions2['default'])(_modalDialog2['
 _component2['default'].registerComponent('ErrorDisplay', ErrorDisplay);
 exports['default'] = ErrorDisplay;
 
-},{"5":5,"50":50,"88":88}],42:[function(_dereq_,module,exports){
+},{"5":5,"50":50,"86":86}],42:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
@@ -6247,14 +6172,14 @@ EventTarget.prototype.dispatchEvent = EventTarget.prototype.trigger;
 
 exports['default'] = EventTarget;
 
-},{"83":83}],43:[function(_dereq_,module,exports){
+},{"81":81}],43:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
@@ -6340,12 +6265,12 @@ var extendFn = function extendFn(superClass) {
 
 exports['default'] = extendFn;
 
-},{"87":87}],44:[function(_dereq_,module,exports){
+},{"85":85}],44:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -6396,7 +6321,7 @@ if (browserApi) {
 
 exports['default'] = FullscreenApi;
 
-},{"95":95}],45:[function(_dereq_,module,exports){
+},{"92":92}],45:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -6461,7 +6386,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                                                                                                                                                                                                                                                                                */
 
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -6559,7 +6484,7 @@ for (var errNum = 0; errNum < MediaError.errorTypes.length; errNum++) {
 
 exports['default'] = MediaError;
 
-},{"139":139}],47:[function(_dereq_,module,exports){
+},{"136":136}],47:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -6576,15 +6501,15 @@ var _menu = _dereq_(49);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _toTitleCase = _dereq_(92);
+var _toTitleCase = _dereq_(89);
 
 var _toTitleCase2 = _interopRequireDefault(_toTitleCase);
 
@@ -6889,7 +6814,7 @@ var MenuButton = function (_ClickableComponent) {
 _component2['default'].registerComponent('MenuButton', MenuButton);
 exports['default'] = MenuButton;
 
-},{"3":3,"49":49,"5":5,"82":82,"84":84,"92":92}],48:[function(_dereq_,module,exports){
+},{"3":3,"49":49,"5":5,"80":80,"82":82,"89":89}],48:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -6902,7 +6827,7 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -7008,7 +6933,7 @@ var MenuItem = function (_ClickableComponent) {
 _component2['default'].registerComponent('MenuItem', MenuItem);
 exports['default'] = MenuItem;
 
-},{"139":139,"3":3,"5":5}],49:[function(_dereq_,module,exports){
+},{"136":136,"3":3,"5":5}],49:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -7017,15 +6942,15 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
@@ -7204,16 +7129,16 @@ var Menu = function (_Component) {
 _component2['default'].registerComponent('Menu', Menu);
 exports['default'] = Menu;
 
-},{"5":5,"82":82,"83":83,"84":84}],50:[function(_dereq_,module,exports){
+},{"5":5,"80":80,"81":81,"82":82}],50:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
@@ -7632,7 +7557,7 @@ ModalDialog.prototype.options_ = {
 _component2['default'].registerComponent('ModalDialog', ModalDialog);
 exports['default'] = ModalDialog;
 
-},{"5":5,"82":82,"84":84}],51:[function(_dereq_,module,exports){
+},{"5":5,"80":80,"82":82}],51:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -7641,47 +7566,47 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _guid = _dereq_(86);
+var _guid = _dereq_(84);
 
 var Guid = _interopRequireWildcard(_guid);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _toTitleCase = _dereq_(92);
+var _toTitleCase = _dereq_(89);
 
 var _toTitleCase2 = _interopRequireDefault(_toTitleCase);
 
-var _timeRanges = _dereq_(91);
+var _timeRanges = _dereq_(88);
 
-var _buffer = _dereq_(80);
+var _buffer = _dereq_(79);
 
-var _stylesheet = _dereq_(90);
+var _stylesheet = _dereq_(87);
 
 var stylesheet = _interopRequireWildcard(_stylesheet);
 
@@ -7693,19 +7618,19 @@ var _mediaError = _dereq_(46);
 
 var _mediaError2 = _interopRequireDefault(_mediaError);
 
-var _tuple = _dereq_(148);
+var _tuple = _dereq_(145);
 
 var _tuple2 = _interopRequireDefault(_tuple);
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-var _textTrackListConverter = _dereq_(70);
+var _textTrackListConverter = _dereq_(69);
 
 var _textTrackListConverter2 = _interopRequireDefault(_textTrackListConverter);
 
@@ -7713,25 +7638,25 @@ var _modalDialog = _dereq_(50);
 
 var _modalDialog2 = _interopRequireDefault(_modalDialog);
 
-var _tech = _dereq_(63);
+var _tech = _dereq_(62);
 
 var _tech2 = _interopRequireDefault(_tech);
 
-var _audioTrackList = _dereq_(64);
+var _audioTrackList = _dereq_(63);
 
 var _audioTrackList2 = _interopRequireDefault(_audioTrackList);
 
-var _videoTrackList = _dereq_(77);
+var _videoTrackList = _dereq_(76);
 
 var _videoTrackList2 = _interopRequireDefault(_videoTrackList);
 
-_dereq_(62);
+_dereq_(61);
 
-_dereq_(60);
+_dereq_(59);
 
 _dereq_(55);
 
-_dereq_(69);
+_dereq_(68);
 
 _dereq_(45);
 
@@ -7743,9 +7668,9 @@ _dereq_(8);
 
 _dereq_(41);
 
-_dereq_(72);
+_dereq_(71);
 
-_dereq_(61);
+_dereq_(60);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
@@ -8236,7 +8161,7 @@ var Player = function (_Component) {
   };
 
   /**
-   * Get/set fluid mode
+   * Add/remove the vjs-fluid class
    *
    * @param {Boolean} bool Value of true adds the class, value of false removes the class
    */
@@ -8254,8 +8179,6 @@ var Player = function (_Component) {
     } else {
       this.removeClass('vjs-fluid');
     }
-
-    this.updateStyleEl_();
   };
 
   /**
@@ -8316,7 +8239,7 @@ var Player = function (_Component) {
     if (this.aspectRatio_ !== undefined && this.aspectRatio_ !== 'auto') {
       // Use any aspectRatio that's been specifically set
       aspectRatio = this.aspectRatio_;
-    } else if (this.videoWidth() > 0) {
+    } else if (this.videoWidth()) {
       // Otherwise try to get the aspect ratio from the video metadata
       aspectRatio = this.videoWidth() + ':' + this.videoHeight();
     } else {
@@ -8415,13 +8338,10 @@ var Player = function (_Component) {
 
     if (source) {
       this.currentType_ = source.type;
-
       if (source.src === this.cache_.src && this.cache_.currentTime > 0) {
         techOptions.startTime = this.cache_.currentTime;
       }
 
-      this.cache_.sources = null;
-      this.cache_.source = source;
       this.cache_.src = source.src;
     }
 
@@ -9719,10 +9639,7 @@ var Player = function (_Component) {
         // the tech loop to check for a compatible technology
         this.sourceList_([source]);
       } else {
-        this.cache_.sources = null;
-        this.cache_.source = source;
         this.cache_.src = source.src;
-
         this.currentType_ = source.type || '';
 
         // wait until the tech is ready to set the source
@@ -9773,8 +9690,6 @@ var Player = function (_Component) {
         // load this technology with the chosen source
         this.loadTech_(sourceTech.tech, sourceTech.source);
       }
-
-      this.cache_.sources = sources;
     } else {
       // We need to wrap this in a timeout to give folks a chance to add error event handlers
       this.setTimeout(function () {
@@ -9811,45 +9726,6 @@ var Player = function (_Component) {
     this.loadTech_((0, _toTitleCase2['default'])(this.options_.techOrder[0]), null);
     this.techCall_('reset');
     return this;
-  };
-
-  /**
-   * Returns the current source objects.
-   *
-   * @return {Object[]} The current source objects
-   * @method currentSources
-   */
-
-
-  Player.prototype.currentSources = function currentSources() {
-    var source = this.currentSource();
-    var sources = [];
-
-    // assume `{}` or `{ src }`
-    if (Object.keys(source).length !== 0) {
-      sources.push(source);
-    }
-
-    return this.cache_.sources || sources;
-  };
-
-  /**
-   * Returns the current source object.
-   *
-   * @return {Object} The current source object
-   * @method currentSource
-   */
-
-
-  Player.prototype.currentSource = function currentSource() {
-    var source = {};
-    var src = this.currentSrc();
-
-    if (src) {
-      source.src = src;
-    }
-
-    return this.cache_.source || source;
   };
 
   /**
@@ -10423,22 +10299,15 @@ var Player = function (_Component) {
   };
 
   /**
-   * Creates a remote text track object and returns an html track element.
+   * Add a remote text track
    *
-   * @param {Object} options The object should contain values for
-   * kind, language, label, and src (location of the WebVTT file)
-   * @param {Boolean} [manualCleanup=true] if set to false, the TextTrack will be
-   * automatically removed from the video element whenever the source changes
-   * @return {HTMLTrackElement} An Html Track Element.
-   * This can be an emulated {@link HTMLTrackElement} or a native one.
-   * @deprecated The default value of the "manualCleanup" parameter will default
-   * to "false" in upcoming versions of Video.js
+   * @param {Object} options    Options for remote text track
    */
 
 
-  Player.prototype.addRemoteTextTrack = function addRemoteTextTrack(options, manualCleanup) {
+  Player.prototype.addRemoteTextTrack = function addRemoteTextTrack(options) {
     if (this.tech_) {
-      return this.tech_.addRemoteTextTrack(options, manualCleanup);
+      return this.tech_.addRemoteTextTrack(options);
     }
   };
 
@@ -10600,10 +10469,6 @@ var Player = function (_Component) {
 
     var tagOptions = Dom.getElAttributes(tag);
     var dataSetup = tagOptions['data-setup'];
-
-    if (Dom.hasElClass(tag, 'vjs-fluid')) {
-      tagOptions.fluid = true;
-    }
 
     // Check if data-setup attr exists.
     if (dataSetup !== null) {
@@ -10860,7 +10725,7 @@ TECH_EVENTS_RETRIGGER.forEach(function (event) {
 _component2['default'].registerComponent('Player', Player);
 exports['default'] = Player;
 
-},{"1":1,"139":139,"148":148,"4":4,"41":41,"44":44,"45":45,"46":46,"5":5,"50":50,"55":55,"60":60,"61":61,"62":62,"63":63,"64":64,"69":69,"70":70,"72":72,"77":77,"79":79,"8":8,"80":80,"82":82,"83":83,"84":84,"86":86,"87":87,"88":88,"90":90,"91":91,"92":92,"95":95,"96":96}],52:[function(_dereq_,module,exports){
+},{"1":1,"136":136,"145":145,"4":4,"41":41,"44":44,"45":45,"46":46,"5":5,"50":50,"55":55,"59":59,"60":60,"61":61,"62":62,"63":63,"68":68,"69":69,"71":71,"76":76,"78":78,"79":79,"8":8,"80":80,"81":81,"82":82,"84":84,"85":85,"86":86,"87":87,"88":88,"89":89,"92":92,"93":93}],52:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11015,15 +10880,15 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
@@ -11106,7 +10971,7 @@ var Popup = function (_Component) {
 _component2['default'].registerComponent('Popup', Popup);
 exports['default'] = Popup;
 
-},{"5":5,"82":82,"83":83,"84":84}],55:[function(_dereq_,module,exports){
+},{"5":5,"80":80,"81":81,"82":82}],55:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11119,15 +10984,15 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
@@ -11273,21 +11138,21 @@ var PosterImage = function (_ClickableComponent) {
 _component2['default'].registerComponent('PosterImage', PosterImage);
 exports['default'] = PosterImage;
 
-},{"3":3,"5":5,"79":79,"82":82,"84":84}],56:[function(_dereq_,module,exports){
+},{"3":3,"5":5,"78":78,"80":80,"82":82}],56:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports.hasLoaded = exports.autoSetupTimeout = exports.autoSetup = undefined;
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
@@ -11390,7 +11255,7 @@ exports.autoSetup = autoSetup;
 exports.autoSetupTimeout = autoSetupTimeout;
 exports.hasLoaded = hasLoaded;
 
-},{"83":83,"95":95,"96":96}],57:[function(_dereq_,module,exports){
+},{"81":81,"92":92,"93":93}],57:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11399,11 +11264,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -11687,44 +11552,7 @@ var Slider = function (_Component) {
 _component2['default'].registerComponent('Slider', Slider);
 exports['default'] = Slider;
 
-},{"139":139,"5":5,"82":82}],58:[function(_dereq_,module,exports){
-"use strict";
-
-exports.__esModule = true;
-exports["default"] = timeExpiringCache;
-/**
- * @file flash-cache.js
- *
- * Auto-caching method wrapper to avoid calling through to Flash too
- * often.
- */
-
-/**
- * Returns a new getter function that returns a cached value if
- * invoked multiple times within the specified duration.
- *
- * @param {Function} getter the function to be cached
- * @param {Number} cacheDuration the number of milliseconds to cache
- * results for
- * @return {Function} a new function that returns cached results if
- * invoked multiple times within the cache duration
- */
-function timeExpiringCache(getter, cacheDuration) {
-  var result = function cachedGetter() {
-    var now = new Date().getTime();
-
-    if (now - result.lastCheckTime_ >= cacheDuration) {
-      result.lastCheckTime_ = now;
-      result.cache_ = getter();
-    }
-    return result.cache_;
-  };
-
-  result.lastCheckTime_ = -Infinity;
-  return result;
-}
-
-},{}],59:[function(_dereq_,module,exports){
+},{"136":136,"5":5,"80":80}],58:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -11848,42 +11676,38 @@ function FlashRtmpDecorator(Flash) {
 
 exports['default'] = FlashRtmpDecorator;
 
-},{}],60:[function(_dereq_,module,exports){
+},{}],59:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _tech = _dereq_(63);
+var _tech = _dereq_(62);
 
 var _tech2 = _interopRequireDefault(_tech);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _url = _dereq_(93);
+var _url = _dereq_(90);
 
 var Url = _interopRequireWildcard(_url);
 
-var _timeRanges = _dereq_(91);
+var _timeRanges = _dereq_(88);
 
-var _flashRtmp = _dereq_(59);
+var _flashRtmp = _dereq_(58);
 
 var _flashRtmp2 = _interopRequireDefault(_flashRtmp);
-
-var _flashCache = _dereq_(58);
-
-var _flashCache2 = _interopRequireDefault(_flashCache);
 
 var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
@@ -11951,34 +11775,6 @@ var Flash = function (_Tech) {
     _this.on('seeked', function () {
       this.lastSeekTarget_ = undefined;
     });
-
-    // calling into the SWF can be expensive, especially if Flash is
-    // busy rendering video frames
-    // automatically cache commonly used properties for a short period
-    // of time so that multiple calls within a short time period don't
-    // all pay a big performance penalty for properties that change
-    // relatively slowly over time
-    var getCurrentTimeCached = (0, _flashCache2['default'])(function () {
-      return _this.el_.vjs_getProperty('currentTime');
-    }, 100);
-
-    _this.currentTime = function (time) {
-      // when seeking make the reported time keep up with the requested time
-      // by reading the time we're seeking to
-      if (_this.seeking()) {
-        return _this.lastSeekTarget_ || 0;
-      }
-
-      return getCurrentTimeCached();
-    };
-    _this.buffered = (0, _flashCache2['default'])(function () {
-      var ranges = _this.el_.vjs_getProperty('buffered');
-
-      if (ranges.length === 0) {
-        return (0, _timeRanges.createTimeRange)();
-      }
-      return (0, _timeRanges.createTimeRange)(ranges[0][0], ranges[0][1]);
-    }, 100);
     return _this;
   }
 
@@ -12153,6 +11949,16 @@ var Flash = function (_Tech) {
    * @method currentTime
    */
 
+
+  Flash.prototype.currentTime = function currentTime(time) {
+    // when seeking make the reported time keep up with the requested time
+    // by reading the time we're seeking to
+    if (this.seeking()) {
+      return this.lastSeekTarget_ || 0;
+    }
+    return this.el_.vjs_getProperty('currentTime');
+  };
+
   /**
    * Get current source
    *
@@ -12237,6 +12043,16 @@ var Flash = function (_Tech) {
    * @return {TimeRangeObject}
    * @method buffered
    */
+
+
+  Flash.prototype.buffered = function buffered() {
+    var ranges = this.el_.vjs_getProperty('buffered');
+
+    if (ranges.length === 0) {
+      return (0, _timeRanges.createTimeRange)();
+    }
+    return (0, _timeRanges.createTimeRange)(ranges[0][0], ranges[0][1]);
+  };
 
   /**
    * Get fullscreen support -
@@ -12427,16 +12243,8 @@ Flash.checkReady = function (tech) {
 // Trigger events from the swf on the player
 Flash.onEvent = function (swfID, eventName) {
   var tech = Dom.getEl(swfID).tech;
-  var args = Array.prototype.slice.call(arguments, 2);
 
-  // dispatch Flash events asynchronously for two reasons:
-  // - Flash swallows any exceptions generated by javascript it
-  //   invokes
-  // - Flash is suspended until the javascript returns which may cause
-  //   playback performance issues
-  tech.setTimeout(function () {
-    tech.trigger(eventName, args);
-  }, 1);
+  tech.trigger(eventName, Array.prototype.slice.call(arguments, 2));
 };
 
 // Log errors from the swf
@@ -12536,7 +12344,7 @@ _component2['default'].registerComponent('Flash', Flash);
 _tech2['default'].registerTech('Flash', Flash);
 exports['default'] = Flash;
 
-},{"139":139,"5":5,"58":58,"59":59,"63":63,"82":82,"91":91,"93":93,"96":96}],61:[function(_dereq_,module,exports){
+},{"136":136,"5":5,"58":58,"62":62,"80":80,"88":88,"90":90,"93":93}],60:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -12545,7 +12353,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _templateObject = _taggedTemplateLiteralLoose(['Text Tracks are being loaded from another origin but the crossorigin attribute isn\'t used.\n            This may prevent text tracks from loading.'], ['Text Tracks are being loaded from another origin but the crossorigin attribute isn\'t used.\n            This may prevent text tracks from loading.']);
 
-var _tech = _dereq_(63);
+var _tech = _dereq_(62);
 
 var _tech2 = _interopRequireDefault(_tech);
 
@@ -12553,47 +12361,47 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _url = _dereq_(93);
+var _url = _dereq_(90);
 
 var Url = _interopRequireWildcard(_url);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _tsml = _dereq_(149);
+var _tsml = _dereq_(146);
 
 var _tsml2 = _interopRequireDefault(_tsml);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _object = _dereq_(139);
+var _object = _dereq_(136);
 
 var _object2 = _interopRequireDefault(_object);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-var _toTitleCase = _dereq_(92);
+var _toTitleCase = _dereq_(89);
 
 var _toTitleCase2 = _interopRequireDefault(_toTitleCase);
 
@@ -13049,37 +12857,7 @@ var Html5 = function (_Tech) {
 
 
   Html5.prototype.duration = function duration() {
-    var _this4 = this;
-
-    // Android Chrome will report duration as Infinity for VOD HLS until after
-    // playback has started, which triggers the live display erroneously.
-    // Return NaN if playback has not started and trigger a durationupdate once
-    // the duration can be reliably known.
-    if (this.el_.duration === Infinity && browser.IS_ANDROID && browser.IS_CHROME) {
-      if (this.el_.currentTime === 0) {
-        var _ret2 = function () {
-          // Wait for the first `timeupdate` with currentTime > 0 - there may be
-          // several with 0
-          var checkProgress = function checkProgress() {
-            if (_this4.el_.currentTime > 0) {
-              // Trigger durationchange for genuinely live video
-              if (_this4.el_.duration === Infinity) {
-                _this4.trigger('durationchange');
-              }
-              _this4.off(_this4.player_, 'timeupdate', checkProgress);
-            }
-          };
-
-          _this4.on(_this4.player_, 'timeupdate', checkProgress);
-          return {
-            v: NaN
-          };
-        }();
-
-        if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
-      }
-    }
-    return this.el_.duration || NaN;
+    return this.el_.duration || 0;
   };
 
   /**
@@ -13114,7 +12892,7 @@ var Html5 = function (_Tech) {
 
 
   Html5.prototype.proxyWebkitFullscreen_ = function proxyWebkitFullscreen_() {
-    var _this5 = this;
+    var _this4 = this;
 
     if (!('webkitDisplayingFullscreen' in this.el_)) {
       return;
@@ -13132,8 +12910,8 @@ var Html5 = function (_Tech) {
 
     this.on('webkitbeginfullscreen', beginFn);
     this.on('dispose', function () {
-      _this5.off('webkitbeginfullscreen', beginFn);
-      _this5.off('webkitendfullscreen', endFn);
+      _this4.off('webkitbeginfullscreen', beginFn);
+      _this4.off('webkitendfullscreen', endFn);
     });
   };
 
@@ -13260,18 +13038,21 @@ var Html5 = function (_Tech) {
   };
 
   /**
-   * Creates either native TextTrack or an emulated TextTrack depending
-   * on the value of `featuresNativeTextTracks`
+   * Creates a remote text track object and returns a html track element
    *
    * @param {Object} options The object should contain values for
    * kind, language, label and src (location of the WebVTT file)
+   * @return {HTMLTrackElement}
    */
 
 
-  Html5.prototype.createRemoteTextTrack = function createRemoteTextTrack(options) {
+  Html5.prototype.addRemoteTextTrack = function addRemoteTextTrack() {
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
     if (!this.featuresNativeTextTracks) {
-      return _Tech.prototype.createRemoteTextTrack.call(this, options);
+      return _Tech.prototype.addRemoteTextTrack.call(this, options);
     }
+
     var htmlTrackElement = _document2['default'].createElement('track');
 
     if (options.kind) {
@@ -13293,27 +13074,11 @@ var Html5 = function (_Tech) {
       htmlTrackElement.src = options.src;
     }
 
-    return htmlTrackElement;
-  };
-
-  /**
-   * Creates a remote text track object and returns an html track element.
-   *
-   * @param {Object} options The object should contain values for
-   * kind, language, label, and src (location of the WebVTT file)
-   * @param {Boolean} [manualCleanup=true] if set to false, the TextTrack will be
-   * automatically removed from the video element whenever the source changes
-   * @return {HTMLTrackElement} An Html Track Element.
-   * This can be an emulated {@link HTMLTrackElement} or a native one.
-   * @deprecated The default value of the "manualCleanup" parameter will default
-   * to "false" in upcoming versions of Video.js
-   */
-
-
-  Html5.prototype.addRemoteTextTrack = function addRemoteTextTrack(options, manualCleanup) {
-    var htmlTrackElement = _Tech.prototype.addRemoteTextTrack.call(this, options, manualCleanup);
-
     this.el().appendChild(htmlTrackElement);
+
+    // store HTMLTrackElement and TextTrack to remote list
+    this.remoteTextTrackEls().addTrackElement_(htmlTrackElement);
+    this.remoteTextTracks().addTrack_(htmlTrackElement.track);
 
     return htmlTrackElement;
   };
@@ -13326,7 +13091,15 @@ var Html5 = function (_Tech) {
 
 
   Html5.prototype.removeRemoteTextTrack = function removeRemoteTextTrack(track) {
-    _Tech.prototype.removeRemoteTextTrack.call(this, track);
+    if (!this.featuresNativeTextTracks) {
+      return _Tech.prototype.removeRemoteTextTrack.call(this, track);
+    }
+
+    var trackElement = this.remoteTextTrackEls().getTrackElementByTrack_(track);
+
+    // remove HTMLTrackElement and TextTrack from remote list
+    this.remoteTextTrackEls().removeTrackElement_(trackElement);
+    this.remoteTextTracks().removeTrack_(track);
 
     var tracks = this.$$('track');
 
@@ -13981,7 +13754,7 @@ _component2['default'].registerComponent('Html5', Html5);
 _tech2['default'].registerTech('Html5', Html5);
 exports['default'] = Html5;
 
-},{"139":139,"149":149,"5":5,"63":63,"79":79,"82":82,"84":84,"87":87,"88":88,"92":92,"93":93,"95":95,"96":96}],62:[function(_dereq_,module,exports){
+},{"136":136,"146":146,"5":5,"62":62,"78":78,"80":80,"82":82,"85":85,"86":86,"89":89,"90":90,"92":92,"93":93}],61:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -13990,11 +13763,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _tech = _dereq_(63);
+var _tech = _dereq_(62);
 
 var _tech2 = _interopRequireDefault(_tech);
 
-var _toTitleCase = _dereq_(92);
+var _toTitleCase = _dereq_(89);
 
 var _toTitleCase2 = _interopRequireDefault(_toTitleCase);
 
@@ -14063,7 +13836,7 @@ var MediaLoader = function (_Component) {
 _component2['default'].registerComponent('MediaLoader', MediaLoader);
 exports['default'] = MediaLoader;
 
-},{"5":5,"63":63,"92":92}],63:[function(_dereq_,module,exports){
+},{"5":5,"62":62,"89":89}],62:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -14072,55 +13845,55 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _htmlTrackElement = _dereq_(67);
+var _htmlTrackElement = _dereq_(66);
 
 var _htmlTrackElement2 = _interopRequireDefault(_htmlTrackElement);
 
-var _htmlTrackElementList = _dereq_(66);
+var _htmlTrackElementList = _dereq_(65);
 
 var _htmlTrackElementList2 = _interopRequireDefault(_htmlTrackElementList);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-var _textTrack = _dereq_(73);
+var _textTrack = _dereq_(72);
 
 var _textTrack2 = _interopRequireDefault(_textTrack);
 
-var _textTrackList = _dereq_(71);
+var _textTrackList = _dereq_(70);
 
 var _textTrackList2 = _interopRequireDefault(_textTrackList);
 
-var _videoTrackList = _dereq_(77);
+var _videoTrackList = _dereq_(76);
 
 var _videoTrackList2 = _interopRequireDefault(_videoTrackList);
 
-var _audioTrackList = _dereq_(64);
+var _audioTrackList = _dereq_(63);
 
 var _audioTrackList2 = _interopRequireDefault(_audioTrackList);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _timeRanges = _dereq_(91);
+var _timeRanges = _dereq_(88);
 
-var _buffer = _dereq_(80);
+var _buffer = _dereq_(79);
 
 var _mediaError = _dereq_(46);
 
 var _mediaError2 = _interopRequireDefault(_mediaError);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -14213,10 +13986,8 @@ var Tech = function (_Component) {
     }
 
     if (!_this.featuresNativeTextTracks) {
-      _this.emulateTextTracks();
+      _this.on('ready', _this.emulateTextTracks);
     }
-
-    _this.autoRemoteTextTracks_ = new _textTrackList2['default']();
 
     _this.initTextTrackListeners();
     _this.initTrackListeners();
@@ -14451,25 +14222,6 @@ var Tech = function (_Component) {
   };
 
   /**
-   * Remove any TextTracks added via addRemoteTextTrack that are
-   * flagged for automatic garbage collection
-   *
-   * @method cleanupAutoTextTracks
-   */
-
-
-  Tech.prototype.cleanupAutoTextTracks = function cleanupAutoTextTracks() {
-    var list = this.autoRemoteTextTracks_ || [];
-    var i = list.length;
-
-    while (i--) {
-      var track = list[i];
-
-      this.removeRemoteTextTrack(track);
-    }
-  };
-
-  /**
    * Reset the tech. Removes all sources and resets readyState.
    *
    * @method reset
@@ -14586,14 +14338,20 @@ var Tech = function (_Component) {
   };
 
   /**
-   * Add vtt.js if necessary
+   * Emulate texttracks
    *
-   * @private
+   * @method emulateTextTracks
    */
 
 
-  Tech.prototype.addWebVttScript_ = function addWebVttScript_() {
+  Tech.prototype.emulateTextTracks = function emulateTextTracks() {
     var _this4 = this;
+
+    var tracks = this.textTracks();
+
+    if (!tracks) {
+      return;
+    }
 
     if (!_window2['default'].WebVTT && this.el().parentNode !== null && this.el().parentNode !== undefined) {
       (function () {
@@ -14616,39 +14374,9 @@ var Tech = function (_Component) {
         _this4.el().parentNode.appendChild(script);
       })();
     }
-  };
-
-  /**
-   * Emulate texttracks
-   *
-   * @method emulateTextTracks
-   */
-
-
-  Tech.prototype.emulateTextTracks = function emulateTextTracks() {
-    var _this5 = this;
-
-    var tracks = this.textTracks();
-
-    if (!tracks) {
-      return;
-    }
-
-    this.remoteTextTracks().on('addtrack', function (e) {
-      _this5.textTracks().addTrack_(e.track);
-    });
-
-    this.remoteTextTracks().on('removetrack', function (e) {
-      _this5.textTracks().removeTrack_(e.track);
-    });
-
-    // Initially, Tech.el_ is a child of a dummy-div wait until the Component system
-    // signals that the Tech is ready at which point Tech.el_ is part of the DOM
-    // before inserting the WebVTT script
-    this.on('ready', this.addWebVttScript_);
 
     var updateDisplay = function updateDisplay() {
-      return _this5.trigger('texttrackchange');
+      return _this4.trigger('texttrackchange');
     };
     var textTracksChanges = function textTracksChanges() {
       updateDisplay();
@@ -14763,58 +14491,28 @@ var Tech = function (_Component) {
   };
 
   /**
-   * Create an emulated TextTrack for use by addRemoteTextTrack
-   *
-   * This is intended to be overridden by classes that inherit from
-   * Tech in order to create native or custom TextTracks.
+   * Creates a remote text track object and returns a emulated html track element
    *
    * @param {Object} options The object should contain values for
    * kind, language, label and src (location of the WebVTT file)
+   * @return {HTMLTrackElement}
+   * @method addRemoteTextTrack
    */
 
 
-  Tech.prototype.createRemoteTextTrack = function createRemoteTextTrack(options) {
+  Tech.prototype.addRemoteTextTrack = function addRemoteTextTrack(options) {
     var track = (0, _mergeOptions2['default'])(options, {
       tech: this
     });
 
-    return new _htmlTrackElement2['default'](track);
-  };
-
-  /**
-   * Creates a remote text track object and returns an html track element.
-   *
-   * @param {Object} options The object should contain values for
-   * kind, language, label, and src (location of the WebVTT file)
-   * @param {Boolean} [manualCleanup=true] if set to false, the TextTrack will be
-   * automatically removed from the video element whenever the source changes
-   * @return {HTMLTrackElement} An Html Track Element.
-   * This can be an emulated {@link HTMLTrackElement} or a native one.
-   * @deprecated The default value of the "manualCleanup" parameter will default
-   * to "false" in upcoming versions of Video.js
-   */
-
-
-  Tech.prototype.addRemoteTextTrack = function addRemoteTextTrack() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var manualCleanup = arguments[1];
-
-    var htmlTrackElement = this.createRemoteTextTrack(options);
-
-    if (manualCleanup !== true && manualCleanup !== false) {
-      // deprecation warning
-      _log2['default'].warn('Calling addRemoteTextTrack without explicitly setting the "manualCleanup" parameter to `true` is deprecated and default to `false` in future version of video.js');
-      manualCleanup = true;
-    }
+    var htmlTrackElement = new _htmlTrackElement2['default'](track);
 
     // store HTMLTrackElement and TextTrack to remote list
     this.remoteTextTrackEls().addTrackElement_(htmlTrackElement);
     this.remoteTextTracks().addTrack_(htmlTrackElement.track);
 
-    if (manualCleanup !== true) {
-      // create the TextTrackList if it doesn't exist
-      this.autoRemoteTextTracks_.addTrack_(htmlTrackElement.track);
-    }
+    // must come after remoteTextTracks()
+    this.textTracks().addTrack_(htmlTrackElement.track);
 
     return htmlTrackElement;
   };
@@ -14828,12 +14526,13 @@ var Tech = function (_Component) {
 
 
   Tech.prototype.removeRemoteTextTrack = function removeRemoteTextTrack(track) {
+    this.textTracks().removeTrack_(track);
+
     var trackElement = this.remoteTextTrackEls().getTrackElementByTrack_(track);
 
     // remove HTMLTrackElement and TextTrack from remote list
     this.remoteTextTrackEls().removeTrackElement_(trackElement);
     this.remoteTextTracks().removeTrack_(track);
-    this.autoRemoteTextTracks_.removeTrack_(track);
   };
 
   /**
@@ -14966,7 +14665,7 @@ Tech.prototype.featuresNativeTextTracks = false;
  *
  * ##### EXAMPLE:
  *
- *   Tech.withSourceHandlers(MyTech);
+ *   Tech.withSourceHandlers.call(MyTech);
  *
  */
 Tech.withSourceHandlers = function (_Tech) {
@@ -14977,7 +14676,7 @@ Tech.withSourceHandlers = function (_Tech) {
    * The source handler pattern is used for adaptive formats (HLS, DASH) that
    * manually load video data and feed it into a Source Buffer (Media Source Extensions)
    * @param  {Function} handler  The source handler
-   * @param  {Number}   index    The index to register the handler among existing handlers
+   * @param  {Boolean}  first    Register it before any existing handlers
    */
   _Tech.registerSourceHandler = function (handler, index) {
     var handlers = _Tech.sourceHandlers;
@@ -15098,7 +14797,17 @@ Tech.withSourceHandlers = function (_Tech) {
     this.disposeSourceHandler();
     this.off('dispose', this.disposeSourceHandler);
 
+    // if we have a source and get another one
+    // then we are loading something new
+    // than clear all of our current tracks
+    if (this.currentSource_) {
+      this.clearTracks(['audio', 'video']);
+
+      this.currentSource_ = null;
+    }
+
     if (sh !== _Tech.nativeSourceHandler) {
+
       this.currentSource_ = source;
 
       // Catch if someone replaced the src without calling setSource.
@@ -15121,6 +14830,7 @@ Tech.withSourceHandlers = function (_Tech) {
 
   // On successive loadstarts when setSource has not been called again
   _Tech.prototype.successiveLoadStartListener_ = function () {
+    this.currentSource_ = null;
     this.disposeSourceHandler();
     this.one(this.el_, 'loadstart', _Tech.prototype.successiveLoadStartListener_);
   };
@@ -15129,25 +14839,10 @@ Tech.withSourceHandlers = function (_Tech) {
    * Clean up any existing source handler
    */
   _Tech.prototype.disposeSourceHandler = function () {
-    // if we have a source and get another one
-    // then we are loading something new
-    // than clear all of our current tracks
-    if (this.currentSource_) {
-      this.clearTracks(['audio', 'video']);
-      this.currentSource_ = null;
-    }
-
-    // always clean up auto-text tracks
-    this.cleanupAutoTextTracks();
-
-    if (this.sourceHandler_) {
+    if (this.sourceHandler_ && this.sourceHandler_.dispose) {
       this.off(this.el_, 'loadstart', _Tech.prototype.firstLoadStartListener_);
       this.off(this.el_, 'loadstart', _Tech.prototype.successiveLoadStartListener_);
-
-      if (this.sourceHandler_.dispose) {
-        this.sourceHandler_.dispose();
-      }
-
+      this.sourceHandler_.dispose();
       this.sourceHandler_ = null;
     }
   };
@@ -15159,20 +14854,20 @@ _component2['default'].registerComponent('MediaTechController', Tech);
 Tech.registerTech('Tech', Tech);
 exports['default'] = Tech;
 
-},{"46":46,"5":5,"64":64,"66":66,"67":67,"71":71,"73":73,"77":77,"80":80,"84":84,"87":87,"88":88,"91":91,"95":95,"96":96}],64:[function(_dereq_,module,exports){
+},{"46":46,"5":5,"63":63,"65":65,"66":66,"70":70,"72":72,"76":76,"79":79,"82":82,"85":85,"86":86,"88":88,"92":92,"93":93}],63:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _trackList = _dereq_(75);
+var _trackList = _dereq_(74);
 
 var _trackList2 = _interopRequireDefault(_trackList);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -15309,22 +15004,22 @@ var AudioTrackList = function (_TrackList) {
 
 exports['default'] = AudioTrackList;
 
-},{"75":75,"79":79,"95":95}],65:[function(_dereq_,module,exports){
+},{"74":74,"78":78,"92":92}],64:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _trackEnums = _dereq_(74);
+var _trackEnums = _dereq_(73);
 
-var _track = _dereq_(76);
+var _track = _dereq_(75);
 
 var _track2 = _interopRequireDefault(_track);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
@@ -15409,16 +15104,16 @@ var AudioTrack = function (_Track) {
 
 exports['default'] = AudioTrack;
 
-},{"74":74,"76":76,"79":79,"88":88}],66:[function(_dereq_,module,exports){
+},{"73":73,"75":75,"78":78,"86":86}],65:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -15498,16 +15193,16 @@ var HtmlTrackElementList = function () {
 
 exports['default'] = HtmlTrackElementList;
 
-},{"79":79,"95":95}],67:[function(_dereq_,module,exports){
+},{"78":78,"92":92}],66:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -15515,7 +15210,7 @@ var _eventTarget = _dereq_(42);
 
 var _eventTarget2 = _interopRequireDefault(_eventTarget);
 
-var _textTrack = _dereq_(73);
+var _textTrack = _dereq_(72);
 
 var _textTrack2 = _interopRequireDefault(_textTrack);
 
@@ -15635,16 +15330,16 @@ HTMLTrackElement.ERROR = ERROR;
 
 exports['default'] = HTMLTrackElement;
 
-},{"42":42,"73":73,"79":79,"95":95}],68:[function(_dereq_,module,exports){
+},{"42":42,"72":72,"78":78,"92":92}],67:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -15765,7 +15460,7 @@ var TextTrackCueList = function () {
 
 exports['default'] = TextTrackCueList;
 
-},{"79":79,"95":95}],69:[function(_dereq_,module,exports){
+},{"78":78,"92":92}],68:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -15774,11 +15469,11 @@ var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
@@ -15941,7 +15636,7 @@ var TextTrackDisplay = function (_Component) {
     return _Component.prototype.createEl.call(this, 'div', {
       className: 'vjs-text-track-display'
     }, {
-      'aria-live': 'off',
+      'aria-live': 'assertive',
       'aria-atomic': 'true'
     });
   };
@@ -15997,14 +15692,8 @@ var TextTrackDisplay = function (_Component) {
     }
 
     if (captionsSubtitlesTrack) {
-      if (this.getAttribute('aria-live') !== 'off') {
-        this.setAttribute('aria-live', 'off');
-      }
       this.updateForTrack(captionsSubtitlesTrack);
     } else if (descriptionsTrack) {
-      if (this.getAttribute('aria-live') !== 'assertive') {
-        this.setAttribute('aria-live', 'assertive');
-      }
       this.updateForTrack(descriptionsTrack);
     }
   };
@@ -16096,7 +15785,7 @@ var TextTrackDisplay = function (_Component) {
 _component2['default'].registerComponent('TextTrackDisplay', TextTrackDisplay);
 exports['default'] = TextTrackDisplay;
 
-},{"5":5,"84":84,"96":96}],70:[function(_dereq_,module,exports){
+},{"5":5,"82":82,"93":93}],69:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -16189,24 +15878,24 @@ var jsonToTextTracks = function jsonToTextTracks(json, tech) {
 
 exports['default'] = { textTracksToJson: textTracksToJson, jsonToTextTracks: jsonToTextTracks, trackToJson_: trackToJson_ };
 
-},{}],71:[function(_dereq_,module,exports){
+},{}],70:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _trackList = _dereq_(75);
+var _trackList = _dereq_(74);
 
 var _trackList2 = _interopRequireDefault(_trackList);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -16347,32 +16036,34 @@ var TextTrackList = function (_TrackList) {
 
 exports['default'] = TextTrackList;
 
-},{"75":75,"79":79,"84":84,"95":95}],72:[function(_dereq_,module,exports){
+},{"74":74,"78":78,"82":82,"92":92}],71:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
-
-var _window = _dereq_(96);
-
-var _window2 = _interopRequireDefault(_window);
 
 var _component = _dereq_(5);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _dom = _dereq_(82);
+var _events = _dereq_(81);
 
-var _fn = _dereq_(84);
+var Events = _interopRequireWildcard(_events);
+
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _obj = _dereq_(89);
-
-var Obj = _interopRequireWildcard(_obj);
-
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
+
+var _tuple = _dereq_(145);
+
+var _tuple2 = _interopRequireDefault(_tuple);
+
+var _window = _dereq_(93);
+
+var _window2 = _interopRequireDefault(_window);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
@@ -16387,162 +16078,45 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
 
-var LOCAL_STORAGE_KEY = 'vjs-text-track-settings';
+function captionOptionsMenuTemplate(uniqueId, dialogLabelId, dialogDescriptionId) {
+  var template = '\n    <div role="document">\n      <div role="heading" aria-level="1" id="' + dialogLabelId + '" class="vjs-control-text">Captions Settings Dialog</div>\n      <div id="' + dialogDescriptionId + '" class="vjs-control-text">Beginning of dialog window. Escape will cancel and close the window.</div>\n      <div class="vjs-tracksettings">\n        <div class="vjs-tracksettings-colors">\n          <fieldset class="vjs-fg-color vjs-tracksetting">\n            <legend>Text</legend>\n            <label class="vjs-label" for="captions-foreground-color-' + uniqueId + '">Color</label>\n            <select id="captions-foreground-color-' + uniqueId + '">\n              <option value="#FFF" selected>White</option>\n              <option value="#000">Black</option>\n              <option value="#F00">Red</option>\n              <option value="#0F0">Green</option>\n              <option value="#00F">Blue</option>\n              <option value="#FF0">Yellow</option>\n              <option value="#F0F">Magenta</option>\n              <option value="#0FF">Cyan</option>\n            </select>\n            <span class="vjs-text-opacity vjs-opacity">\n              <label class="vjs-label" for="captions-foreground-opacity-' + uniqueId + '">Transparency</label>\n              <select id="captions-foreground-opacity-' + uniqueId + '">\n                <option value="1" selected>Opaque</option>\n                <option value="0.5">Semi-Opaque</option>\n              </select>\n            </span>\n          </fieldset>\n          <fieldset class="vjs-bg-color vjs-tracksetting">\n            <legend>Background</legend>\n            <label class="vjs-label" for="captions-background-color-' + uniqueId + '">Color</label>\n            <select id="captions-background-color-' + uniqueId + '">\n              <option value="#000" selected>Black</option>\n              <option value="#FFF">White</option>\n              <option value="#F00">Red</option>\n              <option value="#0F0">Green</option>\n              <option value="#00F">Blue</option>\n              <option value="#FF0">Yellow</option>\n              <option value="#F0F">Magenta</option>\n              <option value="#0FF">Cyan</option>\n            </select>\n            <span class="vjs-bg-opacity vjs-opacity">\n              <label class="vjs-label" for="captions-background-opacity-' + uniqueId + '">Transparency</label>\n              <select id="captions-background-opacity-' + uniqueId + '">\n                <option value="1" selected>Opaque</option>\n                <option value="0.5">Semi-Transparent</option>\n                <option value="0">Transparent</option>\n              </select>\n            </span>\n          </fieldset>\n          <fieldset class="window-color vjs-tracksetting">\n            <legend>Window</legend>\n            <label class="vjs-label" for="captions-window-color-' + uniqueId + '">Color</label>\n            <select id="captions-window-color-' + uniqueId + '">\n              <option value="#000" selected>Black</option>\n              <option value="#FFF">White</option>\n              <option value="#F00">Red</option>\n              <option value="#0F0">Green</option>\n              <option value="#00F">Blue</option>\n              <option value="#FF0">Yellow</option>\n              <option value="#F0F">Magenta</option>\n              <option value="#0FF">Cyan</option>\n            </select>\n            <span class="vjs-window-opacity vjs-opacity">\n              <label class="vjs-label" for="captions-window-opacity-' + uniqueId + '">Transparency</label>\n              <select id="captions-window-opacity-' + uniqueId + '">\n                <option value="0" selected>Transparent</option>\n                <option value="0.5">Semi-Transparent</option>\n                <option value="1">Opaque</option>\n              </select>\n            </span>\n          </fieldset>\n        </div> <!-- vjs-tracksettings-colors -->\n        <div class="vjs-tracksettings-font">\n          <div class="vjs-font-percent vjs-tracksetting">\n            <label class="vjs-label" for="captions-font-size-' + uniqueId + '">Font Size</label>\n            <select id="captions-font-size-' + uniqueId + '">\n              <option value="0.50">50%</option>\n              <option value="0.75">75%</option>\n              <option value="1.00" selected>100%</option>\n              <option value="1.25">125%</option>\n              <option value="1.50">150%</option>\n              <option value="1.75">175%</option>\n              <option value="2.00">200%</option>\n              <option value="3.00">300%</option>\n              <option value="4.00">400%</option>\n            </select>\n          </div>\n          <div class="vjs-edge-style vjs-tracksetting">\n            <label class="vjs-label" for="captions-edge-style-' + uniqueId + '">Text Edge Style</label>\n            <select id="captions-edge-style-' + uniqueId + '">\n              <option value="none" selected>None</option>\n              <option value="raised">Raised</option>\n              <option value="depressed">Depressed</option>\n              <option value="uniform">Uniform</option>\n              <option value="dropshadow">Dropshadow</option>\n            </select>\n          </div>\n          <div class="vjs-font-family vjs-tracksetting">\n            <label class="vjs-label" for="captions-font-family-' + uniqueId + '">Font Family</label>\n            <select id="captions-font-family-' + uniqueId + '">\n              <option value="proportionalSansSerif" selected>Proportional Sans-Serif</option>\n              <option value="monospaceSansSerif">Monospace Sans-Serif</option>\n              <option value="proportionalSerif">Proportional Serif</option>\n              <option value="monospaceSerif">Monospace Serif</option>\n              <option value="casual">Casual</option>\n              <option value="script">Script</option>\n              <option value="small-caps">Small Caps</option>\n            </select>\n          </div>\n        </div> <!-- vjs-tracksettings-font -->\n        <div class="vjs-tracksettings-controls">\n          <button class="vjs-default-button">Defaults</button>\n          <button class="vjs-done-button">Done</button>\n        </div>\n      </div> <!-- vjs-tracksettings -->\n    </div> <!--  role="document" -->\n  ';
 
-var COLOR_BLACK = ['#000', 'Black'];
-var COLOR_BLUE = ['#00F', 'Blue'];
-var COLOR_CYAN = ['#0FF', 'Cyan'];
-var COLOR_GREEN = ['#0F0', 'Green'];
-var COLOR_MAGENTA = ['#F0F', 'Magenta'];
-var COLOR_RED = ['#F00', 'Red'];
-var COLOR_WHITE = ['#FFF', 'White'];
-var COLOR_YELLOW = ['#FF0', 'Yellow'];
-
-var OPACITY_OPAQUE = ['1', 'Opaque'];
-var OPACITY_SEMI = ['0.5', 'Semi-Transparent'];
-var OPACITY_TRANS = ['0', 'Transparent'];
-
-// Configuration for the various <select> elements in the DOM of this component.
-//
-// Possible keys include:
-//
-// `default`:
-//   The default option index. Only needs to be provided if not zero.
-// `parser`:
-//   A function which is used to parse the value from the selected option in
-//   a customized way.
-// `selector`:
-//   The selector used to find the associated <select> element.
-var selectConfigs = {
-  backgroundColor: {
-    selector: '.vjs-bg-color > select',
-    id: 'captions-background-color-%s',
-    label: 'Color',
-    options: [COLOR_BLACK, COLOR_WHITE, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW, COLOR_MAGENTA, COLOR_CYAN]
-  },
-
-  backgroundOpacity: {
-    selector: '.vjs-bg-opacity > select',
-    id: 'captions-background-opacity-%s',
-    label: 'Transparency',
-    options: [OPACITY_OPAQUE, OPACITY_SEMI, OPACITY_TRANS]
-  },
-
-  color: {
-    selector: '.vjs-fg-color > select',
-    id: 'captions-foreground-color-%s',
-    label: 'Color',
-    options: [COLOR_WHITE, COLOR_BLACK, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW, COLOR_MAGENTA, COLOR_CYAN]
-  },
-
-  edgeStyle: {
-    selector: '.vjs-edge-style > select',
-    id: '%s',
-    label: 'Text Edge Style',
-    options: [['none', 'None'], ['raised', 'Raised'], ['depressed', 'Depressed'], ['uniform', 'Uniform'], ['dropshadow', 'Dropshadow']]
-  },
-
-  fontFamily: {
-    selector: '.vjs-font-family > select',
-    id: 'captions-font-family-%s',
-    label: 'Font Family',
-    options: [['proportionalSansSerif', 'Proportional Sans-Serif'], ['monospaceSansSerif', 'Monospace Sans-Serif'], ['proportionalSerif', 'Proportional Serif'], ['monospaceSerif', 'Monospace Serif'], ['casual', 'Casual'], ['script', 'Script'], ['small-caps', 'Small Caps']]
-  },
-
-  fontPercent: {
-    selector: '.vjs-font-percent > select',
-    id: 'captions-font-size-%s',
-    label: 'Font Size',
-    options: [['0.50', '50%'], ['0.75', '75%'], ['1.00', '100%'], ['1.25', '125%'], ['1.50', '150%'], ['1.75', '175%'], ['2.00', '200%'], ['3.00', '300%'], ['4.00', '400%']],
-    'default': 2,
-    parser: function parser(v) {
-      return v === '1.00' ? null : Number(v);
-    }
-  },
-
-  textOpacity: {
-    selector: '.vjs-text-opacity > select',
-    id: 'captions-foreground-opacity-%s',
-    label: 'Transparency',
-    options: [OPACITY_OPAQUE, OPACITY_SEMI]
-  },
-
-  // Options for this object are defined below.
-  windowColor: {
-    selector: '.vjs-window-color > select',
-    id: 'captions-window-color-%s',
-    label: 'Color'
-  },
-
-  // Options for this object are defined below.
-  windowOpacity: {
-    selector: '.vjs-window-opacity > select',
-    id: 'captions-window-opacity-%s',
-    label: 'Transparency',
-    options: [OPACITY_TRANS, OPACITY_SEMI, OPACITY_OPAQUE]
-  }
-};
-
-selectConfigs.windowColor.options = selectConfigs.backgroundColor.options;
-
-/**
- * Parses out option values.
- *
- * @private
- * @param  {String} value
- * @param  {Function} [parser]
- *         Optional function to adjust the value.
- * @return {Mixed}
- *         Will be `undefined` if no value exists (or if given value is "none").
- */
-function parseOptionValue(value, parser) {
-  if (parser) {
-    value = parser(value);
-  }
-
-  if (value && value !== 'none') {
-    return value;
-  }
+  return template;
 }
 
-/**
- * Gets the value of the selected <option> element within a <select> element.
- *
- * @param  {Object} config
- * @param  {Function} [parser]
- *         Optional function to adjust the value.
- * @return {Mixed}
- */
-function getSelectedOptionValue(el, parser) {
-  var value = el.options[el.options.selectedIndex].value;
+function getSelectedOptionValue(target) {
+  var selectedOption = void 0;
 
-  return parseOptionValue(value, parser);
+  // not all browsers support selectedOptions, so, fallback to options
+  if (target.selectedOptions) {
+    selectedOption = target.selectedOptions[0];
+  } else if (target.options) {
+    selectedOption = target.options[target.options.selectedIndex];
+  }
+
+  return selectedOption.value;
 }
 
-/**
- * Sets the selected <option> element within a <select> element based on a
- * given value.
- *
- * @param {Object} el
- * @param {String} value
- * @param {Function} [parser]
- *        Optional function to adjust the value before comparing.
- */
-function setSelectedOption(el, value, parser) {
+function setSelectedOption(target, value) {
   if (!value) {
     return;
   }
 
-  for (var i = 0; i < el.options.length; i++) {
-    if (parseOptionValue(el.options[i].value, parser) === value) {
-      el.selectedIndex = i;
+  var i = void 0;
+
+  for (i = 0; i < target.options.length; i++) {
+    var option = target.options[i];
+
+    if (option.value === value) {
       break;
     }
   }
+
+  target.selectedIndex = i;
 }
 
 /**
- * Manipulate settings of text tracks
+ * Manipulate settings of texttracks
  *
  * @param {Object} player  Main Player
  * @param {Object=} options Object of option names and values
@@ -16558,205 +16132,46 @@ var TextTrackSettings = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, _Component.call(this, player, options));
 
-    _this.setDefaults();
     _this.hide();
-
-    _this.updateDisplay = Fn.bind(_this, _this.updateDisplay);
 
     // Grab `persistTextTrackSettings` from the player options if not passed in child options
     if (options.persistTextTrackSettings === undefined) {
       _this.options_.persistTextTrackSettings = _this.options_.playerOptions.persistTextTrackSettings;
     }
 
-    _this.on(_this.$('.vjs-done-button'), 'click', function () {
-      _this.saveSettings();
-      _this.hide();
-    });
+    Events.on(_this.$('.vjs-done-button'), 'click', Fn.bind(_this, function () {
+      this.saveSettings();
+      this.hide();
+    }));
 
-    _this.on(_this.$('.vjs-default-button'), 'click', function () {
-      _this.setDefaults();
-      _this.updateDisplay();
-    });
+    Events.on(_this.$('.vjs-default-button'), 'click', Fn.bind(_this, function () {
+      this.$('.vjs-fg-color > select').selectedIndex = 0;
+      this.$('.vjs-bg-color > select').selectedIndex = 0;
+      this.$('.window-color > select').selectedIndex = 0;
+      this.$('.vjs-text-opacity > select').selectedIndex = 0;
+      this.$('.vjs-bg-opacity > select').selectedIndex = 0;
+      this.$('.vjs-window-opacity > select').selectedIndex = 0;
+      this.$('.vjs-edge-style select').selectedIndex = 0;
+      this.$('.vjs-font-family select').selectedIndex = 0;
+      this.$('.vjs-font-percent select').selectedIndex = 2;
+      this.updateDisplay();
+    }));
 
-    Obj.each(selectConfigs, function (config) {
-      _this.on(_this.$(config.selector), 'change', _this.updateDisplay);
-    });
+    Events.on(_this.$('.vjs-fg-color > select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.vjs-bg-color > select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.window-color > select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.vjs-text-opacity > select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.vjs-bg-opacity > select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.vjs-window-opacity > select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.vjs-font-percent select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.vjs-edge-style select'), 'change', Fn.bind(_this, _this.updateDisplay));
+    Events.on(_this.$('.vjs-font-family select'), 'change', Fn.bind(_this, _this.updateDisplay));
 
     if (_this.options_.persistTextTrackSettings) {
       _this.restoreSettings();
     }
     return _this;
   }
-
-  /**
-   * Create a <select> element with configured options.
-   *
-   * @private
-   * @return {Element}
-   * @method createElSelect_
-   */
-
-
-  TextTrackSettings.prototype.createElSelect_ = function createElSelect_(key) {
-    var _this2 = this;
-
-    var config = selectConfigs[key];
-    var id = config.id.replace('%s', this.id_);
-
-    return [(0, _dom.createEl)('label', {
-      className: 'vjs-label',
-      textContent: config.label
-    }, {
-      'for': id
-    }), (0, _dom.createEl)('select', { id: id }, undefined, config.options.map(function (o) {
-      return (0, _dom.createEl)('option', {
-        textContent: _this2.localize(o[1]),
-        value: o[0]
-      });
-    }))];
-  };
-
-  /**
-   * Create foreground color element for the component
-   *
-   * @private
-   * @return {Element}
-   * @method createElFgColor_
-   */
-
-
-  TextTrackSettings.prototype.createElFgColor_ = function createElFgColor_() {
-    var legend = (0, _dom.createEl)('legend', {
-      textContent: this.localize('Text')
-    });
-
-    var select = this.createElSelect_('color');
-
-    var opacity = (0, _dom.createEl)('span', {
-      className: 'vjs-text-opacity vjs-opacity'
-    }, undefined, this.createElSelect_('textOpacity'));
-
-    return (0, _dom.createEl)('fieldset', {
-      className: 'vjs-fg-color vjs-tracksetting'
-    }, undefined, [legend].concat(select, opacity));
-  };
-
-  /**
-   * Create background color element for the component
-   *
-   * @private
-   * @return {Element}
-   * @method createElBgColor_
-   */
-
-
-  TextTrackSettings.prototype.createElBgColor_ = function createElBgColor_() {
-    var legend = (0, _dom.createEl)('legend', {
-      textContent: this.localize('Background')
-    });
-
-    var select = this.createElSelect_('backgroundColor');
-
-    var opacity = (0, _dom.createEl)('span', {
-      className: 'vjs-bg-opacity vjs-opacity'
-    }, undefined, this.createElSelect_('backgroundOpacity'));
-
-    return (0, _dom.createEl)('fieldset', {
-      className: 'vjs-bg-color vjs-tracksetting'
-    }, undefined, [legend].concat(select, opacity));
-  };
-
-  /**
-   * Create window color element for the component
-   *
-   * @private
-   * @return {Element}
-   * @method createElWinColor_
-   */
-
-
-  TextTrackSettings.prototype.createElWinColor_ = function createElWinColor_() {
-    var legend = (0, _dom.createEl)('legend', {
-      textContent: this.localize('Window')
-    });
-
-    var select = this.createElSelect_('windowColor');
-
-    var opacity = (0, _dom.createEl)('span', {
-      className: 'vjs-window-opacity vjs-opacity'
-    }, undefined, this.createElSelect_('windowOpacity'));
-
-    return (0, _dom.createEl)('fieldset', {
-      className: 'vjs-window-color vjs-tracksetting'
-    }, undefined, [legend].concat(select, opacity));
-  };
-
-  /**
-   * Create color elements for the component
-   *
-   * @private
-   * @return {Element}
-   * @method createElColors_
-   */
-
-
-  TextTrackSettings.prototype.createElColors_ = function createElColors_() {
-    return (0, _dom.createEl)('div', {
-      className: 'vjs-tracksettings-colors'
-    }, undefined, [this.createElFgColor_(), this.createElBgColor_(), this.createElWinColor_()]);
-  };
-
-  /**
-   * Create font elements for the component
-   *
-   * @private
-   * @return {Element}
-   * @method createElFont_
-   */
-
-
-  TextTrackSettings.prototype.createElFont_ = function createElFont_() {
-    var fontPercent = (0, _dom.createEl)('div', {
-      className: 'vjs-font-percent vjs-tracksetting'
-    }, undefined, this.createElSelect_('fontPercent'));
-
-    var edgeStyle = (0, _dom.createEl)('div', {
-      className: 'vjs-edge-style vjs-tracksetting'
-    }, undefined, this.createElSelect_('edgeStyle'));
-
-    var fontFamily = (0, _dom.createEl)('div', {
-      className: 'vjs-font-family vjs-tracksetting'
-    }, undefined, this.createElSelect_('fontFamily'));
-
-    return (0, _dom.createEl)('div', {
-      className: 'vjs-tracksettings-font'
-    }, undefined, [fontPercent, edgeStyle, fontFamily]);
-  };
-
-  /**
-   * Create controls for the component
-   *
-   * @private
-   * @return {Element}
-   * @method createElControls_
-   */
-
-
-  TextTrackSettings.prototype.createElControls_ = function createElControls_() {
-    var defaultsButton = (0, _dom.createEl)('button', {
-      className: 'vjs-default-button',
-      textContent: this.localize('Defaults')
-    });
-
-    var doneButton = (0, _dom.createEl)('button', {
-      className: 'vjs-done-button',
-      textContent: 'Done'
-    });
-
-    return (0, _dom.createEl)('div', {
-      className: 'vjs-tracksettings-controls'
-    }, undefined, [defaultsButton, doneButton]);
-  };
 
   /**
    * Create the component's DOM element
@@ -16767,94 +16182,103 @@ var TextTrackSettings = function (_Component) {
 
 
   TextTrackSettings.prototype.createEl = function createEl() {
-    var settings = (0, _dom.createEl)('div', {
-      className: 'vjs-tracksettings'
-    }, undefined, [this.createElColors_(), this.createElFont_(), this.createElControls_()]);
+    var uniqueId = this.id_;
+    var dialogLabelId = 'TTsettingsDialogLabel-' + uniqueId;
+    var dialogDescriptionId = 'TTsettingsDialogDescription-' + uniqueId;
 
-    var heading = (0, _dom.createEl)('div', {
-      className: 'vjs-control-text',
-      id: 'TTsettingsDialogLabel-' + this.id_,
-      textContent: 'Caption Settings Dialog'
-    }, {
-      'aria-level': '1',
-      'role': 'heading'
-    });
-
-    var description = (0, _dom.createEl)('div', {
-      className: 'vjs-control-text',
-      id: 'TTsettingsDialogDescription-' + this.id_,
-      textContent: 'Beginning of dialog window. Escape will cancel and close the window.'
-    });
-
-    var doc = (0, _dom.createEl)('div', undefined, {
-      role: 'document'
-    }, [heading, description, settings]);
-
-    return (0, _dom.createEl)('div', {
+    return _Component.prototype.createEl.call(this, 'div', {
       className: 'vjs-caption-settings vjs-modal-overlay',
+      innerHTML: captionOptionsMenuTemplate(uniqueId, dialogLabelId, dialogDescriptionId),
       tabIndex: -1
     }, {
       'role': 'dialog',
-      'aria-labelledby': heading.id,
-      'aria-describedby': description.id
-    }, doc);
+      'aria-labelledby': dialogLabelId,
+      'aria-describedby': dialogDescriptionId
+    });
   };
 
   /**
-   * Gets an object of text track settings (or null).
+   * Get texttrack settings
+   * Settings are
+   * .vjs-edge-style
+   * .vjs-font-family
+   * .vjs-fg-color
+   * .vjs-text-opacity
+   * .vjs-bg-color
+   * .vjs-bg-opacity
+   * .window-color
+   * .vjs-window-opacity
    *
    * @return {Object}
-   *         An object with config values parsed from the DOM or localStorage.
    * @method getValues
    */
 
 
   TextTrackSettings.prototype.getValues = function getValues() {
-    var _this3 = this;
+    var textEdge = getSelectedOptionValue(this.$('.vjs-edge-style select'));
+    var fontFamily = getSelectedOptionValue(this.$('.vjs-font-family select'));
+    var fgColor = getSelectedOptionValue(this.$('.vjs-fg-color > select'));
+    var textOpacity = getSelectedOptionValue(this.$('.vjs-text-opacity > select'));
+    var bgColor = getSelectedOptionValue(this.$('.vjs-bg-color > select'));
+    var bgOpacity = getSelectedOptionValue(this.$('.vjs-bg-opacity > select'));
+    var windowColor = getSelectedOptionValue(this.$('.window-color > select'));
+    var windowOpacity = getSelectedOptionValue(this.$('.vjs-window-opacity > select'));
+    var fontPercent = _window2['default'].parseFloat(getSelectedOptionValue(this.$('.vjs-font-percent > select')));
 
-    return Obj.reduce(selectConfigs, function (accum, config, key) {
-      var value = getSelectedOptionValue(_this3.$(config.selector), config.parser);
+    var result = {
+      fontPercent: fontPercent,
+      fontFamily: fontFamily,
+      textOpacity: textOpacity,
+      windowColor: windowColor,
+      windowOpacity: windowOpacity,
+      backgroundOpacity: bgOpacity,
+      edgeStyle: textEdge,
+      color: fgColor,
+      backgroundColor: bgColor
+    };
 
-      if (value !== undefined) {
-        accum[key] = value;
+    for (var name in result) {
+      if (result[name] === '' || result[name] === 'none' || name === 'fontPercent' && result[name] === 1.00) {
+        delete result[name];
       }
-
-      return accum;
-    }, {});
+    }
+    return result;
   };
 
   /**
-   * Sets text track settings from an object of values.
+   * Set texttrack settings
+   * Settings are
+   * .vjs-edge-style
+   * .vjs-font-family
+   * .vjs-fg-color
+   * .vjs-text-opacity
+   * .vjs-bg-color
+   * .vjs-bg-opacity
+   * .window-color
+   * .vjs-window-opacity
    *
-   * @param {Object} values
-   *        An object with config values parsed from the DOM or localStorage.
+   * @param {Object} values Object with texttrack setting values
    * @method setValues
    */
 
 
   TextTrackSettings.prototype.setValues = function setValues(values) {
-    var _this4 = this;
+    setSelectedOption(this.$('.vjs-edge-style select'), values.edgeStyle);
+    setSelectedOption(this.$('.vjs-font-family select'), values.fontFamily);
+    setSelectedOption(this.$('.vjs-fg-color > select'), values.color);
+    setSelectedOption(this.$('.vjs-text-opacity > select'), values.textOpacity);
+    setSelectedOption(this.$('.vjs-bg-color > select'), values.backgroundColor);
+    setSelectedOption(this.$('.vjs-bg-opacity > select'), values.backgroundOpacity);
+    setSelectedOption(this.$('.window-color > select'), values.windowColor);
+    setSelectedOption(this.$('.vjs-window-opacity > select'), values.windowOpacity);
 
-    Obj.each(selectConfigs, function (config, key) {
-      setSelectedOption(_this4.$(config.selector), values[key], config.parser);
-    });
-  };
+    var fontPercent = values.fontPercent;
 
-  /**
-   * Sets all <select> elements to their default values.
-   *
-   * @method setDefaults
-   */
+    if (fontPercent) {
+      fontPercent = fontPercent.toFixed(2);
+    }
 
-
-  TextTrackSettings.prototype.setDefaults = function setDefaults() {
-    var _this5 = this;
-
-    Obj.each(selectConfigs, function (config) {
-      var index = config.hasOwnProperty('default') ? config['default'] : 0;
-
-      _this5.$(config.selector).selectedIndex = index;
-    });
+    setSelectedOption(this.$('.vjs-font-percent > select'), fontPercent);
   };
 
   /**
@@ -16865,12 +16289,21 @@ var TextTrackSettings = function (_Component) {
 
 
   TextTrackSettings.prototype.restoreSettings = function restoreSettings() {
+    var err = void 0;
     var values = void 0;
 
     try {
-      values = JSON.parse(_window2['default'].localStorage.getItem(LOCAL_STORAGE_KEY));
-    } catch (err) {
-      _log2['default'].warn(err);
+      var _safeParseTuple = (0, _tuple2['default'])(_window2['default'].localStorage.getItem('vjs-text-track-settings'));
+
+      err = _safeParseTuple[0];
+      values = _safeParseTuple[1];
+
+
+      if (err) {
+        _log2['default'].error(err);
+      }
+    } catch (e) {
+      _log2['default'].warn(e);
     }
 
     if (values) {
@@ -16879,7 +16312,7 @@ var TextTrackSettings = function (_Component) {
   };
 
   /**
-   * Save text track settings to local storage
+   * Save texttrack settings to local storage
    *
    * @method saveSettings
    */
@@ -16893,18 +16326,18 @@ var TextTrackSettings = function (_Component) {
     var values = this.getValues();
 
     try {
-      if (Object.keys(values).length) {
-        _window2['default'].localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(values));
+      if (Object.getOwnPropertyNames(values).length > 0) {
+        _window2['default'].localStorage.setItem('vjs-text-track-settings', JSON.stringify(values));
       } else {
-        _window2['default'].localStorage.removeItem(LOCAL_STORAGE_KEY);
+        _window2['default'].localStorage.removeItem('vjs-text-track-settings');
       }
-    } catch (err) {
-      _log2['default'].warn(err);
+    } catch (e) {
+      _log2['default'].warn(e);
     }
   };
 
   /**
-   * Update display of text track settings
+   * Update display of texttrack settings
    *
    * @method updateDisplay
    */
@@ -16925,44 +16358,44 @@ _component2['default'].registerComponent('TextTrackSettings', TextTrackSettings)
 
 exports['default'] = TextTrackSettings;
 
-},{"5":5,"82":82,"84":84,"87":87,"89":89,"96":96}],73:[function(_dereq_,module,exports){
+},{"145":145,"5":5,"81":81,"82":82,"85":85,"93":93}],72:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _textTrackCueList = _dereq_(68);
+var _textTrackCueList = _dereq_(67);
 
 var _textTrackCueList2 = _interopRequireDefault(_textTrackCueList);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _trackEnums = _dereq_(74);
+var _trackEnums = _dereq_(73);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _track = _dereq_(76);
+var _track = _dereq_(75);
 
 var _track2 = _interopRequireDefault(_track);
 
-var _url = _dereq_(93);
+var _url = _dereq_(90);
 
-var _xhr = _dereq_(150);
+var _xhr = _dereq_(147);
 
 var _xhr2 = _interopRequireDefault(_xhr);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
@@ -17305,7 +16738,7 @@ TextTrack.prototype.allowedEvents_ = {
 
 exports['default'] = TextTrack;
 
-},{"150":150,"68":68,"74":74,"76":76,"79":79,"84":84,"87":87,"88":88,"93":93,"96":96}],74:[function(_dereq_,module,exports){
+},{"147":147,"67":67,"73":73,"75":75,"78":78,"82":82,"85":85,"86":86,"90":90,"93":93}],73:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -17387,7 +16820,7 @@ var TextTrackMode = exports.TextTrackMode = {
   showing: 'showing'
 };
 
-},{}],75:[function(_dereq_,module,exports){
+},{}],74:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -17396,11 +16829,11 @@ var _eventTarget = _dereq_(42);
 
 var _eventTarget2 = _interopRequireDefault(_eventTarget);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -17580,20 +17013,20 @@ for (var event in TrackList.prototype.allowedEvents_) {
 
 exports['default'] = TrackList;
 
-},{"42":42,"79":79,"95":95}],76:[function(_dereq_,module,exports){
+},{"42":42,"78":78,"92":92}],75:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _guid = _dereq_(86);
+var _guid = _dereq_(84);
 
 var Guid = _interopRequireWildcard(_guid);
 
@@ -17674,20 +17107,20 @@ var Track = function (_EventTarget) {
 
 exports['default'] = Track;
 
-},{"42":42,"79":79,"86":86,"95":95}],77:[function(_dereq_,module,exports){
+},{"42":42,"78":78,"84":84,"92":92}],76:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _trackList = _dereq_(75);
+var _trackList = _dereq_(74);
 
 var _trackList2 = _interopRequireDefault(_trackList);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -17832,22 +17265,22 @@ var VideoTrackList = function (_TrackList) {
 
 exports['default'] = VideoTrackList;
 
-},{"75":75,"79":79,"95":95}],78:[function(_dereq_,module,exports){
+},{"74":74,"78":78,"92":92}],77:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
-var _trackEnums = _dereq_(74);
+var _trackEnums = _dereq_(73);
 
-var _track = _dereq_(76);
+var _track = _dereq_(75);
 
 var _track2 = _interopRequireDefault(_track);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
@@ -17932,17 +17365,17 @@ var VideoTrack = function (_Track) {
 
 exports['default'] = VideoTrack;
 
-},{"74":74,"76":76,"79":79,"88":88}],79:[function(_dereq_,module,exports){
+},{"73":73,"75":75,"78":78,"86":86}],78:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports.BACKGROUND_SIZE_SUPPORTED = exports.TOUCH_ENABLED = exports.IE_VERSION = exports.IS_IE8 = exports.IS_CHROME = exports.IS_EDGE = exports.IS_FIREFOX = exports.IS_NATIVE_ANDROID = exports.IS_OLD_ANDROID = exports.ANDROID_VERSION = exports.IS_ANDROID = exports.IOS_VERSION = exports.IS_IOS = exports.IS_IPOD = exports.IS_IPHONE = exports.IS_IPAD = undefined;
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
@@ -18016,13 +17449,13 @@ var IE_VERSION = exports.IE_VERSION = function (result) {
 var TOUCH_ENABLED = exports.TOUCH_ENABLED = !!('ontouchstart' in _window2['default'] || _window2['default'].DocumentTouch && _document2['default'] instanceof _window2['default'].DocumentTouch);
 var BACKGROUND_SIZE_SUPPORTED = exports.BACKGROUND_SIZE_SUPPORTED = 'backgroundSize' in _document2['default'].createElement('video').style;
 
-},{"95":95,"96":96}],80:[function(_dereq_,module,exports){
+},{"92":92,"93":93}],79:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports.bufferedPercent = bufferedPercent;
 
-var _timeRanges = _dereq_(91);
+var _timeRanges = _dereq_(88);
 
 /**
  * Compute how much your video has been buffered
@@ -18063,45 +17496,7 @@ function bufferedPercent(buffered, duration) {
    * @file buffer.js
    */
 
-},{"91":91}],81:[function(_dereq_,module,exports){
-'use strict';
-
-exports.__esModule = true;
-exports['default'] = computedStyle;
-
-var _window = _dereq_(96);
-
-var _window2 = _interopRequireDefault(_window);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/**
- * A safe getComputedStyle with an IE8 fallback.
- *
- * This is because in Firefox, if the player is loaded in an iframe with `display:none`,
- * then `getComputedStyle` returns `null`, so, we do a null-check to make sure
- * that the player doesn't break in these cases.
- * See https://bugzilla.mozilla.org/show_bug.cgi?id=548397 for more details.
- *
- * @function computedStyle
- * @param el the element you want the computed style of
- * @param prop the property name you want
- */
-function computedStyle(el, prop) {
-  if (!el || !prop) {
-    return '';
-  }
-
-  if (typeof _window2['default'].getComputedStyle === 'function') {
-    var cs = _window2['default'].getComputedStyle(el);
-
-    return cs ? cs[prop] : '';
-  }
-
-  return el.currentStyle[prop] || '';
-}
-
-},{"96":96}],82:[function(_dereq_,module,exports){
+},{"88":88}],80:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -18128,9 +17523,6 @@ exports.removeElClass = removeElClass;
 exports.toggleElClass = toggleElClass;
 exports.setElAttributes = setElAttributes;
 exports.getElAttributes = getElAttributes;
-exports.getAttribute = getAttribute;
-exports.setAttribute = setAttribute;
-exports.removeAttribute = removeAttribute;
 exports.blockTextSelection = blockTextSelection;
 exports.unblockTextSelection = unblockTextSelection;
 exports.findElPosition = findElPosition;
@@ -18141,23 +17533,23 @@ exports.normalizeContent = normalizeContent;
 exports.appendContent = appendContent;
 exports.insertContent = insertContent;
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _guid = _dereq_(86);
+var _guid = _dereq_(84);
 
 var Guid = _interopRequireWildcard(_guid);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _tsml = _dereq_(149);
+var _tsml = _dereq_(146);
 
 var _tsml2 = _interopRequireDefault(_tsml);
 
@@ -18256,7 +17648,6 @@ function getEl(id) {
  * @param  {String} [tagName='div'] Name of tag to be created.
  * @param  {Object} [properties={}] Element properties to be applied.
  * @param  {Object} [attributes={}] Element attributes to be applied.
- * @param  {String|Element|TextNode|Array|Function} [content] Contents for the element (see: `normalizeContent`)
  * @return {Element}
  * @function createEl
  */
@@ -18264,7 +17655,6 @@ function createEl() {
   var tagName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'div';
   var properties = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-  var content = arguments[3];
 
   var el = _document2['default'].createElement(tagName);
 
@@ -18277,11 +17667,6 @@ function createEl() {
     if (propName.indexOf('aria-') !== -1 || propName === 'role' || propName === 'type') {
       _log2['default'].warn((0, _tsml2['default'])(_templateObject, propName, val));
       el.setAttribute(propName, val);
-
-      // Handle textContent since it's not supported everywhere and we have a
-      // method for it.
-    } else if (propName === 'textContent') {
-      textContent(el, val);
     } else {
       el[propName] = val;
     }
@@ -18290,10 +17675,6 @@ function createEl() {
   Object.getOwnPropertyNames(attributes).forEach(function (attrName) {
     el.setAttribute(attrName, attributes[attrName]);
   });
-
-  if (content) {
-    appendContent(el, content);
-  }
 
   return el;
 }
@@ -18312,7 +17693,6 @@ function textContent(el, text) {
   } else {
     el.textContent = text;
   }
-  return el;
 }
 
 /**
@@ -18579,41 +17959,6 @@ function getElAttributes(tag) {
 }
 
 /**
- * Get the value of an element's attribute
- *
- * @param {Element} el
- * @param {String} attribute Attribute to get
- * @return {String} value of the attribute
- * @method getAttribute
- */
-function getAttribute(el, attribute) {
-  return el.getAttribute(attribute);
-}
-
-/**
- * Set the value of an element's attribute
- *
- * @param {Element} el
- * @param {String} attribute Attribute to set
- * @param {String} value Value to set the attribute to
- * @method setAttribute
- */
-function setAttribute(el, attribute, value) {
-  el.setAttribute(attribute, value);
-}
-
-/**
- * Remove an element's attribute
- *
- * @param {Element} el
- * @param {String} attribute Attribute to remove
- * @method removeAttribute
- */
-function removeAttribute(el, attribute) {
-  el.removeAttribute(attribute);
-}
-
-/**
  * Attempt to block the ability to select text while dragging controls
  *
  * @return {Boolean}
@@ -18859,7 +18204,7 @@ var $ = exports.$ = createQuerier('querySelector');
  */
 var $$ = exports.$$ = createQuerier('querySelectorAll');
 
-},{"149":149,"86":86,"87":87,"95":95,"96":96}],83:[function(_dereq_,module,exports){
+},{"146":146,"84":84,"85":85,"92":92,"93":93}],81:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -18869,23 +18214,23 @@ exports.off = off;
 exports.trigger = trigger;
 exports.one = one;
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _guid = _dereq_(86);
+var _guid = _dereq_(84);
 
 var Guid = _interopRequireWildcard(_guid);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -19293,13 +18638,13 @@ function one(elem, type, fn) {
   on(elem, type, func);
 }
 
-},{"82":82,"86":86,"87":87,"95":95,"96":96}],84:[function(_dereq_,module,exports){
+},{"80":80,"84":84,"85":85,"92":92,"93":93}],82:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports.bind = undefined;
 
-var _guid = _dereq_(86);
+var _guid = _dereq_(84);
 
 /**
  * Bind (a.k.a proxy or Context). A simple method for changing the context of a function
@@ -19336,7 +18681,7 @@ var bind = exports.bind = function bind(context, fn, uid) {
     * @file fn.js
     */
 
-},{"86":86}],85:[function(_dereq_,module,exports){
+},{"84":84}],83:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19385,7 +18730,7 @@ function formatTime(seconds) {
 
 exports['default'] = formatTime;
 
-},{}],86:[function(_dereq_,module,exports){
+},{}],84:[function(_dereq_,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -19409,7 +18754,7 @@ function newGUID() {
   return _guid++;
 }
 
-},{}],87:[function(_dereq_,module,exports){
+},{}],85:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19420,11 +18765,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                                                                                                                                                                                                                                                                                */
 
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -19545,7 +18890,7 @@ log.warn = function () {
 
 exports['default'] = log;
 
-},{"79":79,"96":96}],88:[function(_dereq_,module,exports){
+},{"78":78,"93":93}],86:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19557,7 +18902,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports['default'] = mergeOptions;
 
-var _merge = _dereq_(134);
+var _merge = _dereq_(131);
 
 var _merge2 = _interopRequireDefault(_merge);
 
@@ -19599,73 +18944,30 @@ function customizer(destination, source) {
  * @function mergeOptions
  */
 function mergeOptions() {
-  for (var _len = arguments.length, objects = Array(_len), _key = 0; _key < _len; _key++) {
-    objects[_key] = arguments[_key];
-  }
+  // contruct the call dynamically to handle the variable number of
+  // objects to merge
+  var args = Array.prototype.slice.call(arguments);
 
   // unshift an empty object into the front of the call as the target
   // of the merge
-  objects.unshift({});
+  args.unshift({});
 
   // customize conflict resolution to match our historical merge behavior
-  objects.push(customizer);
+  args.push(customizer);
 
-  _merge2['default'].apply(null, objects);
+  _merge2['default'].apply(null, args);
 
   // return the mutated result object
-  return objects[0];
+  return args[0];
 }
 
-},{"134":134}],89:[function(_dereq_,module,exports){
-"use strict";
-
-exports.__esModule = true;
-exports.each = each;
-exports.reduce = reduce;
-/**
- * @file obj.js
- */
-
-/**
- * Array-like iteration for objects.
- *
- * @param  {Object}   object
- * @param  {Function} fn
- *         A callback function which is called for each key in the object. It
- *         receives the value and key as arguments.
- */
-function each(object, fn) {
-  Object.keys(object).forEach(function (key) {
-    return fn(object[key], key);
-  });
-}
-
-/**
- * Array-like reduce for objects.
- *
- * @param  {Object}   object
- * @param  {Function} fn
- *         A callback function which is called for each key in the object. It
- *         receives the accumulated value and the per-iteration value and key
- *         as arguments.
- * @param  {Mixed}    [initial = 0]
- * @return {Mixed}
- */
-function reduce(object, fn) {
-  var initial = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-  return Object.keys(object).reduce(function (accum, key) {
-    return fn(accum, object[key], key);
-  }, initial);
-}
-
-},{}],90:[function(_dereq_,module,exports){
+},{"131":131}],87:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports.setTextContent = exports.createStyleElement = undefined;
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -19687,14 +18989,14 @@ var setTextContent = exports.setTextContent = function setTextContent(el, conten
   }
 };
 
-},{"95":95}],91:[function(_dereq_,module,exports){
+},{"92":92}],88:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports.createTimeRange = undefined;
 exports.createTimeRanges = createTimeRanges;
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
@@ -19758,8 +19060,8 @@ function createTimeRanges(start, end) {
 
 exports.createTimeRange = createTimeRanges;
 
-},{"87":87}],92:[function(_dereq_,module,exports){
-'use strict';
+},{"85":85}],89:[function(_dereq_,module,exports){
+"use strict";
 
 exports.__esModule = true;
 /**
@@ -19773,26 +19075,22 @@ exports.__esModule = true;
  * @method toTitleCase
  */
 function toTitleCase(string) {
-  if (typeof string !== 'string') {
-    return string;
-  }
-
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-exports['default'] = toTitleCase;
+exports["default"] = toTitleCase;
 
-},{}],93:[function(_dereq_,module,exports){
+},{}],90:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
 exports.isCrossOrigin = exports.getFileExtension = exports.getAbsoluteURL = exports.parseUrl = undefined;
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
@@ -19920,7 +19218,7 @@ var isCrossOrigin = exports.isCrossOrigin = function isCrossOrigin(url) {
   return crossOrigin;
 };
 
-},{"95":95,"96":96}],94:[function(_dereq_,module,exports){
+},{"92":92,"93":93}],91:[function(_dereq_,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19934,11 +19232,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 // Include the built-in techs
 
 
-var _window = _dereq_(96);
+var _window = _dereq_(93);
 
 var _window2 = _interopRequireDefault(_window);
 
-var _document = _dereq_(95);
+var _document = _dereq_(92);
 
 var _document2 = _interopRequireDefault(_document);
 
@@ -19946,7 +19244,7 @@ var _setup = _dereq_(56);
 
 var setup = _interopRequireWildcard(_setup);
 
-var _stylesheet = _dereq_(90);
+var _stylesheet = _dereq_(87);
 
 var stylesheet = _interopRequireWildcard(_stylesheet);
 
@@ -19958,7 +19256,7 @@ var _eventTarget = _dereq_(42);
 
 var _eventTarget2 = _interopRequireDefault(_eventTarget);
 
-var _events = _dereq_(83);
+var _events = _dereq_(81);
 
 var Events = _interopRequireWildcard(_events);
 
@@ -19970,65 +19268,61 @@ var _plugins = _dereq_(52);
 
 var _plugins2 = _interopRequireDefault(_plugins);
 
-var _mergeOptions = _dereq_(88);
+var _mergeOptions = _dereq_(86);
 
 var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-var _fn = _dereq_(84);
+var _fn = _dereq_(82);
 
 var Fn = _interopRequireWildcard(_fn);
 
-var _textTrack = _dereq_(73);
+var _textTrack = _dereq_(72);
 
 var _textTrack2 = _interopRequireDefault(_textTrack);
 
-var _audioTrack = _dereq_(65);
+var _audioTrack = _dereq_(64);
 
 var _audioTrack2 = _interopRequireDefault(_audioTrack);
 
-var _videoTrack = _dereq_(78);
+var _videoTrack = _dereq_(77);
 
 var _videoTrack2 = _interopRequireDefault(_videoTrack);
 
-var _timeRanges = _dereq_(91);
+var _timeRanges = _dereq_(88);
 
-var _formatTime = _dereq_(85);
+var _formatTime = _dereq_(83);
 
 var _formatTime2 = _interopRequireDefault(_formatTime);
 
-var _log = _dereq_(87);
+var _log = _dereq_(85);
 
 var _log2 = _interopRequireDefault(_log);
 
-var _dom = _dereq_(82);
+var _dom = _dereq_(80);
 
 var Dom = _interopRequireWildcard(_dom);
 
-var _browser = _dereq_(79);
+var _browser = _dereq_(78);
 
 var browser = _interopRequireWildcard(_browser);
 
-var _url = _dereq_(93);
+var _url = _dereq_(90);
 
 var Url = _interopRequireWildcard(_url);
-
-var _computedStyle = _dereq_(81);
-
-var _computedStyle2 = _interopRequireDefault(_computedStyle);
 
 var _extend = _dereq_(43);
 
 var _extend2 = _interopRequireDefault(_extend);
 
-var _merge2 = _dereq_(134);
+var _merge2 = _dereq_(131);
 
 var _merge3 = _interopRequireDefault(_merge2);
 
-var _xhr = _dereq_(150);
+var _xhr = _dereq_(147);
 
 var _xhr2 = _interopRequireDefault(_xhr);
 
-var _tech = _dereq_(63);
+var _tech = _dereq_(62);
 
 var _tech2 = _interopRequireDefault(_tech);
 
@@ -20060,8 +19354,6 @@ if (typeof HTMLVideoElement === 'undefined' && _window2['default'].document && _
  */
 function videojs(id, options, ready) {
   var tag = void 0;
-
-  options = options || {};
 
   // Allow for element or ID to be passed in
   // String ID
@@ -20102,82 +19394,9 @@ function videojs(id, options, ready) {
   }
 
   // Element may have a player attr referring to an already created player instance.
-  // If so return that otherwise set up a new player below
-  if (tag.player || _player2['default'].players[tag.playerId]) {
-    return tag.player || _player2['default'].players[tag.playerId];
-  }
-
-  videojs.hooks('beforesetup').forEach(function (hookFunction) {
-    var opts = hookFunction(tag, (0, _mergeOptions2['default'])(options));
-
-    if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object' || Array.isArray(opts)) {
-      videojs.log.error('please return an object in beforesetup hooks');
-      return;
-    }
-
-    options = (0, _mergeOptions2['default'])(options, opts);
-  });
-
-  // If not, set up a new player
-  var player = new _player2['default'](tag, options, ready);
-
-  videojs.hooks('setup').forEach(function (hookFunction) {
-    return hookFunction(player);
-  });
-
-  return player;
+  // If not, set up a new player and return the instance.
+  return tag.player || _player2['default'].players[tag.playerId] || new _player2['default'](tag, options, ready);
 }
-
-/**
- * An Object that contains lifecycle hooks as keys which point to an array
- * of functions that are run when a lifecycle is triggered
- */
-videojs.hooks_ = {};
-
-/**
- * Get a list of hooks for a specific lifecycle
- *
- * @param {String} type the lifecyle to get hooks from
- * @param {Function=} optionally add a hook to the lifecycle that your are getting
- * @return {Array} an array of hooks, or an empty array if there are none
- */
-videojs.hooks = function (type, fn) {
-  videojs.hooks_[type] = videojs.hooks_[type] || [];
-  if (fn) {
-    videojs.hooks_[type] = videojs.hooks_[type].concat(fn);
-  }
-  return videojs.hooks_[type];
-};
-
-/**
- * Add a function hook to a specific videojs lifecycle
- *
- * @param {String} type the lifecycle to hook the function to
- * @param {Function|Array} fn the function to attach
- */
-videojs.hook = function (type, fn) {
-  videojs.hooks(type, fn);
-};
-
-/**
- * Remove a hook from a specific videojs lifecycle
- *
- * @param {String} type the lifecycle that the function hooked to
- * @param {Function} fn the hooked function to remove
- * @return {Boolean} the function that was removed or undef
- */
-videojs.removeHook = function (type, fn) {
-  var index = videojs.hooks(type).indexOf(fn);
-
-  if (index <= -1) {
-    return false;
-  }
-
-  videojs.hooks_[type] = videojs.hooks_[type].slice();
-  videojs.hooks_[type].splice(index, 1);
-
-  return true;
-};
 
 // Add default styles
 if (_window2['default'].VIDEOJS_NO_DYNAMIC_STYLE !== true) {
@@ -20204,7 +19423,7 @@ setup.autoSetupTimeout(1, videojs);
  *
  * @type {String}
  */
-videojs.VERSION = '5.13.1';
+videojs.VERSION = '5.12.6';
 
 /**
  * The global options object. These are the settings that take effect
@@ -20793,20 +20012,6 @@ videojs.appendContent = Dom.appendContent;
  */
 videojs.insertContent = Dom.insertContent;
 
-/**
- * A safe getComputedStyle with an IE8 fallback.
- *
- * This is because in Firefox, if the player is loaded in an iframe with `display:none`,
- * then `getComputedStyle` returns `null`, so, we do a null-check to make sure
- * that the player doesn't break in these cases.
- * See https://bugzilla.mozilla.org/show_bug.cgi?id=548397 for more details.
- *
- * @function computedStyle
- * @param el the element you want the computed style of
- * @param prop the property name you want
- */
-videojs.computedStyle = _computedStyle2['default'];
-
 /*
  * Custom Universal Module Definition (UMD)
  *
@@ -20826,11 +20031,11 @@ if (typeof define === 'function' && define.amd) {
 
 exports['default'] = videojs;
 
-},{"134":134,"150":150,"42":42,"43":43,"5":5,"51":51,"52":52,"56":56,"63":63,"65":65,"73":73,"78":78,"79":79,"81":81,"82":82,"83":83,"84":84,"85":85,"87":87,"88":88,"90":90,"91":91,"93":93,"95":95,"96":96}],95:[function(_dereq_,module,exports){
+},{"131":131,"147":147,"42":42,"43":43,"5":5,"51":51,"52":52,"56":56,"62":62,"64":64,"72":72,"77":77,"78":78,"80":80,"81":81,"82":82,"83":83,"85":85,"86":86,"87":87,"88":88,"90":90,"92":92,"93":93}],92:[function(_dereq_,module,exports){
 (function (global){
 var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
-var minDoc = _dereq_(97);
+var minDoc = _dereq_(94);
 
 if (typeof document !== 'undefined') {
     module.exports = document;
@@ -20845,7 +20050,7 @@ if (typeof document !== 'undefined') {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"97":97}],96:[function(_dereq_,module,exports){
+},{"94":94}],93:[function(_dereq_,module,exports){
 (function (global){
 if (typeof window !== "undefined") {
     module.exports = window;
@@ -20858,10 +20063,10 @@ if (typeof window !== "undefined") {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],97:[function(_dereq_,module,exports){
+},{}],94:[function(_dereq_,module,exports){
 
-},{}],98:[function(_dereq_,module,exports){
-var getNative = _dereq_(114);
+},{}],95:[function(_dereq_,module,exports){
+var getNative = _dereq_(111);
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeNow = getNative(Date, 'now');
@@ -20886,9 +20091,9 @@ var now = nativeNow || function() {
 
 module.exports = now;
 
-},{"114":114}],99:[function(_dereq_,module,exports){
-var isObject = _dereq_(127),
-    now = _dereq_(98);
+},{"111":111}],96:[function(_dereq_,module,exports){
+var isObject = _dereq_(124),
+    now = _dereq_(95);
 
 /** Used as the `TypeError` message for "Functions" methods. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -21069,7 +20274,7 @@ function debounce(func, wait, options) {
 
 module.exports = debounce;
 
-},{"127":127,"98":98}],100:[function(_dereq_,module,exports){
+},{"124":124,"95":95}],97:[function(_dereq_,module,exports){
 /** Used as the `TypeError` message for "Functions" methods. */
 var FUNC_ERROR_TEXT = 'Expected a function';
 
@@ -21129,9 +20334,9 @@ function restParam(func, start) {
 
 module.exports = restParam;
 
-},{}],101:[function(_dereq_,module,exports){
-var debounce = _dereq_(99),
-    isObject = _dereq_(127);
+},{}],98:[function(_dereq_,module,exports){
+var debounce = _dereq_(96),
+    isObject = _dereq_(124);
 
 /** Used as the `TypeError` message for "Functions" methods. */
 var FUNC_ERROR_TEXT = 'Expected a function';
@@ -21193,7 +20398,7 @@ function throttle(func, wait, options) {
 
 module.exports = throttle;
 
-},{"127":127,"99":99}],102:[function(_dereq_,module,exports){
+},{"124":124,"96":96}],99:[function(_dereq_,module,exports){
 /**
  * Copies the values of `source` to `array`.
  *
@@ -21215,7 +20420,7 @@ function arrayCopy(source, array) {
 
 module.exports = arrayCopy;
 
-},{}],103:[function(_dereq_,module,exports){
+},{}],100:[function(_dereq_,module,exports){
 /**
  * A specialized version of `_.forEach` for arrays without support for callback
  * shorthands and `this` binding.
@@ -21239,7 +20444,7 @@ function arrayEach(array, iteratee) {
 
 module.exports = arrayEach;
 
-},{}],104:[function(_dereq_,module,exports){
+},{}],101:[function(_dereq_,module,exports){
 /**
  * Copies properties of `source` to `object`.
  *
@@ -21264,8 +20469,8 @@ function baseCopy(source, props, object) {
 
 module.exports = baseCopy;
 
-},{}],105:[function(_dereq_,module,exports){
-var createBaseFor = _dereq_(112);
+},{}],102:[function(_dereq_,module,exports){
+var createBaseFor = _dereq_(109);
 
 /**
  * The base implementation of `baseForIn` and `baseForOwn` which iterates
@@ -21283,9 +20488,9 @@ var baseFor = createBaseFor();
 
 module.exports = baseFor;
 
-},{"112":112}],106:[function(_dereq_,module,exports){
-var baseFor = _dereq_(105),
-    keysIn = _dereq_(133);
+},{"109":109}],103:[function(_dereq_,module,exports){
+var baseFor = _dereq_(102),
+    keysIn = _dereq_(130);
 
 /**
  * The base implementation of `_.forIn` without support for callback
@@ -21302,15 +20507,15 @@ function baseForIn(object, iteratee) {
 
 module.exports = baseForIn;
 
-},{"105":105,"133":133}],107:[function(_dereq_,module,exports){
-var arrayEach = _dereq_(103),
-    baseMergeDeep = _dereq_(108),
-    isArray = _dereq_(124),
-    isArrayLike = _dereq_(115),
-    isObject = _dereq_(127),
-    isObjectLike = _dereq_(120),
-    isTypedArray = _dereq_(130),
-    keys = _dereq_(132);
+},{"102":102,"130":130}],104:[function(_dereq_,module,exports){
+var arrayEach = _dereq_(100),
+    baseMergeDeep = _dereq_(105),
+    isArray = _dereq_(121),
+    isArrayLike = _dereq_(112),
+    isObject = _dereq_(124),
+    isObjectLike = _dereq_(117),
+    isTypedArray = _dereq_(127),
+    keys = _dereq_(129);
 
 /**
  * The base implementation of `_.merge` without support for argument juggling,
@@ -21360,14 +20565,14 @@ function baseMerge(object, source, customizer, stackA, stackB) {
 
 module.exports = baseMerge;
 
-},{"103":103,"108":108,"115":115,"120":120,"124":124,"127":127,"130":130,"132":132}],108:[function(_dereq_,module,exports){
-var arrayCopy = _dereq_(102),
-    isArguments = _dereq_(123),
-    isArray = _dereq_(124),
-    isArrayLike = _dereq_(115),
-    isPlainObject = _dereq_(128),
-    isTypedArray = _dereq_(130),
-    toPlainObject = _dereq_(131);
+},{"100":100,"105":105,"112":112,"117":117,"121":121,"124":124,"127":127,"129":129}],105:[function(_dereq_,module,exports){
+var arrayCopy = _dereq_(99),
+    isArguments = _dereq_(120),
+    isArray = _dereq_(121),
+    isArrayLike = _dereq_(112),
+    isPlainObject = _dereq_(125),
+    isTypedArray = _dereq_(127),
+    toPlainObject = _dereq_(128);
 
 /**
  * A specialized version of `baseMerge` for arrays and objects which performs
@@ -21429,8 +20634,8 @@ function baseMergeDeep(object, source, key, mergeFunc, customizer, stackA, stack
 
 module.exports = baseMergeDeep;
 
-},{"102":102,"115":115,"123":123,"124":124,"128":128,"130":130,"131":131}],109:[function(_dereq_,module,exports){
-var toObject = _dereq_(122);
+},{"112":112,"120":120,"121":121,"125":125,"127":127,"128":128,"99":99}],106:[function(_dereq_,module,exports){
+var toObject = _dereq_(119);
 
 /**
  * The base implementation of `_.property` without support for deep paths.
@@ -21447,8 +20652,8 @@ function baseProperty(key) {
 
 module.exports = baseProperty;
 
-},{"122":122}],110:[function(_dereq_,module,exports){
-var identity = _dereq_(136);
+},{"119":119}],107:[function(_dereq_,module,exports){
+var identity = _dereq_(133);
 
 /**
  * A specialized version of `baseCallback` which only supports `this` binding
@@ -21488,10 +20693,10 @@ function bindCallback(func, thisArg, argCount) {
 
 module.exports = bindCallback;
 
-},{"136":136}],111:[function(_dereq_,module,exports){
-var bindCallback = _dereq_(110),
-    isIterateeCall = _dereq_(118),
-    restParam = _dereq_(100);
+},{"133":133}],108:[function(_dereq_,module,exports){
+var bindCallback = _dereq_(107),
+    isIterateeCall = _dereq_(115),
+    restParam = _dereq_(97);
 
 /**
  * Creates a `_.assign`, `_.defaults`, or `_.merge` function.
@@ -21531,8 +20736,8 @@ function createAssigner(assigner) {
 
 module.exports = createAssigner;
 
-},{"100":100,"110":110,"118":118}],112:[function(_dereq_,module,exports){
-var toObject = _dereq_(122);
+},{"107":107,"115":115,"97":97}],109:[function(_dereq_,module,exports){
+var toObject = _dereq_(119);
 
 /**
  * Creates a base function for `_.forIn` or `_.forInRight`.
@@ -21560,8 +20765,8 @@ function createBaseFor(fromRight) {
 
 module.exports = createBaseFor;
 
-},{"122":122}],113:[function(_dereq_,module,exports){
-var baseProperty = _dereq_(109);
+},{"119":119}],110:[function(_dereq_,module,exports){
+var baseProperty = _dereq_(106);
 
 /**
  * Gets the "length" property value of `object`.
@@ -21577,8 +20782,8 @@ var getLength = baseProperty('length');
 
 module.exports = getLength;
 
-},{"109":109}],114:[function(_dereq_,module,exports){
-var isNative = _dereq_(126);
+},{"106":106}],111:[function(_dereq_,module,exports){
+var isNative = _dereq_(123);
 
 /**
  * Gets the native function at `key` of `object`.
@@ -21595,9 +20800,9 @@ function getNative(object, key) {
 
 module.exports = getNative;
 
-},{"126":126}],115:[function(_dereq_,module,exports){
-var getLength = _dereq_(113),
-    isLength = _dereq_(119);
+},{"123":123}],112:[function(_dereq_,module,exports){
+var getLength = _dereq_(110),
+    isLength = _dereq_(116);
 
 /**
  * Checks if `value` is array-like.
@@ -21612,7 +20817,7 @@ function isArrayLike(value) {
 
 module.exports = isArrayLike;
 
-},{"113":113,"119":119}],116:[function(_dereq_,module,exports){
+},{"110":110,"116":116}],113:[function(_dereq_,module,exports){
 /**
  * Checks if `value` is a host object in IE < 9.
  *
@@ -21635,7 +20840,7 @@ var isHostObject = (function() {
 
 module.exports = isHostObject;
 
-},{}],117:[function(_dereq_,module,exports){
+},{}],114:[function(_dereq_,module,exports){
 /** Used to detect unsigned integer values. */
 var reIsUint = /^\d+$/;
 
@@ -21661,10 +20866,10 @@ function isIndex(value, length) {
 
 module.exports = isIndex;
 
-},{}],118:[function(_dereq_,module,exports){
-var isArrayLike = _dereq_(115),
-    isIndex = _dereq_(117),
-    isObject = _dereq_(127);
+},{}],115:[function(_dereq_,module,exports){
+var isArrayLike = _dereq_(112),
+    isIndex = _dereq_(114),
+    isObject = _dereq_(124);
 
 /**
  * Checks if the provided arguments are from an iteratee call.
@@ -21691,7 +20896,7 @@ function isIterateeCall(value, index, object) {
 
 module.exports = isIterateeCall;
 
-},{"115":115,"117":117,"127":127}],119:[function(_dereq_,module,exports){
+},{"112":112,"114":114,"124":124}],116:[function(_dereq_,module,exports){
 /**
  * Used as the [maximum length](http://ecma-international.org/ecma-262/6.0/#sec-number.max_safe_integer)
  * of an array-like value.
@@ -21713,7 +20918,7 @@ function isLength(value) {
 
 module.exports = isLength;
 
-},{}],120:[function(_dereq_,module,exports){
+},{}],117:[function(_dereq_,module,exports){
 /**
  * Checks if `value` is object-like.
  *
@@ -21727,13 +20932,13 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],121:[function(_dereq_,module,exports){
-var isArguments = _dereq_(123),
-    isArray = _dereq_(124),
-    isIndex = _dereq_(117),
-    isLength = _dereq_(119),
-    isString = _dereq_(129),
-    keysIn = _dereq_(133);
+},{}],118:[function(_dereq_,module,exports){
+var isArguments = _dereq_(120),
+    isArray = _dereq_(121),
+    isIndex = _dereq_(114),
+    isLength = _dereq_(116),
+    isString = _dereq_(126),
+    keysIn = _dereq_(130);
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -21771,10 +20976,10 @@ function shimKeys(object) {
 
 module.exports = shimKeys;
 
-},{"117":117,"119":119,"123":123,"124":124,"129":129,"133":133}],122:[function(_dereq_,module,exports){
-var isObject = _dereq_(127),
-    isString = _dereq_(129),
-    support = _dereq_(135);
+},{"114":114,"116":116,"120":120,"121":121,"126":126,"130":130}],119:[function(_dereq_,module,exports){
+var isObject = _dereq_(124),
+    isString = _dereq_(126),
+    support = _dereq_(132);
 
 /**
  * Converts `value` to an object if it's not one.
@@ -21799,9 +21004,9 @@ function toObject(value) {
 
 module.exports = toObject;
 
-},{"127":127,"129":129,"135":135}],123:[function(_dereq_,module,exports){
-var isArrayLike = _dereq_(115),
-    isObjectLike = _dereq_(120);
+},{"124":124,"126":126,"132":132}],120:[function(_dereq_,module,exports){
+var isArrayLike = _dereq_(112),
+    isObjectLike = _dereq_(117);
 
 /** Used for native method references. */
 var objectProto = Object.prototype;
@@ -21835,10 +21040,10 @@ function isArguments(value) {
 
 module.exports = isArguments;
 
-},{"115":115,"120":120}],124:[function(_dereq_,module,exports){
-var getNative = _dereq_(114),
-    isLength = _dereq_(119),
-    isObjectLike = _dereq_(120);
+},{"112":112,"117":117}],121:[function(_dereq_,module,exports){
+var getNative = _dereq_(111),
+    isLength = _dereq_(116),
+    isObjectLike = _dereq_(117);
 
 /** `Object#toString` result references. */
 var arrayTag = '[object Array]';
@@ -21877,8 +21082,8 @@ var isArray = nativeIsArray || function(value) {
 
 module.exports = isArray;
 
-},{"114":114,"119":119,"120":120}],125:[function(_dereq_,module,exports){
-var isObject = _dereq_(127);
+},{"111":111,"116":116,"117":117}],122:[function(_dereq_,module,exports){
+var isObject = _dereq_(124);
 
 /** `Object#toString` result references. */
 var funcTag = '[object Function]';
@@ -21917,10 +21122,10 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{"127":127}],126:[function(_dereq_,module,exports){
-var isFunction = _dereq_(125),
-    isHostObject = _dereq_(116),
-    isObjectLike = _dereq_(120);
+},{"124":124}],123:[function(_dereq_,module,exports){
+var isFunction = _dereq_(122),
+    isHostObject = _dereq_(113),
+    isObjectLike = _dereq_(117);
 
 /** Used to detect host constructors (Safari > 5). */
 var reIsHostCtor = /^\[object .+?Constructor\]$/;
@@ -21968,7 +21173,7 @@ function isNative(value) {
 
 module.exports = isNative;
 
-},{"116":116,"120":120,"125":125}],127:[function(_dereq_,module,exports){
+},{"113":113,"117":117,"122":122}],124:[function(_dereq_,module,exports){
 /**
  * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
  * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
@@ -21998,12 +21203,12 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{}],128:[function(_dereq_,module,exports){
-var baseForIn = _dereq_(106),
-    isArguments = _dereq_(123),
-    isHostObject = _dereq_(116),
-    isObjectLike = _dereq_(120),
-    support = _dereq_(135);
+},{}],125:[function(_dereq_,module,exports){
+var baseForIn = _dereq_(103),
+    isArguments = _dereq_(120),
+    isHostObject = _dereq_(113),
+    isObjectLike = _dereq_(117),
+    support = _dereq_(132);
 
 /** `Object#toString` result references. */
 var objectTag = '[object Object]';
@@ -22080,8 +21285,8 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"106":106,"116":116,"120":120,"123":123,"135":135}],129:[function(_dereq_,module,exports){
-var isObjectLike = _dereq_(120);
+},{"103":103,"113":113,"117":117,"120":120,"132":132}],126:[function(_dereq_,module,exports){
+var isObjectLike = _dereq_(117);
 
 /** `Object#toString` result references. */
 var stringTag = '[object String]';
@@ -22117,9 +21322,9 @@ function isString(value) {
 
 module.exports = isString;
 
-},{"120":120}],130:[function(_dereq_,module,exports){
-var isLength = _dereq_(119),
-    isObjectLike = _dereq_(120);
+},{"117":117}],127:[function(_dereq_,module,exports){
+var isLength = _dereq_(116),
+    isObjectLike = _dereq_(117);
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
@@ -22193,9 +21398,9 @@ function isTypedArray(value) {
 
 module.exports = isTypedArray;
 
-},{"119":119,"120":120}],131:[function(_dereq_,module,exports){
-var baseCopy = _dereq_(104),
-    keysIn = _dereq_(133);
+},{"116":116,"117":117}],128:[function(_dereq_,module,exports){
+var baseCopy = _dereq_(101),
+    keysIn = _dereq_(130);
 
 /**
  * Converts `value` to a plain object flattening inherited enumerable
@@ -22226,12 +21431,12 @@ function toPlainObject(value) {
 
 module.exports = toPlainObject;
 
-},{"104":104,"133":133}],132:[function(_dereq_,module,exports){
-var getNative = _dereq_(114),
-    isArrayLike = _dereq_(115),
-    isObject = _dereq_(127),
-    shimKeys = _dereq_(121),
-    support = _dereq_(135);
+},{"101":101,"130":130}],129:[function(_dereq_,module,exports){
+var getNative = _dereq_(111),
+    isArrayLike = _dereq_(112),
+    isObject = _dereq_(124),
+    shimKeys = _dereq_(118),
+    support = _dereq_(132);
 
 /* Native method references for those with the same name as other `lodash` methods. */
 var nativeKeys = getNative(Object, 'keys');
@@ -22274,16 +21479,16 @@ var keys = !nativeKeys ? shimKeys : function(object) {
 
 module.exports = keys;
 
-},{"114":114,"115":115,"121":121,"127":127,"135":135}],133:[function(_dereq_,module,exports){
-var arrayEach = _dereq_(103),
-    isArguments = _dereq_(123),
-    isArray = _dereq_(124),
-    isFunction = _dereq_(125),
-    isIndex = _dereq_(117),
-    isLength = _dereq_(119),
-    isObject = _dereq_(127),
-    isString = _dereq_(129),
-    support = _dereq_(135);
+},{"111":111,"112":112,"118":118,"124":124,"132":132}],130:[function(_dereq_,module,exports){
+var arrayEach = _dereq_(100),
+    isArguments = _dereq_(120),
+    isArray = _dereq_(121),
+    isFunction = _dereq_(122),
+    isIndex = _dereq_(114),
+    isLength = _dereq_(116),
+    isObject = _dereq_(124),
+    isString = _dereq_(126),
+    support = _dereq_(132);
 
 /** `Object#toString` result references. */
 var arrayTag = '[object Array]',
@@ -22412,9 +21617,9 @@ function keysIn(object) {
 
 module.exports = keysIn;
 
-},{"103":103,"117":117,"119":119,"123":123,"124":124,"125":125,"127":127,"129":129,"135":135}],134:[function(_dereq_,module,exports){
-var baseMerge = _dereq_(107),
-    createAssigner = _dereq_(111);
+},{"100":100,"114":114,"116":116,"120":120,"121":121,"122":122,"124":124,"126":126,"132":132}],131:[function(_dereq_,module,exports){
+var baseMerge = _dereq_(104),
+    createAssigner = _dereq_(108);
 
 /**
  * Recursively merges own enumerable properties of the source object(s), that
@@ -22468,7 +21673,7 @@ var merge = createAssigner(baseMerge);
 
 module.exports = merge;
 
-},{"107":107,"111":111}],135:[function(_dereq_,module,exports){
+},{"104":104,"108":108}],132:[function(_dereq_,module,exports){
 /** Used for native method references. */
 var arrayProto = Array.prototype,
     errorProto = Error.prototype,
@@ -22566,7 +21771,7 @@ var support = {};
 
 module.exports = support;
 
-},{}],136:[function(_dereq_,module,exports){
+},{}],133:[function(_dereq_,module,exports){
 /**
  * This method returns the first argument provided to it.
  *
@@ -22588,10 +21793,10 @@ function identity(value) {
 
 module.exports = identity;
 
-},{}],137:[function(_dereq_,module,exports){
+},{}],134:[function(_dereq_,module,exports){
 'use strict';
 
-var keys = _dereq_(144);
+var keys = _dereq_(141);
 
 module.exports = function hasSymbols() {
 	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
@@ -22631,16 +21836,16 @@ module.exports = function hasSymbols() {
 	return true;
 };
 
-},{"144":144}],138:[function(_dereq_,module,exports){
+},{"141":141}],135:[function(_dereq_,module,exports){
 'use strict';
 
 // modified from https://github.com/es-shims/es6-shim
-var keys = _dereq_(144);
-var bind = _dereq_(143);
+var keys = _dereq_(141);
+var bind = _dereq_(140);
 var canBeObject = function (obj) {
 	return typeof obj !== 'undefined' && obj !== null;
 };
-var hasSymbols = _dereq_(137)();
+var hasSymbols = _dereq_(134)();
 var toObject = Object;
 var push = bind.call(Function.call, Array.prototype.push);
 var propIsEnumerable = bind.call(Function.call, Object.prototype.propertyIsEnumerable);
@@ -22674,14 +21879,14 @@ module.exports = function assign(target, source1) {
 	return objTarget;
 };
 
-},{"137":137,"143":143,"144":144}],139:[function(_dereq_,module,exports){
+},{"134":134,"140":140,"141":141}],136:[function(_dereq_,module,exports){
 'use strict';
 
-var defineProperties = _dereq_(140);
+var defineProperties = _dereq_(137);
 
-var implementation = _dereq_(138);
-var getPolyfill = _dereq_(146);
-var shim = _dereq_(147);
+var implementation = _dereq_(135);
+var getPolyfill = _dereq_(143);
+var shim = _dereq_(144);
 
 var polyfill = getPolyfill();
 
@@ -22693,11 +21898,11 @@ defineProperties(polyfill, {
 
 module.exports = polyfill;
 
-},{"138":138,"140":140,"146":146,"147":147}],140:[function(_dereq_,module,exports){
+},{"135":135,"137":137,"143":143,"144":144}],137:[function(_dereq_,module,exports){
 'use strict';
 
-var keys = _dereq_(144);
-var foreach = _dereq_(141);
+var keys = _dereq_(141);
+var foreach = _dereq_(138);
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol() === 'symbol';
 
 var toStr = Object.prototype.toString;
@@ -22751,7 +21956,7 @@ defineProperties.supportsDescriptors = !!supportsDescriptors;
 
 module.exports = defineProperties;
 
-},{"141":141,"144":144}],141:[function(_dereq_,module,exports){
+},{"138":138,"141":141}],138:[function(_dereq_,module,exports){
 
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
@@ -22775,7 +21980,7 @@ module.exports = function forEach (obj, fn, ctx) {
 };
 
 
-},{}],142:[function(_dereq_,module,exports){
+},{}],139:[function(_dereq_,module,exports){
 var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
 var slice = Array.prototype.slice;
 var toStr = Object.prototype.toString;
@@ -22825,19 +22030,19 @@ module.exports = function bind(that) {
     return bound;
 };
 
-},{}],143:[function(_dereq_,module,exports){
-var implementation = _dereq_(142);
+},{}],140:[function(_dereq_,module,exports){
+var implementation = _dereq_(139);
 
 module.exports = Function.prototype.bind || implementation;
 
-},{"142":142}],144:[function(_dereq_,module,exports){
+},{"139":139}],141:[function(_dereq_,module,exports){
 'use strict';
 
 // modified from https://github.com/es-shims/es5-shim
 var has = Object.prototype.hasOwnProperty;
 var toStr = Object.prototype.toString;
 var slice = Array.prototype.slice;
-var isArgs = _dereq_(145);
+var isArgs = _dereq_(142);
 var isEnumerable = Object.prototype.propertyIsEnumerable;
 var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
 var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
@@ -22972,7 +22177,7 @@ keysShim.shim = function shimObjectKeys() {
 
 module.exports = keysShim;
 
-},{"145":145}],145:[function(_dereq_,module,exports){
+},{"142":142}],142:[function(_dereq_,module,exports){
 'use strict';
 
 var toStr = Object.prototype.toString;
@@ -22991,10 +22196,10 @@ module.exports = function isArguments(value) {
 	return isArgs;
 };
 
-},{}],146:[function(_dereq_,module,exports){
+},{}],143:[function(_dereq_,module,exports){
 'use strict';
 
-var implementation = _dereq_(138);
+var implementation = _dereq_(135);
 
 var lacksProperEnumerationOrder = function () {
 	if (!Object.assign) {
@@ -23044,11 +22249,11 @@ module.exports = function getPolyfill() {
 	return Object.assign;
 };
 
-},{"138":138}],147:[function(_dereq_,module,exports){
+},{"135":135}],144:[function(_dereq_,module,exports){
 'use strict';
 
-var define = _dereq_(140);
-var getPolyfill = _dereq_(146);
+var define = _dereq_(137);
+var getPolyfill = _dereq_(143);
 
 module.exports = function shimAssign() {
 	var polyfill = getPolyfill();
@@ -23060,7 +22265,7 @@ module.exports = function shimAssign() {
 	return polyfill;
 };
 
-},{"140":140,"146":146}],148:[function(_dereq_,module,exports){
+},{"137":137,"143":143}],145:[function(_dereq_,module,exports){
 module.exports = SafeParseTuple
 
 function SafeParseTuple(obj, reviver) {
@@ -23076,7 +22281,7 @@ function SafeParseTuple(obj, reviver) {
     return [error, json]
 }
 
-},{}],149:[function(_dereq_,module,exports){
+},{}],146:[function(_dereq_,module,exports){
 function clean (s) {
   return s.replace(/\n\r?\s*/g, '')
 }
@@ -23091,13 +22296,13 @@ module.exports = function tsml (sa) {
 
   return s
 }
-},{}],150:[function(_dereq_,module,exports){
+},{}],147:[function(_dereq_,module,exports){
 "use strict";
-var window = _dereq_(96)
-var once = _dereq_(152)
-var isFunction = _dereq_(151)
-var parseHeaders = _dereq_(155)
-var xtend = _dereq_(156)
+var window = _dereq_(93)
+var once = _dereq_(149)
+var isFunction = _dereq_(148)
+var parseHeaders = _dereq_(152)
+var xtend = _dereq_(153)
 
 module.exports = createXHR
 createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
@@ -23312,7 +22517,7 @@ function _createXHR(options) {
 
 function noop() {}
 
-},{"151":151,"152":152,"155":155,"156":156,"96":96}],151:[function(_dereq_,module,exports){
+},{"148":148,"149":149,"152":152,"153":153,"93":93}],148:[function(_dereq_,module,exports){
 module.exports = isFunction
 
 var toString = Object.prototype.toString
@@ -23329,7 +22534,7 @@ function isFunction (fn) {
       fn === window.prompt))
 };
 
-},{}],152:[function(_dereq_,module,exports){
+},{}],149:[function(_dereq_,module,exports){
 module.exports = once
 
 once.proto = once(function () {
@@ -23350,8 +22555,8 @@ function once (fn) {
   }
 }
 
-},{}],153:[function(_dereq_,module,exports){
-var isFunction = _dereq_(151)
+},{}],150:[function(_dereq_,module,exports){
+var isFunction = _dereq_(148)
 
 module.exports = forEach
 
@@ -23398,7 +22603,7 @@ function forEachObject(object, iterator, context) {
     }
 }
 
-},{"151":151}],154:[function(_dereq_,module,exports){
+},{"148":148}],151:[function(_dereq_,module,exports){
 
 exports = module.exports = trim;
 
@@ -23414,9 +22619,9 @@ exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
 
-},{}],155:[function(_dereq_,module,exports){
-var trim = _dereq_(154)
-  , forEach = _dereq_(153)
+},{}],152:[function(_dereq_,module,exports){
+var trim = _dereq_(151)
+  , forEach = _dereq_(150)
   , isArray = function(arg) {
       return Object.prototype.toString.call(arg) === '[object Array]';
     }
@@ -23446,7 +22651,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"153":153,"154":154}],156:[function(_dereq_,module,exports){
+},{"150":150,"151":151}],153:[function(_dereq_,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -23467,7 +22672,7 @@ function extend() {
     return target
 }
 
-},{}]},{},[94])(94)
+},{}]},{},[91])(91)
 });
 /* vtt.js - v0.12.1 (https://github.com/mozilla/vtt.js) built on 08-07-2015 */
 
