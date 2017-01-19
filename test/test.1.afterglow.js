@@ -242,6 +242,49 @@ describe("Afterglow Core", () => {
 			sinon.assert.calledOnce(afterglow.closeLightbox);
 		});
 
+		it('should pass play method for regular players',() => {
+			var testobject = {
+				play: () => {
+					return 'success';
+				}
+			};
+
+			afterglow.players = [
+				{
+					id : 'testid',
+					getPlayer: () => {
+						return testobject;
+					}
+				}
+			];
+
+			afterglow.lightboxtriggers = [];
+
+			sinon.spy(testobject, 'play');
+
+			afterglow.play('testid');
+
+			sinon.assert.calledOnce(testobject.play);
+		});
+
+		it('should trigger lightboxes',() => {
+			var testTrigger = {
+				playerid : 'testid',
+				trigger: () => {
+					return 'triggersuccess';
+				}
+			}
+
+			sinon.spy(testTrigger, 'trigger');
+
+			afterglow.lightboxtriggers = [ testTrigger ];
+			afterglow.players = [];
+			
+			afterglow.play('testid');
+			
+			sinon.assert.calledOnce(testTrigger.trigger);
+		});
+
 		it('should properly close all lightboxes when closing is triggered', () => {
 			let closeTest = {
 				alert : () => {}

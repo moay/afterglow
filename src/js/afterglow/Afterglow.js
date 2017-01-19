@@ -90,6 +90,27 @@ class Afterglow {
 	}
 
 	/**
+	 * Shortcut method to trigger a player's play method. Will launch lightboxes if needed.
+	 * 
+	 * @param {playerid} the player's id
+	 * @return void
+	 */
+	play(playerid){
+		// Look out for regular player
+	 	for (var i = this.players.length - 1; i >= 0; i--) {
+			if(this.players[i].id === playerid){
+	 			this.players[i].getPlayer().play();
+			}
+	 	};
+	 	// Else try to trigger lightbox player
+	 	for (var i = this.lightboxtriggers.length - 1; i >= 0; i--) {
+	 		if(this.lightboxtriggers[i].playerid === playerid){
+	 			this.lightboxtriggers[i].trigger();
+			}
+	 	};
+	}
+
+	/**
 	 * Returns the the players object if it was initiated yet
 	 * @param  string The player's id
 	 * @return boolean false or object if found
