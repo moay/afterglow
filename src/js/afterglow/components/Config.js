@@ -50,7 +50,7 @@ class Config {
 		this.options.controls = true;
 		
 		// Default tech order
-		this.options.techOrder = ["Html5","Flash"];
+		this.options.techOrder = ["Html5"];
 	
 		// Some default player parameters
 		this.options.preload = this.getPlayerAttributeFromVideoElement('preload','auto');
