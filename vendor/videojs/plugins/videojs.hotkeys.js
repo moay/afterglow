@@ -17,7 +17,7 @@
 
 })(window, function(window, videojs) {
   "use strict";
-  window['videojs_hotkeys'] = { version: "0.2.13" };
+  window['videojs_hotkeys'] = { version: "0.2.17" };
 
   var hotkeys = function(options) {
     var player = this;
@@ -32,6 +32,7 @@
       enableNumbers: true,
       enableJogStyle: false,
       alwaysCaptureHotkeys: false,
+      enableModifiersForNumbers: true,
       playPauseKey: playPauseKey,
       rewindKey: rewindKey,
       forwardKey: forwardKey,
@@ -61,33 +62,22 @@
       enableFull = options.enableFullscreen,
       enableNumbers = options.enableNumbers,
       enableJogStyle = options.enableJogStyle,
-      alwaysCaptureHotkeys = options.alwaysCaptureHotkeys;
+      alwaysCaptureHotkeys = options.alwaysCaptureHotkeys,
+      enableModifiersForNumbers = options.enableModifiersForNumbers;
 
     // Set default player tabindex to handle keydown and doubleclick events
     if (!pEl.hasAttribute('tabIndex')) {
       pEl.setAttribute('tabIndex', '-1');
     }
 
-    if (alwaysCaptureHotkeys) {
+    // Remove player outline to fix video performance issue
+    pEl.style.outline = "none";
+
+    if (alwaysCaptureHotkeys || !player.autoplay()) {
       player.one('play', function() {
         pEl.focus(); // Fixes the .vjs-big-play-button handing focus back to body instead of the player
       });
     }
-
-    player.on('userinactive', function() {
-      // When the control bar fades, re-apply focus to the player if last focus was a control button
-      var cancelFocusingPlayer = function() {
-        clearTimeout(focusingPlayerTimeout);
-      };
-      var focusingPlayerTimeout = setTimeout(function() {
-        player.off('useractive', cancelFocusingPlayer);
-        if (doc.activeElement.parentElement == pEl.querySelector('.vjs-control-bar')) {
-          pEl.focus();
-        }
-      }, 10);
-
-      player.one('useractive', cancelFocusingPlayer);
-    });
 
     player.on('play', function() {
       // Fix allowing the YouTube plugin to have hotkey support.
@@ -113,7 +103,6 @@
             activeEl == pEl.querySelector('.iframeblocker')) {
 
           switch (checkKeys(event, player)) {
-
             // Spacebar toggles play/pause
             case cPlay:
               ePreventDefault();
@@ -188,14 +177,17 @@
             default:
               // Number keys from 0-9 skip to a percentage of the video. 0 is 0% and 9 is 90%
               if ((ewhich > 47 && ewhich < 59) || (ewhich > 95 && ewhich < 106)) {
-                if (enableNumbers) {
-                  var sub = 48;
-                  if (ewhich > 95) {
-                    sub = 96;
+                // Do not handle if enableModifiersForNumbers set to false and keys are Ctrl, Cmd or Alt
+                if (enableModifiersForNumbers || !(event.metaKey || event.ctrlKey || event.altKey)) {
+                  if (enableNumbers) {
+                    var sub = 48;
+                    if (ewhich > 95) {
+                      sub = 96;
+                    }
+                    var number = ewhich - sub;
+                    ePreventDefault();
+                    player.currentTime(player.duration() * number * 0.1);
                   }
-                  var number = ewhich - sub;
-                  ePreventDefault();
-                  player.currentTime(player.duration() * number * 0.1);
                 }
               }
 
@@ -207,7 +199,7 @@
                   // Check if the custom key's condition matches
                   if (customHotkey.key(event)) {
                     ePreventDefault();
-                    customHotkey.handler(player, options);
+                    customHotkey.handler(player, options, event);
                   }
                 }
               }
@@ -302,18 +294,18 @@
     };
 
     function playPauseKey(e) {
-      // Space bar
-      return (e.which === 32);
+      // Space bar or MediaPlayPause
+      return (e.which === 32 || e.which === 179);
     }
 
     function rewindKey(e) {
-      // Left Arrow
-      return (e.which === 37);
+      // Left Arrow or MediaRewind
+      return (e.which === 37 || e.which === 177);
     }
 
     function forwardKey(e) {
-      // Right Arrow
-      return (e.which === 39);
+      // Right Arrow or MediaForward
+      return (e.which === 39 || e.which === 176);
     }
 
     function volumeUpKey(e) {
@@ -343,6 +335,6 @@
 
     return this;
   };
-  
+
   videojs.plugin('hotkeys', hotkeys);
 });
