@@ -83,6 +83,14 @@ class Player {
 				    	window.videojs.getPlayers()[key].pause();
 				    }
 				}
+
+				// Remove youtube player class after 5 seconds if youtube player
+				if(this.el_.classList.contains('vjs-youtube-headstart')){
+					let el = this.el_;
+					setTimeout(function(){
+						el.classList.remove('vjs-youtube-headstart');
+					}, 3000)
+				}
 			});
 
 			// Launch the callback if there is one
@@ -144,6 +152,7 @@ class Player {
 	 */
 	applyYoutubeClasses(){
 		this.videoelement.addClass("vjs-youtube");
+		this.videoelement.addClass("vjs-youtube-headstart");
 		
 		// Check for native playback
 		if(document.querySelector('video').controls){
