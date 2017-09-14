@@ -31,11 +31,7 @@
       enableFullscreen: true,
       enableNumbers: true,
       enableJogStyle: false,
-<<<<<<< HEAD
       alwaysCaptureHotkeys: false,
-=======
-      alwaysCaptureHotkeys: true,
->>>>>>> master
       enableModifiersForNumbers: true,
       playPauseKey: playPauseKey,
       rewindKey: rewindKey,
@@ -77,11 +73,7 @@
     // Remove player outline to fix video performance issue
     pEl.style.outline = "none";
 
-<<<<<<< HEAD
     if (alwaysCaptureHotkeys || !player.options_.autoplay) {
-=======
-    if (alwaysCaptureHotkeys) {
->>>>>>> master
       player.one('play', function() {
         pEl.focus(); // Fixes the .vjs-big-play-button handing focus back to body instead of the player
       });
