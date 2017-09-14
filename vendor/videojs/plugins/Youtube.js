@@ -81,11 +81,6 @@ THE SOFTWARE. */
         divBlocker.setAttribute('class', 'vjs-iframe-blocker');
         divBlocker.setAttribute('style', 'position:absolute;top:0;left:0;width:100%;height:100%');
 
-        // In case the blocker is still there and we want to pause
-        divBlocker.onclick = function() {
-          this.pause();
-        }.bind(this);
-
         divWrapper.appendChild(divBlocker);
       }
 
@@ -594,8 +589,7 @@ THE SOFTWARE. */
 
   function injectCss() {
     var css = // iframe blocker to catch mouse events
-              '.vjs-youtube .vjs-iframe-blocker { display: none; }' +
-              '.vjs-youtube.vjs-user-inactive .vjs-iframe-blocker { display: block; }' +
+              '.vjs-youtube .vjs-iframe-blocker { display: block; }' +
               '.vjs-youtube .vjs-poster { background-size: cover; }' +
               '.vjs-youtube-mobile .vjs-big-play-button { display: none; }';
 

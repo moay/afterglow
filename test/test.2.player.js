@@ -167,9 +167,15 @@ describe("Afterglow Player", () => {
 							videoelement.triggeredOnEvent = triggeredOnEvent;
 							onAction();
 						}
+						this.el_ = {
+							classList: {
+								contains: () => {}
+							}
+						}
 						this.action = action;
 						this.action();
-					}
+					},
+
 				};
 			};
 			window.videojs.players = {
@@ -196,8 +202,7 @@ describe("Afterglow Player", () => {
 			player.videoelement = {
 				node:{
 					getAttribute : () => { return null }
-				}
-			}
+				}			}
 			player.config = {}
 		});
 
@@ -584,8 +589,9 @@ describe("Afterglow Player", () => {
 
 		it('should add the youtube class properly', () => {
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledOnce;
+			expect(player.videoelement.addClass).to.have.been.calledTwice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-youtube');
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-youtube-headstart');
 		});
 
 		it('should add the native controls class if needed', () => {
@@ -596,7 +602,7 @@ describe("Afterglow Player", () => {
 				}
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
 		});
 
@@ -605,7 +611,7 @@ describe("Afterglow Player", () => {
 			    return 'somthing120e7 19827e1982iPada8d7a928z8dhn' // customized user agent
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-iOS');
 		});
 
@@ -614,7 +620,7 @@ describe("Afterglow Player", () => {
 			    return 'somthing120e7 19827e1982iPoda8d7a928z8dhn' // customized user agent
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-iOS');
 		});
 
@@ -623,7 +629,7 @@ describe("Afterglow Player", () => {
 			    return 'somthing120e9827e1982iPhonea8d7a928z8dhn' // customized user agent
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-iOS');
 		});
 
@@ -640,7 +646,7 @@ describe("Afterglow Player", () => {
 				}
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
 		});
 
@@ -652,7 +658,7 @@ describe("Afterglow Player", () => {
 				}
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
 		});
 
@@ -664,7 +670,7 @@ describe("Afterglow Player", () => {
 				}
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
 		});
 
@@ -676,7 +682,7 @@ describe("Afterglow Player", () => {
 				}
 			});
 			player.applyYoutubeClasses();
-			expect(player.videoelement.addClass).to.have.been.calledTwice;
+			expect(player.videoelement.addClass).to.have.been.calledThrice;
 			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-using-native-controls');
 		});
 

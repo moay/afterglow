@@ -31,7 +31,11 @@
       enableFullscreen: true,
       enableNumbers: true,
       enableJogStyle: false,
+<<<<<<< HEAD
       alwaysCaptureHotkeys: false,
+=======
+      alwaysCaptureHotkeys: true,
+>>>>>>> master
       enableModifiersForNumbers: true,
       playPauseKey: playPauseKey,
       rewindKey: rewindKey,
@@ -73,26 +77,15 @@
     // Remove player outline to fix video performance issue
     pEl.style.outline = "none";
 
+<<<<<<< HEAD
     if (alwaysCaptureHotkeys || !player.options_.autoplay) {
+=======
+    if (alwaysCaptureHotkeys) {
+>>>>>>> master
       player.one('play', function() {
         pEl.focus(); // Fixes the .vjs-big-play-button handing focus back to body instead of the player
       });
     }
-
-    player.on('userinactive', function() {
-      // When the control bar fades, re-apply focus to the player if last focus was a control button
-      var cancelFocusingPlayer = function() {
-        clearTimeout(focusingPlayerTimeout);
-      };
-      var focusingPlayerTimeout = setTimeout(function() {
-        player.off('useractive', cancelFocusingPlayer);
-        if (doc.activeElement.parentElement == pEl.querySelector('.vjs-control-bar')) {
-          pEl.focus();
-        }
-      }, 10);
-
-      player.one('useractive', cancelFocusingPlayer);
-    });
 
     player.on('play', function() {
       // Fix allowing the YouTube plugin to have hotkey support.

@@ -235,7 +235,7 @@ class Lightbox extends DOMElement{
 	}
 
 	/**
-	 * Closes the lightbox and rmoves the nodes from the dom.
+	 * Closes the lightbox and removes the nodes from the DOM.
 	 * @return void
 	 */
 	close(){

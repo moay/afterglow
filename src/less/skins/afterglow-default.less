@@ -1324,24 +1324,32 @@
 		}
 		
 		.vjs-control-bar{
-			right:80px;
+			right:120px;
 			width:auto;
 		
-			.transition(all .1s);
+			.transition(all .3s);
 			.transition-delay(.4s);
 		}
-
 		&.vjs-has-started{
+		
+			&.vjs-youtube-headstart{
+				.vjs-control-bar{
+					right:120px;
+					.transition(all .3s);
+					.transition-delay(0s);
+				}
+			}
 			.vjs-control-bar{
-				right:0;
+				right:0px;
 				.transition(all .3s);
 				.transition-delay(.4s);
 			}
 			&.vjs-paused, &.vjs-ended{
 				.vjs-control-bar{
-					right:80px;
+					right:120px;
 					width:auto;
 					.transition(all .1s);
+					.transition-delay(.1s);
 				}
 			}
 		}
