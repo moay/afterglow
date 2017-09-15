@@ -1,0 +1,26 @@
+{
+  "name": "afterglow",
+  "description": "An easy to integrate HTML5 video player with lightbox support.",
+  "main": "dist/afterglow.min.js",
+  "authors": [
+    "moay <mv@moay.de>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "html5 video",
+    "video",
+    "video.js",
+    "player",
+    "youtube",
+    "vimeo",
+    "lightbox"
+  ],
+  "homepage": "http://afterglowplayer.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
