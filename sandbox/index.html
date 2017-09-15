@@ -36,7 +36,7 @@
 	<video id="video1" class="afterglow" width="1920" height="1080" data-youtube-id="HgbHx4CY300" data-skin="dark"></video>
 
 	<!-- LOCAL TEST -->
-	<h2>Local video, single source, with poster</h2>
+	<h2>Local video, single source, with poster and bound play event</h2>
 	<video id="video2" class="afterglow" width="1920" height="1080" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" preload="none" src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4"></video>
 
 	<!-- LOCAL TEST -->
@@ -62,8 +62,7 @@
 
 <!-- VIMEO TEST -->
 	<h2>Vimeo video</h2>
-	<video id="video-vimeo" class="afterglow" width="1920" height="1080" data-vimeo-id="191169455"> </video>
-	<video id="video-vimeo" class="afterglow" width="1920" height="1080" data-vimeo-id="147865858"> </video>
+	<video id="video-vimeo" class="afterglow" width="1920" height="1080" data-vimeo-id="233970493"> </video>
 
 	<!-- LIGHTBOX TEST -->
 	<!-- LOCAL TEST -->
@@ -83,6 +82,28 @@
 	<a href="#videovimeol" class="afterglow">Open the lightbox</a>
 	<video id="videovimeol" width="1920" height="1080" data-vimeo-id="191169455"  data-skin="dark" ></video>
 
-	
+	<script>
+		var events = ['play', 'paused', 'ended', 'volume-changed', 'ready', 'lightbox-launched', 'lightbox-closed', 'fullscreen-entered', 'fullscreen-left', 'fullscreen-changed'];
+		for (var i = 0; i < events.length; i++) {
+			var eventname = events[i];
+			console.log('Binding ' + eventname);
+			afterglow.on('video2',eventname,function(e){
+				console.log('EVENT video2: ' + e.type);
+			});
+			afterglow.on('video3',eventname,function(e){
+				console.log('EVENT video3 (LB): ' + e.type);
+			});
+			afterglow.on('video1',eventname,function(e){
+				console.log('EVENT video1 (YT): ' + e.type);
+			});
+			afterglow.on('video-vimeo',eventname,function(e){
+				console.log('EVENT video1 (YT): ' + e.type);
+			});
+			afterglow.on('videovimeol',eventname,function(e){
+				console.log('EVENT video1 (YT): ' + e.type);
+			});
+		}
+			
+	</script>
 </body>
 </html>

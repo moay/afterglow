@@ -1,5 +1,6 @@
 import LightboxTrigger from '../src/js/afterglow/components/LightboxTrigger';
 import Lightbox from '../src/js/afterglow/components/Lightbox';
+import Eventbus from '../src/js/afterglow/components/Eventbus';
 import Emitter from '../vendor/Emitter/Emitter';
 import DOMElement from '../src/js/afterglow/lib/DOMElement';
 
@@ -18,7 +19,8 @@ describe("Afterglow Lightbox Trigger", () => {
 	// Initiate the DOM
 	jsdom();
 
-	var lightboxtrigger,
+	var afterglow,
+		lightboxtrigger,
 		triggerelement,
 		$;
 
@@ -106,6 +108,7 @@ describe("Afterglow Lightbox Trigger", () => {
 	describe('trigger()', () => {
 		beforeEach(() => {
 
+			sinon.stub(Eventbus.prototype, 'dispatch');
 			sinon.stub(LightboxTrigger.prototype, 'init');
 			sinon.stub(Emitter.prototype, 'on');
 			sinon.stub(Emitter.prototype, 'emit');
@@ -113,6 +116,9 @@ describe("Afterglow Lightbox Trigger", () => {
 			sinon.stub(Lightbox.prototype, 'build', function(){ this.on = () => { return 'test' } });
 			sinon.stub(Lightbox.prototype, 'passVideoElement', (input) => { return input });
 			sinon.stub(Lightbox.prototype, 'launch');
+
+			window.afterglow = {};
+			window.afterglow.eventbus = new Eventbus();
 			
 			lightboxtrigger.videoelement = {
 				cloneNode : () => { return 'test' }
@@ -129,6 +135,7 @@ describe("Afterglow Lightbox Trigger", () => {
 			Lightbox.prototype.launch.restore();
 			Emitter.prototype.on.restore();
 			Emitter.prototype.emit.restore();
+			Eventbus.prototype.dispatch.restore();
 		});
 
 		it('should create a new Lightbox Element', () => {
@@ -148,6 +155,7 @@ describe("Afterglow Lightbox Trigger", () => {
 		it('should launch the lightbox properly', () => {
 			lightboxtrigger.trigger();
 			assert(Lightbox.prototype.launch.calledOnce);
+			assert(Eventbus.prototype.dispatch.calledOnce);
 		});
 
 		it('should trigger and bind the events', () => {

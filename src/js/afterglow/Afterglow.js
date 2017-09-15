@@ -9,6 +9,7 @@
 import Player from './components/Player';
 import Lightbox from './components/Lightbox';
 import LightboxTrigger from './components/LightboxTrigger';
+import Eventbus from './components/Eventbus';
 import DOMElement from './lib/DOMElement';
 
 
@@ -19,10 +20,21 @@ class Afterglow {
 		 * Will hold the players in order to make them accessible
 		 */
 		this.players = [];
+		
 		/**
 		 * Will hold the trigger elements which will launch lightbox players
 		 */
 		this.lightboxtriggers = [];
+		
+		/**
+		 * Will hold the event bus which registers and dispatches events
+		 */
+		this.eventbus = false;
+
+		/**
+		 * Container for callbacks that have to be executed when afterglow is initalized
+		 */
+		this.afterinit = [];
 	}
 
 	/**
@@ -33,11 +45,20 @@ class Afterglow {
 		// Run some preparations
 		this.configureVideoJS();
 
+		// prepare the event bus
+		this.prepareEventbus();
+
 		// initialize regular players
 		this.initVideoElements();
 
 		// prepare Lightboxes
 		this.prepareLightboxVideos();
+
+		// execute things to do when init done
+		for (var i = 0; i < this.afterinit.length; i++) {
+			this.afterinit[i]();
+		}
+		this.afterinit = [];
 	}
 
 	/**
@@ -72,6 +93,52 @@ class Afterglow {
 			this.bindLightboxTriggerEvents(trigger);
 
 			this.lightboxtriggers.push(trigger);
+		}
+	}
+
+	/**
+	 * Initializes the event bus
+	 * @return void
+	 */
+	prepareEventbus() {
+		// Reset the event bus
+		this.eventbus = false;
+		this.eventbus = new Eventbus();
+	}
+
+	/**
+	 * Binds an event for any given player
+	 *
+	 * @param      string  	playerid   The playerid
+	 * @param      string  	eventname  The eventname
+	 * @param      mixed 	_callback  The callback
+	 */
+	on(playerid, eventname, _callback){
+		if(!this.eventbus){
+			this.afterinit.push(() => {
+				this.on(playerid, eventname, _callback);
+			});
+		}
+		else{
+			this.eventbus.subscribe(playerid, eventname, _callback);
+		}
+	}
+
+	/**
+	 * Removes an event for any given player
+	 *
+	 * @param      string  	playerid   The playerid
+	 * @param      string  	eventname  The eventname
+	 * @param      mixed 	_callback  The callback
+	 */
+	off(playerid, eventname, _callback){
+		if(!this.eventbus){
+			this.afterinit.push(() => {
+				this.off(playerid, eventname, _callback);
+			});
+		}
+		else{
+			this.eventbus.unsubscribe(playerid, eventname, _callback);
 		}
 	}
 

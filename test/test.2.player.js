@@ -1,6 +1,7 @@
 import Player from '../src/js/afterglow/components/Player';
 import Config from '../src/js/afterglow/components/Config';
 import Util from '../src/js/afterglow/lib/Util';
+import Eventbus from '../src/js/afterglow/components/Eventbus';
 
 var chai = require('chai');
 var sinon = require("sinon");
@@ -103,9 +104,10 @@ describe("Afterglow Player", () => {
 
 		beforeEach(() => {
 			window.videojs = () => {
-				return {ready : (input) => {}};
+				return {ready : (input) => {}, this: { id: () => {}} };
 			};
 			sinon.stub(Player.prototype, 'setup');
+			sinon.stub(Eventbus.prototype, 'dispatch');
 			player = new Player();
 			player.videoelement = {
 				node : 'testnode'
@@ -113,10 +115,13 @@ describe("Afterglow Player", () => {
 			player.config = {
 				options : 'testoptions'
 			}
+			window.afterglow = {};
+			window.afterglow.eventbus = new Eventbus();
 		});
 
 		afterEach(() => {
 			Player.prototype.setup.restore();
+			Eventbus.prototype.dispatch.restore();
 		});
 
 		it('should pass the videoelement and the options to videojs properly', () => {
@@ -171,6 +176,12 @@ describe("Afterglow Player", () => {
 							classList: {
 								contains: () => {}
 							}
+						}
+						this.id = () => {
+							return 'testid';
+						}
+						this.isFullscreen = () => {
+							return false;
 						}
 						this.action = action;
 						this.action();
@@ -256,7 +267,7 @@ describe("Afterglow Player", () => {
 			expect(window.videojs.players['video1'].paused).to.be.false;
 			expect(window.videojs.players['video2'].paused).to.be.false;
 			player.init();
-			expect(player.videoelement.node.triggeredOnEvent).to.equal('play');
+			expect(player.videoelement.node.triggeredOnEvent).to.equal('autoplay');
 			expect(window.videojs.players['video1'].paused).to.be.true;
 			expect(window.videojs.players['video2'].paused).to.be.true;
 		});
