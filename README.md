@@ -17,6 +17,7 @@ afterglow relies on scripts provided by many great people.
 
 - [video.js](http://www.videojs.com/) published under the [Apache License 2.0](https://github.com/videojs/video.js/blob/master/LICENSE)
 - [videojs-youtube](https://github.com/eXon/videojs-youtube) published under the [MIT License](https://github.com/eXon/videojs-youtube/blob/master/LICENSE)
+- [videojs-vimeo](https://github.com/eXon/videojs-vimeo) published under the [MIT License](https://github.com/eXon/videojs-vimeo/blob/master/LICENSE)
 - [videojs-hotkeys](https://github.com/ctd1500/videojs-hotkeys) published under the [Apache License 2.0](https://github.com/ctd1500/videojs-hotkeys/blob/master/LICENSE.md)
 - [Emitter](https://github.com/component/emitter) published under the [MIT License](https://github.com/component/emitter/blob/master/LICENSE)
 - The font [Open Sans](https://www.google.com/fonts/specimen/Open+Sans) published under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
