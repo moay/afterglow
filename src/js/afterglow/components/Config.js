@@ -38,6 +38,10 @@ class Config {
 			if(util.isYoutubePlayer(this.videoelement)){
 				this.setYoutubeOptions();	
 			}
+			// Initialize vimeo if the current player is a vimeo player
+			if(util.isVimeoPlayer(this.videoelement)){
+				this.setVimeoOptions();	
+			}
 		}
 	}
 
@@ -126,7 +130,8 @@ class Config {
 		if(util.ie().actualVersion >= 8 && util.ie().actualVersion <= 11){
 			this.options.youtube = {
 				ytControls : 2,
-				modestbranding: 1
+				color : "white",
+				modestbranding : 1
 			};
 		}
 		else{
@@ -135,6 +140,17 @@ class Config {
 				modestbranding: 1
 			};
 		}
+	}
+
+	/**
+	 * Sets options needed for vimeo to work and replaces the sources with the correct vimeo source
+	 */
+	setVimeoOptions(){
+		this.options.techOrder = ["vimeo"];
+		this.options.sources = [{
+			"type": "video/vimeo",
+			"src": "https://vimeo.com/"+this.getPlayerAttributeFromVideoElement('vimeo-id')
+		}];
 	}
 
 	/**

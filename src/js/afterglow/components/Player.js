@@ -46,6 +46,10 @@ class Player {
 		if(this.util.isYoutubePlayer(this.videoelement)){
 			this.applyYoutubeClasses();
 		}
+
+		else if(this.util.isVimeoPlayer(this.videoelement)){
+			this.applyVimeoClasses();
+		}
 	}
 
 	/**
@@ -62,7 +66,7 @@ class Player {
 
 			// Enable hotkeys
 			this.hotkeys({
-				enableFullscreen: false,
+				enableFullscreen: true,
 				enableNumbers: false,
 				enableVolumeScroll: false
 			});
@@ -77,6 +81,9 @@ class Player {
 			this.addChild("TopControlBar");
 
 			this.on('play', () => {
+				// Trigger afterglow play event
+				window.afterglow.eventbus.dispatch(this.id(), 'play');
+
 				// Stop all other players if there are any on play
 				for( let key in window.videojs.getPlayers() ) {
 				    if(window.videojs.getPlayers()[key] !== null && window.videojs.getPlayers()[key].id_ !== this.id_){
@@ -93,10 +100,44 @@ class Player {
 				}
 			});
 
+			// Trigger afterglow ended event
+			this.on('pause', () => {
+				window.afterglow.eventbus.dispatch(this.id(), 'paused');
+			});
+
+			// Trigger afterglow ended event
+			this.on('ended', () => {
+				window.afterglow.eventbus.dispatch(this.id(), 'ended');
+			});
+
+			// Trigger afterglow ended event
+			this.on('volumechange', () => {
+				window.afterglow.eventbus.dispatch(this.id(), 'volume-changed');
+			});
+
+			// Trigger afterglow fullscreen events
+			this.on('fullscreenchange', () => {
+				if(this.isFullscreen()){
+					window.afterglow.eventbus.dispatch(this.id(), 'fullscreen-entered');	
+				}
+				else{
+					window.afterglow.eventbus.dispatch(this.id(), 'fullscreen-left');	
+				}
+				window.afterglow.eventbus.dispatch(this.id(), 'fullscreen-changed');
+			});
+
 			// Launch the callback if there is one
 			if(typeof _callback == "function"){
 				_callback(this);
 			}
+
+			// Trigger afterglow ready event
+			window.afterglow.eventbus.dispatch(this.id(), 'ready');
+
+			this.on('autoplay', () => {
+				// Trigger afterglow play event
+				window.afterglow.eventbus.dispatch(this.id(), 'play');
+			});
 		});
 		this.videojs = player;
 	}
@@ -136,7 +177,7 @@ class Player {
 		}
 
 		// Apply some responsive stylings
-		if(this.videoelement.getAttribute("data-autoresize") === 'fit' || this.videoelement.hasClass("responsive")){
+		if(this.videoelement.getAttribute("data-autoresize") != 'none' && this.videoelement.getAttribute("data-autoresize") != 'false'){
 			this.videoelement.addClass("vjs-responsive");
 			let ratio = this.calculateRatio();
 			this.videoelement.node.style.paddingTop = (ratio * 100)+"%";
@@ -168,6 +209,14 @@ class Player {
 		if(ie >= 8 && ie <= 11){ // @see afterglow-lib.js
 			this.videoelement.addClass("vjs-using-native-controls");
 		}
+	}
+
+	/**
+	 * Applies all needed classes to the videoelement in order to provide proper vimeo playback
+	 * @return {void}
+	 */
+	applyVimeoClasses(){
+		this.videoelement.addClass("vjs-vimeo");
 	}
 
 	/**

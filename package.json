@@ -1,7 +1,7 @@
 {
   "name": "afterglow",
   "description": "An easy to integrate HTML5 video player with lightbox support.",
-  "version": "0.4.2",
+  "version": "1.0.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -42,7 +42,7 @@
     "istanbul-traceur": "^1.0.7",
     "jquery": "^2.1.4",
     "jsdom": "^6.5.0",
-    "karma": "^1",
+    "karma": "^0.13.10",
     "mocha": "^2.3.2",
     "mocha-jsdom": "^1.0.0",
     "mocha-notifier-reporter": "^0.1.1",
@@ -54,5 +54,8 @@
   "scripts": {
     "test": "babel-node ./node_modules/.bin/isparta cover _mocha -- --reporter dot && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "coverage": "babel-node ./node_modules/.bin/isparta cover --report text --report html _mocha -- --reporter dot"
+  },
+  "dependencies": {
+    "eventbusjs": "^0.2.0"
   }
 }

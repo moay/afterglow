@@ -1,6 +1,7 @@
 import Player from '../src/js/afterglow/components/Player';
 import Config from '../src/js/afterglow/components/Config';
 import Util from '../src/js/afterglow/lib/Util';
+import Eventbus from '../src/js/afterglow/components/Eventbus';
 
 var chai = require('chai');
 var sinon = require("sinon");
@@ -103,9 +104,10 @@ describe("Afterglow Player", () => {
 
 		beforeEach(() => {
 			window.videojs = () => {
-				return {ready : (input) => {}};
+				return {ready : (input) => {}, this: { id: () => {}} };
 			};
 			sinon.stub(Player.prototype, 'setup');
+			sinon.stub(Eventbus.prototype, 'dispatch');
 			player = new Player();
 			player.videoelement = {
 				node : 'testnode'
@@ -113,10 +115,13 @@ describe("Afterglow Player", () => {
 			player.config = {
 				options : 'testoptions'
 			}
+			window.afterglow = {};
+			window.afterglow.eventbus = new Eventbus();
 		});
 
 		afterEach(() => {
 			Player.prototype.setup.restore();
+			Eventbus.prototype.dispatch.restore();
 		});
 
 		it('should pass the videoelement and the options to videojs properly', () => {
@@ -171,6 +176,12 @@ describe("Afterglow Player", () => {
 							classList: {
 								contains: () => {}
 							}
+						}
+						this.id = () => {
+							return 'testid';
+						}
+						this.isFullscreen = () => {
+							return false;
 						}
 						this.action = action;
 						this.action();
@@ -256,13 +267,13 @@ describe("Afterglow Player", () => {
 			expect(window.videojs.players['video1'].paused).to.be.false;
 			expect(window.videojs.players['video2'].paused).to.be.false;
 			player.init();
-			expect(player.videoelement.node.triggeredOnEvent).to.equal('play');
+			expect(player.videoelement.node.triggeredOnEvent).to.equal('autoplay');
 			expect(window.videojs.players['video1'].paused).to.be.true;
 			expect(window.videojs.players['video2'].paused).to.be.true;
 		});
 	});
 
-	describe('prepareVideoElement no youtube', () => {
+	describe('prepareVideoElement regular', () => {
 		var videoelement;
 
 		beforeEach(() => {
@@ -271,6 +282,8 @@ describe("Afterglow Player", () => {
 			sinon.stub(Player.prototype, 'applyParameters');
 			sinon.stub(Player.prototype, 'applyYoutubeClasses');
 			sinon.stub(Util.prototype, 'isYoutubePlayer', () => { return false });
+			sinon.stub(Player.prototype, 'applyVimeoClasses');
+			sinon.stub(Util.prototype, 'isVimeoPlayer', () => { return false });
 			player = new Player();
 			player.util = new Util;
 		});
@@ -281,6 +294,8 @@ describe("Afterglow Player", () => {
 			Player.prototype.applyParameters.restore();
 			Player.prototype.applyYoutubeClasses.restore();
 			Util.prototype.isYoutubePlayer.restore();
+			Player.prototype.applyVimeoClasses.restore();
+			Util.prototype.isVimeoPlayer.restore();
 		});
 
 		it('should call applyDefaultClasses() once', () => {
@@ -308,6 +323,8 @@ describe("Afterglow Player", () => {
 			sinon.stub(Player.prototype, 'applyParameters');
 			sinon.stub(Player.prototype, 'applyYoutubeClasses');
 			sinon.stub(Util.prototype, 'isYoutubePlayer', () => { return true });
+			sinon.stub(Player.prototype, 'applyVimeoClasses');
+			sinon.stub(Util.prototype, 'isVimeoPlayer', () => { return false });
 			player = new Player();
 			player.util = new Util;
 		});
@@ -318,11 +335,49 @@ describe("Afterglow Player", () => {
 			Player.prototype.applyParameters.restore();
 			Player.prototype.applyYoutubeClasses.restore();
 			Util.prototype.isYoutubePlayer.restore();
+			Player.prototype.applyVimeoClasses.restore();
+			Util.prototype.isVimeoPlayer.restore();
 		});
 
 		it('should call applyYoutubeClasses() once', () => {
 			player.prepareVideoElement();
 			expect(Player.prototype.applyYoutubeClasses).to.have.been.calledOnce;
+		});
+
+		it('should not call applyVimeoClasses() once', () => {
+			player.prepareVideoElement();
+			expect(Player.prototype.applyVimeoClasses).to.not.have.been.called;
+		});
+	});
+
+	describe('prepareVideoElement vimeo', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			sinon.stub(Player.prototype, 'applyDefaultClasses');
+			sinon.stub(Player.prototype, 'applyParameters');
+			sinon.stub(Player.prototype, 'applyYoutubeClasses');
+			sinon.stub(Util.prototype, 'isYoutubePlayer', () => { return false });
+			sinon.stub(Player.prototype, 'applyVimeoClasses');
+			sinon.stub(Util.prototype, 'isVimeoPlayer', () => { return true });
+			player = new Player();
+			player.util = new Util;
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+			Player.prototype.applyDefaultClasses.restore();
+			Player.prototype.applyParameters.restore();
+			Player.prototype.applyYoutubeClasses.restore();
+			Util.prototype.isYoutubePlayer.restore();
+			Player.prototype.applyVimeoClasses.restore();
+			Util.prototype.isVimeoPlayer.restore();
+		});
+
+		it('should call applyVimeoClasses() once', () => {
+			player.prepareVideoElement();
+			expect(Player.prototype.applyVimeoClasses).to.have.been.calledOnce;
 		});
 	});
 
@@ -464,22 +519,24 @@ describe("Afterglow Player", () => {
 		});
 
 		it('should not set data-maxwidth if data-overscale is not set or not false', () => {
-			player.applyParameters();
-			expect(player.videoelement.setAttribute).to.not.have.been.called;
-		});
-
-		it('should trigger responsivity stuff if has data-autoresize', () => {
 			player.videoelement.getAttribute.restore();
-			sinon.stub(player.videoelement, 'getAttribute', () => { return "fit" });
+			player.applyParameters();
+			expect(player.videoelement.setAttribute).to.have.been.calledOnce;
+			expect(player.videoelement.setAttribute).to.have.been.calledWith("data-ratio");
+		});
+
+		it('should trigger responsivity stuff if hasn\'t data-autoresize none or false', () => {
+			player.videoelement.getAttribute.restore();
 			player.applyParameters();
 			expect(player.videoelement.addClass).to.have.been.calledWith("vjs-responsive");
 		});
 
-		it('should trigger responsivity stuff if has class responsive', () => {
+		it('should not trigger responsivity stuff if has data-autoresize none', () => {
 			player.videoelement.hasClass.restore();
-			sinon.stub(player.videoelement, 'hasClass', () => { return true });
+			player.videoelement.getAttribute.restore();
+			sinon.stub(player.videoelement, 'getAttribute', () => { return "none" });
 			player.applyParameters();
-			expect(player.videoelement.addClass).to.have.been.calledWith("vjs-responsive");
+			expect(player.videoelement.addClass).to.not.have.been.called;
 		});
 
 		it('should get the ratio correctly and pass it to the correct places', () => {
@@ -649,6 +706,40 @@ describe("Afterglow Player", () => {
 			});
 			player.applyYoutubeClasses();
 			expect(player.videoelement.addClass).to.not.have.been.calledWith('vjs-using-native-controls');
+		});
+	});
+
+	describe('applyVimeoClasses()', () => {
+		var videoelement;
+
+		beforeEach(() => {
+			sinon.stub(Player.prototype, 'setup');
+			
+			player = new Player();
+			player.util = new Util;
+
+			player.videoelement = {
+				addClass : () => {}
+			};
+
+			// Prevent iIOS Tests by default
+			navigator.__defineGetter__('platform', function(){
+			    return 'none' // customized user agent
+			});
+
+			sinon.spy(player.videoelement, 'addClass');
+		});
+
+		afterEach(() => {
+			Player.prototype.setup.restore();
+
+			player.videoelement.addClass;
+		});
+
+		it('should add the vimeo class properly', () => {
+			player.applyVimeoClasses();
+			expect(player.videoelement.addClass).to.have.been.calledOnce;
+			expect(player.videoelement.addClass).to.have.been.calledWith('vjs-vimeo');
 		});
 	});
 

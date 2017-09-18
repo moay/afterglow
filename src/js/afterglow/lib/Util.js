@@ -27,6 +27,15 @@ class Util {
     };
 
     /**
+     * Checks wether or not the given video element is a vimeo player
+     * @param  {DOMElement object || DOM node} videoelement
+     * @return {Boolean}
+     */
+    isVimeoPlayer(videoelement){
+        return videoelement.hasAttribute("data-vimeo-id");
+    }
+
+    /**
      * Checks wether or not the given video element should trigger the dailymotion tech
      * @param  {DOMElement object || DOM node}  videoelement
      * @return {Boolean}
