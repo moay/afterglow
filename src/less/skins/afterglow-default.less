@@ -965,6 +965,15 @@
 		color: #F4A460;
 	}
 
+	&.vjs-error{
+
+
+		.vjs-fullscreen-control {
+
+			display:none;
+		}
+	}
+
 	/* Loading Spinner
 	--------------------------------------------------------------------------------
 	*/
@@ -1385,6 +1394,36 @@
 				display:block;
 				visibility:visible;
 			}
+		}
+	}
+
+	.vjs-error-display{
+		&:before{    
+		    content: '';
+		    width: 100px;
+		    width: 10vh;
+		    height: 100px;
+		    height: 10vh;
+		    background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjkgMTI5IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAxMjkgMTI5IiB3aWR0aD0iNjRweCIgaGVpZ2h0PSI2NHB4Ij4KICA8Zz4KICAgIDxnPgogICAgICA8cGF0aCBkPSJNNjQuNSwxMjIuNmMzMiwwLDU4LjEtMjYsNTguMS01OC4xUzk2LjUsNi40LDY0LjUsNi40UzYuNCwzMi41LDYuNCw2NC41UzMyLjUsMTIyLjYsNjQuNSwxMjIuNnogTTY0LjUsMTQuNiAgICBjMjcuNSwwLDQ5LjksMjIuNCw0OS45LDQ5LjlTOTIsMTE0LjQsNjQuNSwxMTQuNFMxNC42LDkyLDE0LjYsNjQuNVMzNywxNC42LDY0LjUsMTQuNnoiIGZpbGw9IiNGRkZGRkYiLz4KICAgICAgPHBhdGggZD0ibTQyLjcsODUuN2MwLjgsMC44IDEuOCwxLjIgMi45LDEuMnMyLjEtMC40IDIuOS0xLjJsMTYtMTYgMTYsMTZjMC44LDAuOCAxLjgsMS4yIDIuOSwxLjJzMi4xLTAuNCAyLjktMS4yYzEuNi0xLjYgMS42LTQuMiAwLTUuOGwtMTYtMTYgMTYtMTZjMS42LTEuNiAxLjYtNC4yIDAtNS44cy00LjItMS42LTUuOCwwbC0xNiwxNi0xNi0xNmMtMS42LTEuNi00LjItMS42LTUuOCwwLTEuNiwxLjYtMS42LDQuMiAwLDUuOGwxNiwxNi0xNiwxNmMtMS42LDEuNi0xLjYsNC4yLTEuNDIxMDllLTE0LDUuOHoiIGZpbGw9IiNGRkZGRkYiLz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPgo=);
+		    background-size: cover;
+		    margin-top: -50px;
+		    margin-top: -5vh;
+		    margin-left: -50px;
+		    margin-left: -5vh;
+		    top: 40%;
+		    left: 50%;
+		}
+
+		.vjs-modal-dialog-content{
+			width: 80%;
+		    margin: 0 auto;
+		    font-family: 'Open Sans';
+		    font-weight: 100;
+		    position: absolute;
+		    bottom: 20%;
+		    height: auto;
+		    top: auto;
+		    font-size: 2vh;
 		}
 	}
 
