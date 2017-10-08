@@ -22,6 +22,6 @@
     "bower_components",
     "test",
     "tests",
-    "sandbox",
+    "sandbox"
   ]
 }
