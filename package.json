@@ -1,7 +1,7 @@
 {
   "name": "afterglowplayer",
   "description": "An easy to integrate HTML5 video player with lightbox support.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
     "chai": "^3.2.0",
     "coveralls": "^2.11.4",
     "del": "^1.2.1",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-add-src": "~0.2.0",
     "gulp-babel": "^5.2.1",
     "gulp-bump": "^0.3.1",
