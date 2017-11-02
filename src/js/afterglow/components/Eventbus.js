@@ -58,7 +58,7 @@ class Eventbus{
 			return false;
 		}
 		for (var i = 0; i < this.players[playerid].listeners[event].length; i++) {
-			this.players[playerid].listeners[event][i]({type: event, player: playerid});
+			this.players[playerid].listeners[event][i]({type: event, playerid: playerid, player: window.afterglow.getPlayer(playerid)});
 		}
 	}
 }

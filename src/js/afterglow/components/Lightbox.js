@@ -239,6 +239,7 @@ class Lightbox extends DOMElement{
 	 * @return void
 	 */
 	close(){
+		window.afterglow.eventbus.dispatch(this.player.id, 'before-lightbox-close');
 		this.player.destroy(true);
 		this.node.parentNode.removeChild(this.node);
 		this.emit('close');
