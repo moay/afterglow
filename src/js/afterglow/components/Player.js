@@ -100,7 +100,7 @@ class Player {
 				}
 			});
 
-			// Trigger afterglow ended event
+			// Trigger afterglow paused event
 			this.on('pause', () => {
 				window.afterglow.eventbus.dispatch(this.id(), 'paused');
 			});
@@ -110,9 +110,14 @@ class Player {
 				window.afterglow.eventbus.dispatch(this.id(), 'ended');
 			});
 
-			// Trigger afterglow ended event
+			// Trigger afterglow volume-changed event
 			this.on('volumechange', () => {
 				window.afterglow.eventbus.dispatch(this.id(), 'volume-changed');
+			});
+			
+			// Trigger afterglow timeupdate event
+			this.on('timeupdate', () => {
+				window.afterglow.eventbus.dispatch(this.id(), 'timeupdate');
 			});
 
 			// Trigger afterglow fullscreen events
