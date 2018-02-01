@@ -22,7 +22,7 @@ afterglow relies on scripts provided by many great people.
 - [Emitter](https://github.com/component/emitter) published under the [MIT License](https://github.com/component/emitter/blob/master/LICENSE)
 - The font [Open Sans](https://www.google.com/fonts/specimen/Open+Sans) published under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-Our resolution switching component is based on [videojs-resolutions](https://github.com/vidcaster/video-js-resolutions) published under the [Apache License 2.0](https://github.com/vidcaster/video-js-resolutions/blob/master/LICENSE.txt).
+Our resolution switching component is based on videojs-resolutions by vidcaster published under the Apache License 2.0.
 
 Thanks for your great work, guys!
 
