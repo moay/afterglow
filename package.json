@@ -13,9 +13,11 @@
     "clean-webpack-plugin": "^0.1.19",
     "path": "^0.12.7",
     "webpack": "^4.22.0",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   },
   "scripts": {
+    "dev": "webpack-dev-server",
     "build": "webpack --config webpack.config.js",
     "test": "babel-node ./node_modules/.bin/isparta cover _mocha -- --reporter dot && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "coverage": "babel-node ./node_modules/.bin/isparta cover --report text --report html _mocha -- --reporter dot"
