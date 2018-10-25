@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-  - "4.1"
-  - "4.0"
+  - "10"
 notifications:
   slack: afterglowplayer:LzjtRryiNVLXdd7BFsScx289
