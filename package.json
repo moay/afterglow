@@ -10,7 +10,12 @@
   "jsdelivr": "dist/afterglow.min.js",
   "homepage": "http://afterglowplayer.com",
   "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "^8.0.4",
+    "babili-webpack-plugin": "^0.1.2",
     "base64-inline-loader": "^1.1.1",
+    "brotli-webpack-plugin": "^1.0.0",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^0.1.19",
     "coveralls": "^3.0.2",
@@ -31,14 +36,17 @@
     "sinon": "^7.0.0",
     "sinon-chai": "^3.2.0",
     "style-loader": "^0.23.1",
-    "webpack": "^4.22.0",
+    "uglify-js": "^3.4.9",
+    "uglifyjs-webpack-plugin": "^2.0.1",
+    "webpack": "^4.23.1",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
     "dev": "webpack-dev-server --config webpack.config.dev.js --watch --https",
-    "build": "webpack --config webpack.config.prod.js --mode=production",
+    "build": "webpack --config webpack.config.prod.js --mode=production -p",
     "test": "mocha-webpack"
   },
   "dependencies": {

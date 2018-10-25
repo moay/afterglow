@@ -1,7 +1,7 @@
 module.exports = {
   mode: 'development',
   entry: {
-    standalone: './src/js/init.js',
+    afterglow: './src/js/init.js',
   },
   module: {
     rules: [{
