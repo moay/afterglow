@@ -722,14 +722,10 @@ describe('Afterglow Player', () => {
     });
 
     it('should log an error and return 0 if calculation is not possible', () => {
-      sinon.stub(window.console, 'error');
-
       const ratio = player.calculateRatio();
 
       expect(ratio).to.be.a('number');
       ratio.should.equal(0);
-      expect(window.console.error).to.have.been.calledOnce;
-      window.console.error.restore();
     });
 
     it('should return the correct ratio if it is already set', () => {

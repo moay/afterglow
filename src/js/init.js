@@ -8,7 +8,6 @@ import Afterglow from './afterglow/Afterglow';
 
 window.afterglow = new Afterglow();
 
-// Initiate afterglow when the DOM is ready. This is not IE8 compatible!
 document.addEventListener('DOMContentLoaded', () => {
   window.afterglow.init();
 });

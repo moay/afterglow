@@ -43,9 +43,9 @@ class Config {
   }
 
   /**
-	 * Sets some basic options based on the videoelement's attributes
-	 * @return {void}
-	 */
+   * Sets some basic options based on the videoelement's attributes
+   * @return {void}
+   */
   setDefaultOptions() {
     // Controls needed for the player
     this.options.controls = true;
@@ -60,11 +60,13 @@ class Config {
   }
 
   /**
-	 * Gets a configuration value that has been passed to the videoelement as HTML tag attribute
-	 * @param  {string}  attributename  The name of the attribute to get
-	 * @param  {mixed} fallback      	The expected fallback if the attribute was not set - false by default
-	 * @return {mixed}					The attribute (with data-attributename being preferred) or the fallback if none.
-	 */
+   * Gets a configuration value that has been passed to the videoelement as HTML tag attribute
+   * @param attributename   string  The name of the attribute to get
+   * @param fallback        mixed   The expected fallback if the attribute was
+   *                                not set - false by default
+   * @return mixed                  The attribute (with data-attributename being preferred)
+   *                                or the fallback if none.
+   */
   getPlayerAttributeFromVideoElement(attributename, fallback = false) {
     if (this.videoelement.getAttribute(`data-${attributename}`) !== null) {
       return this.videoelement.getAttribute(`data-${attributename}`);
@@ -75,11 +77,12 @@ class Config {
   }
 
   /**
-	 * Sets the controls which are needed for the player to work properly.
-	 */
+   * Sets the controls which are needed for the player to work properly.
+   */
   setSkinControls() {
-    // For now, we just output the default 'afterglow' skin children, as there isn't any other skin defined yet
-    const controlBar = {
+    // For now, we just output the default 'afterglow' skin children,
+    // as there isn't any other skin defined yet
+    this.options.controlBar = {
       children: [
         {
           name: 'currentTimeDisplay',
@@ -108,12 +111,12 @@ class Config {
         },
       ],
     };
-    this.options.controlBar = controlBar;
   }
 
   /**
-	 * Sets options needed for youtube to work and replaces the sources with the correct youtube source
-	 */
+   * Sets options needed for youtube to work and replaces the sources
+   * with the correct youtube source
+   */
   setYoutubeOptions() {
     this.options.showinfo = 0;
     this.options.techOrder = ['youtube'];
@@ -138,8 +141,8 @@ class Config {
   }
 
   /**
-	 * Sets options needed for vimeo to work and replaces the sources with the correct vimeo source
-	 */
+   * Sets options needed for vimeo to work and replaces the sources with the correct vimeo source
+   */
   setVimeoOptions() {
     this.options.techOrder = ['vimeo'];
     this.options.sources = [{
@@ -149,9 +152,9 @@ class Config {
   }
 
   /**
-	 * Returns the CSS class for the video element
-	 * @return {string}
-	 */
+   * Returns the CSS class for the video element
+   * @return {string}
+   */
   getSkinClass() {
     let cssclass = 'vjs-afterglow-skin';
     if (this.skin !== 'afterglow') {

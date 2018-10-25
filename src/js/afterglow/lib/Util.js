@@ -8,7 +8,7 @@
 class Util {
   /**
      * Checks wether or not the given video element should be converted into a video element
-     * @param  {DOMElement object || DOM node}  videoelement
+     * @param videoelement DOMElement|Dom node
      * @return {Boolean}
      */
   isYoutubePlayer(videoelement) {
@@ -21,26 +21,16 @@ class Util {
      * @return {string} the url to the thumbnail
      */
   loadYoutubeThumbnailUrl(id) {
-    const uri = `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
-    return uri;
+    return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
   }
 
   /**
      * Checks wether or not the given video element is a vimeo player
-     * @param  {DOMElement object || DOM node} videoelement
+     * @param  videoelement DOMElement|Dom node
      * @return {Boolean}
      */
   isVimeoPlayer(videoelement) {
     return videoelement.hasAttribute('data-vimeo-id');
-  }
-
-  /**
-     * Checks wether or not the given video element should trigger the dailymotion tech
-     * @param  {DOMElement object || DOM node}  videoelement
-     * @return {Boolean}
-     */
-  isDailymotionPlayer(videoelement) {
-    return videoelement.hasAttribute('data-dailymotion-id');
   }
 
   /**
@@ -62,37 +52,37 @@ class Util {
 
     let jscriptVersion;
 
-	    isTheBrowser = false;
+    isTheBrowser = false;
 
-	    jscriptMap = {
-	        5.5: '5.5',
-	        5.6: '6',
-	        5.7: '7',
-	        5.8: '8',
-	        9: '9',
-	        10: '10',
-	    };
-	    jscriptVersion = new Function('/*@cc_on return @_jscript_version; @*/')();
+    jscriptMap = {
+      5.5: '5.5',
+      5.6: '6',
+      5.7: '7',
+      5.8: '8',
+      9: '9',
+      10: '10',
+    };
+    jscriptVersion = new Function('/*@cc_on return @_jscript_version; @*/')();
 
-	    if (jscriptVersion !== undefined) {
-	        isTheBrowser = true;
-	        actualVersion = jscriptMap[jscriptVersion];
-	    }
+    if (jscriptVersion !== undefined) {
+      isTheBrowser = true;
+      actualVersion = jscriptMap[jscriptVersion];
+    }
 
-	    ret = {
-	        isTheBrowser,
-	        actualVersion,
-	    };
+    ret = {
+      isTheBrowser,
+      actualVersion,
+    };
 
-	    if (!isTheBrowser) {
-	        if (window.navigator.userAgent.indexOf('Trident/7.0') > 0 && !/x64|x32/ig.test(window.navigator.userAgent)) {
-	            ret = {
-	                isTheBrowser: true,
-	                actualVersion: '11',
-	            };
-	        }
-	    }
-	    return ret;
+    if (!isTheBrowser) {
+      if (window.navigator.userAgent.indexOf('Trident/7.0') > 0 && !/x64|x32/ig.test(window.navigator.userAgent)) {
+        ret = {
+          isTheBrowser: true,
+          actualVersion: '11',
+        };
+      }
+    }
+    return ret;
   }
 
   /**
@@ -117,8 +107,8 @@ class Util {
      */
   merge_objects(obj1, obj2) {
     const obj3 = {};
-    for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-    for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+    for (const attrname in obj1) { obj3[attrname] = obj1[attrname]; }
+    for (const attrname in obj2) { obj3[attrname] = obj2[attrname]; }
     return obj3;
   }
 

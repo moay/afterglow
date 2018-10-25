@@ -15,9 +15,9 @@ class Player {
   }
 
   /**
-	 * Sets the player up and prepares the video element
-	 * @param  {DOMElement object} videoelement 	The videoelement which shall be transformed
-	 */
+   * Sets the player up and prepares the video element
+   * @param videoelement DOMElement   The videoelement which shall be transformed
+   */
   setup(videoelement) {
     this.videoelement = videoelement;
     this.id = videoelement.getAttribute('id');
@@ -34,9 +34,10 @@ class Player {
   }
 
   /**
-	 * Shortcut method which will apply some classes and parameters to the video element via some other methods
-	 * @return
-	 */
+   * Shortcut method which will apply some classes and parameters
+   * to the video element via some other methods
+   * @return
+   */
   prepareVideoElement() {
     this.applyDefaultClasses();
     this.applyParameters();
@@ -49,16 +50,16 @@ class Player {
   }
 
   /**
-	 * Initializes the player and applies all needed stuff.
-	 * @param  {function} _callback   Callback function to be called when the player is ready
-	 * @return {void}
-	 */
+   * Initializes the player and applies all needed stuff.
+   * @param  {function} _callback   Callback function to be called when the player is ready
+   * @return {void}
+   */
   init(_callback) {
     const videoelement = this.videoelement.node;
-    const options = this.config.options;
+    const { options } = this.config;
 
     // initiate videojs and do some post initiation stuff
-    const player = window.videojs(videoelement, options).ready(function () {
+    this.videojs = window.videojs(videoelement, options).ready(function () {
       // Enable hotkeys
       this.hotkeys({
         enableFullscreen: true,
@@ -81,9 +82,10 @@ class Player {
 
         // Stop all other players if there are any on play
         for (const key in window.videojs.getPlayers()) {
-				    if (window.videojs.getPlayers()[key] !== null && window.videojs.getPlayers()[key].id_ !== this.id_) {
-				    	window.videojs.getPlayers()[key].pause();
-				    }
+          if (window.videojs.getPlayers()[key] !== null
+            && window.videojs.getPlayers()[key].id_ !== this.id_) {
+            window.videojs.getPlayers()[key].pause();
+          }
         }
 
         // Remove youtube player class after 5 seconds if youtube player
@@ -133,13 +135,12 @@ class Player {
         window.afterglow.eventbus.dispatch(this.id(), 'play');
       });
     });
-    this.videojs = player;
   }
 
   /**
-	 * Applies the default classes to the videoelement and removes sublime's class
-	 * @return {void}
-	 */
+   * Applies the default classes to the videoelement and removes sublime's class
+   * @return {void}
+   */
   applyDefaultClasses() {
     // Add some classes
     this.videoelement.addClass('video-js');
@@ -161,17 +162,18 @@ class Player {
   }
 
   /**
-	 * Applies basic parameters to the videoelement to make it well usable for video.js
-	 * @return {void}
-	 */
+   * Applies basic parameters to the videoelement to make it well usable for video.js
+   * @return {void}
+   */
   applyParameters() {
     // Make lightboxplayer not overscale
-    if (this.videoelement.getAttribute('data-overscale') == 'false') {
+    if (this.videoelement.getAttribute('data-overscale') === 'false') {
       this.videoelement.setAttribute('data-maxwidth', this.videoelement.getAttribute('width'));
     }
 
     // Apply some responsive stylings
-    if (this.videoelement.getAttribute('data-autoresize') != 'none' && this.videoelement.getAttribute('data-autoresize') != 'false') {
+    if (this.videoelement.getAttribute('data-autoresize') !== 'none'
+      && this.videoelement.getAttribute('data-autoresize') !== 'false') {
       this.videoelement.addClass('vjs-responsive');
       const ratio = this.calculateRatio();
       this.videoelement.node.style.paddingTop = `${ratio * 100}%`;
@@ -182,9 +184,9 @@ class Player {
   }
 
   /**
-	 * Applies all needed classes to the videoelement in order to provide proper youtube playback
-	 * @return {void}
-	 */
+   * Applies all needed classes to the videoelement in order to provide proper youtube playback
+   * @return {void}
+   */
   applyYoutubeClasses() {
     this.videoelement.addClass('vjs-youtube');
     this.videoelement.addClass('vjs-youtube-headstart');
@@ -206,33 +208,33 @@ class Player {
   }
 
   /**
-	 * Applies all needed classes to the videoelement in order to provide proper vimeo playback
-	 * @return {void}
-	 */
+   * Applies all needed classes to the videoelement in order to provide proper vimeo playback
+   * @return {void}
+   */
   applyVimeoClasses() {
     this.videoelement.addClass('vjs-vimeo');
   }
 
   /**
-	 * Calculates the players ratio based on the given value or on width/height
-	 * @return {float}
-	 */
+   * Calculates the players ratio based on the given value or on width/height
+   * @return float
+   */
   calculateRatio() {
+    let ratio = 0;
     if (this.videoelement.getAttribute('data-ratio')) {
-      var ratio = this.videoelement.getAttribute('data-ratio');
+      ratio = this.videoelement.getAttribute('data-ratio');
     } else if (!this.videoelement.getAttribute('height') || !this.videoelement.getAttribute('width')) {
-      console.error('Please provide witdh and height for your video element.');
-      return 0;
+      return ratio;
     } else {
-      var ratio = this.videoelement.getAttribute('height') / this.videoelement.getAttribute('width');
+      ratio = this.videoelement.getAttribute('height') / this.videoelement.getAttribute('width');
     }
     return parseFloat(ratio);
   }
 
   /**
-	 * Gets the current player's skin name for further use in css variables and so on.
-	 * @return {string}
-	 */
+   * Gets the current player's skin name for further use in css variables and so on.
+   * @return {string}
+   */
   getSkinName() {
     if (this.videoelement.getAttribute('data-skin')) {
       return this.videoelement.getAttribute('data-skin');
@@ -241,9 +243,9 @@ class Player {
   }
 
   /**
-	 * Destroys the player instance and disposes it.
-	 * @return {void}
-	 */
+   * Destroys the player instance and disposes it.
+   * @return {void}
+   */
   destroy() {
     if (!this.videojs.paused()) {
       this.videojs.pause();
@@ -256,8 +258,8 @@ class Player {
   }
 
   /**
-	 * Getter for the player
-	 */
+   * Getter for the player
+   */
   getPlayer() {
     return this.videojs;
   }

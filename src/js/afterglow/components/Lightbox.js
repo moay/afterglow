@@ -4,7 +4,6 @@
  * @license MIT
  */
 
-
 import Player from './Player';
 import Util from '../lib/Util';
 import DOMElement from '../lib/DOMElement';
@@ -21,9 +20,9 @@ class Lightbox extends DOMElement {
   }
 
   /**
-	 * Prepares the lightbox elements which are needed to properly add them to the DOM
-	 * @return {void}
-	 */
+   * Prepares the lightbox elements which are needed to properly add them to the DOM
+   * @return {void}
+   */
   build() {
     // Prepare the lightbox elements
     const cover = this.buildCover();
@@ -34,9 +33,9 @@ class Lightbox extends DOMElement {
   }
 
   /**
-	 * Builds the Cover element
-	 * @return {DOMElement object}
-	 */
+   * Builds the Cover element
+   * @return {DOMElement object}
+   */
   buildCover() {
     let cover = document.createElement('div');
     cover = new DOMElement(cover);
@@ -45,9 +44,9 @@ class Lightbox extends DOMElement {
   }
 
   /**
-	 * Builds the Lightbox element
-	 * @return {DOMElement object}
-	 */
+   * Builds the Lightbox element
+   * @return {DOMElement object}
+   */
   buildLightbox() {
     let lightbox = document.createElement('div');
     lightbox = new DOMElement(lightbox);
@@ -55,35 +54,36 @@ class Lightbox extends DOMElement {
     return lightbox;
   }
 
- 	/**
- 	 * Initiating the Lightbox and enabling element binding
- 	 * @return void
- 	 */
+  /**
+   * Initiating the Lightbox and enabling element binding
+   * @return void
+   */
   bindEmitter() {
     Emitter(this);
   }
 
   /**
-	 * Appends the real videoElement to the wrapper.
-	 * @param  {[type]} videoelement [description]
-	 * @return {[type]}              [description]
-	 */
+   * Appends the real videoElement to the wrapper.
+   * @param  videoelement
+   * @return void
+   */
   passVideoElement(videoelement) {
     this.playerid = videoelement.getAttribute('id');
-    // This is not easily testable. But the constructor of DOMElement is so simple, that we rely on the UTs that exist for DOMElement.
-    videoelement = new DOMElement(videoelement);
-    this.lightbox.appendDomElement(videoelement, 'videoelement');
-    this.lightbox.videoelement = videoelement;
+    // This is not easily testable. But the constructor of DOMElement
+    // is so simple that we rely on the UTs that exist for DOMElement.
+    const domElement = new DOMElement(videoelement);
+    this.lightbox.appendDomElement(domElement, 'videoelement');
+    this.lightbox.videoelement = domElement;
     this.lightbox.videoelement.setAttribute('autoplay', 'autoplay');
 
     this.player = new Player(this.lightbox.videoelement);
   }
 
   /**
-	 * Method which will actually launch the player. Nodes will be appended to the DOM and all events will be bound.
-	 * @param  {closure} _callback A callback function which will be executed after having completed the launch if needed.
-	 * @return {void}
-	 */
+   * Method which will actually launch the player. Nodes will be appended to the DOM and all events will be bound.
+   * @param _callback A callback function which will be executed after having completed the launch if needed.
+   * @return {void}
+   */
   launch(_callback) {
     const util = new Util();
     document.body.appendChild(this.node);
@@ -115,11 +115,12 @@ class Lightbox extends DOMElement {
     });
 
     // Stop all active players if there are any playing
-    for (const key in window.videojs.getPlayers()) {
-		    if (window.videojs.getPlayers()[key] !== null && window.videojs.getPlayers()[key].id_ !== this.playerid) {
-		    	window.videojs.getPlayers()[key].pause();
-		    }
-    }
+    Object.keys(window.videojs.getPlayers()).forEach(key => {
+      if (window.videojs.getPlayers()[key] !== null
+        && window.videojs.getPlayers()[key].id_ !== this.playerid) {
+        window.videojs.getPlayers()[key].pause();
+      }
+    });
 
     // resize the lightbox and make it autoresize
     this.resize();
@@ -146,9 +147,9 @@ class Lightbox extends DOMElement {
   }
 
   /**
-	 * Resize the lightbox according to the media ratio
-	 * @return void
-	 */
+   * Resize the lightbox according to the media ratio
+   * @return void
+   */
   resize() {
     // Standard HTML5 player
     if (this.lightbox.videoelement !== undefined) {
@@ -180,31 +181,30 @@ class Lightbox extends DOMElement {
   }
 
   /**
-	 * calculates the current lightbox size based on window width and height and on the players ratio
-	 * @param  {float} ratio   The players ratio
-	 * @return {object}        Some sizes which can be used
-	 */
+   * calculates the current lightbox size based on window width and height and on the players ratio
+   * @param ratio float The players ratio
+   * @param maxwidth
+   * @return object     Some sizes which can be used
+   */
   calculateLightboxSizes(ratio, maxwidth) {
     const sizes = {};
 
     // Get window width && height
     sizes.width = window.clientWidth
-		|| document.documentElement.clientWidth
-		|| document.body.clientWidth
-		|| window.innerWidth;
+    || document.documentElement.clientWidth
+    || document.body.clientWidth
+    || window.innerWidth;
     sizes.height = window.clientHeight
-		|| document.documentElement.clientHeight
-		|| document.body.clientHeight
-		|| window.innerHeight;
+    || document.documentElement.clientHeight
+    || document.body.clientHeight
+    || window.innerHeight;
 
     // Window is wide enough
     if (sizes.height / sizes.width > ratio) {
       // Check if the lightbox should overscale, even if video is smaller
       if (typeof maxwidth !== 'undefined' && maxwidth < sizes.width * 0.90) {
         sizes.playerwidth = maxwidth;
-      }
-      // Else scale up as much as possible
-      else {
+      } else { // Else scale up as much as possible
         sizes.playerwidth = sizes.width * 0.90;
       }
       sizes.playerheight = sizes.playerwidth * ratio;
@@ -212,9 +212,7 @@ class Lightbox extends DOMElement {
       // Check if the lightbox should overscale, even if video is smaller
       if (typeof maxwidth !== 'undefined' && maxwidth < (sizes.height * 0.92) / ratio) {
         sizes.playerheight = maxwidth * ratio;
-      }
-      // Else scale up as much as possible
-      else {
+      } else { // Else scale up as much as possible
         sizes.playerheight = sizes.height * 0.92;
       }
       sizes.playerwidth = sizes.playerheight / ratio;
@@ -226,9 +224,9 @@ class Lightbox extends DOMElement {
   }
 
   /**
-	 * Closes the lightbox and removes the nodes from the DOM.
-	 * @return void
-	 */
+   * Closes the lightbox and removes the nodes from the DOM.
+   * @return void
+   */
   close() {
     window.afterglow.eventbus.dispatch(this.player.id, 'before-lightbox-close');
     this.player.destroy(true);
@@ -237,9 +235,9 @@ class Lightbox extends DOMElement {
   }
 
   /**
-	 * Returns the player
-	 * @return {Player object}
-	 */
+   * Returns the player
+   * @return Player
+   */
   getPlayer() {
     if (this.player !== undefined) {
       return this.player.getPlayer();

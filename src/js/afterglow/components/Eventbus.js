@@ -4,19 +4,18 @@
  * @license MIT
  */
 
-
 class Eventbus {
   constructor() {
     this.players = {};
   }
 
   /**
-	 * Packs the events into the container to be able to listen to them lateron
-	 *
-	 * @param      string  playerid   The playerid
-	 * @param      string  event      The event
-	 * @param      executable  _callback  The callback
-	 */
+   * Packs the events into the container to be able to listen to them lateron
+   *
+   * @param playerid
+   * @param event
+   * @param _callback
+   */
   subscribe(playerid, event, _callback) {
     if (!this.players[playerid]) {
       this.players[playerid] = { listeners: {} };
@@ -28,14 +27,16 @@ class Eventbus {
   }
 
   /**
-	 * Removes the the first matching callback which was bound to the event
-	 *
-	 * @param      string  playerid   The playerid
-	 * @param      string  event      The event
-	 * @param      executable  _callback  The callback
-	 */
+   * Removes the the first matching callback which was bound to the event
+   *
+   * @param playerid
+   * @param event
+   * @param _callback
+   */
   unsubscribe(playerid, event, _callback) {
-    if (!this.players[playerid] || !this.players[playerid].listeners[event] || this.players[playerid].listeners[event].indexOf(_callback) === -1) {
+    if (!this.players[playerid]
+      || !this.players[playerid].listeners[event]
+      || this.players[playerid].listeners[event].indexOf(_callback) === -1) {
       console.error('afterglow could not unbind your event because the _callback was not bound');
     } else {
       const index = this.players[playerid].listeners[event].indexOf(_callback);
@@ -44,18 +45,22 @@ class Eventbus {
   }
 
   /**
-	 * Dispatches an event and executes all bound callbacks
-	 *
-	 * @param      string  playerid   The playerid
-	 * @param      string  event      The event
-	 * @param      executable  _callback  The callback
-	 */
+   * Dispatches an event and executes all bound callbacks
+   *
+   * @param playerid
+   * @param event
+   * @return void;
+   */
   dispatch(playerid, event) {
     if (!this.players[playerid] || !this.players[playerid].listeners[event]) {
-      return false;
+      return;
     }
-    for (let i = 0; i < this.players[playerid].listeners[event].length; i++) {
-      this.players[playerid].listeners[event][i]({ type: event, playerid, player: window.afterglow.getPlayer(playerid) });
+    for (let i = 0; i < this.players[playerid].listeners[event].length; i += 1) {
+      this.players[playerid].listeners[event][i]({
+        type: event,
+        playerid,
+        player: window.afterglow.getPlayer(playerid),
+      });
     }
   }
 }
