@@ -1,12 +1,16 @@
-import Player from '../src/js/afterglow/components/Player';
-import Config from '../src/js/afterglow/components/Config';
-import Util from '../src/js/afterglow/lib/Util';
-import Eventbus from '../src/js/afterglow/components/Eventbus';
 
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 require('jsdom-global')();
+
+import videojs from '../src/js/afterglow/lib/VideoJsWrapper';
+sinon.stub(videojs).returns({ ready: (input) => 'test', this: { id: () => {} } });
+
+import Player from '../src/js/afterglow/components/Player';
+import Config from '../src/js/afterglow/components/Config';
+import Util from '../src/js/afterglow/lib/Util';
+import EventBus from '../src/js/afterglow/components/EventBus';
 
 chai.use(sinonChai);
 chai.should();
@@ -92,9 +96,8 @@ describe('Afterglow Player', () => {
 
   describe('init() only outside of video.js', () => {
     beforeEach(() => {
-      window.videojs = () => ({ ready: (input) => {}, this: { id: () => {} } });
       sinon.stub(Player.prototype, 'setup');
-      sinon.stub(Eventbus.prototype, 'dispatch');
+      sinon.stub(EventBus, 'dispatch');
       player = new Player();
       player.videoelement = {
         node: 'testnode',
@@ -102,28 +105,25 @@ describe('Afterglow Player', () => {
       player.config = {
         options: 'testoptions',
       };
-      window.afterglow = {};
-      window.afterglow.eventbus = new Eventbus();
     });
 
     afterEach(() => {
       Player.prototype.setup.restore();
-      Eventbus.prototype.dispatch.restore();
+      EventBus.dispatch.restore();
+      videojs.stub = undefined;
     });
 
     it('should pass the videoelement and the options to videojs properly', () => {
-      sinon.stub(window, 'videojs').callsFake(() => ({ ready: (input) => {} }));
       player.init();
-      expect(window.videojs).to.have.been.calledOnce;
-      expect(window.videojs).to.have.been.calledWith('testnode', 'testoptions');
-      window.videojs.restore();
+      expect(videojs).to.have.been.calledOnce;
+      expect(videojs).to.have.been.calledWith('testnode', 'testoptions');
+      videojs.restore();
     });
 
     it('should properly store videojs in its own videojs attribute', () => {
-      sinon.stub(window, 'videojs').callsFake(() => ({ ready: input => 'test' }));
       player.init();
       expect(player.videojs).to.equal('test');
-      window.videojs.restore();
+      videojs.restore();
     });
   });
 
@@ -136,57 +136,6 @@ describe('Afterglow Player', () => {
         hotkeys: () => {},
       };
       callback = 'test';
-      window.videojs = function (videoelement, options) {
-        return {
-          ready: (action) => {
-            this.hotkeys = (input) => {
-              videoelement.hotkeysInput = input;
-            };
-            this.addChild = (input) => {
-              videoelement.addChildInput = input;
-            };
-            this.volume = (input) => {
-              videoelement.volumeInput = input;
-            };
-            this.setCallbackReturnValue = (input) => {
-              videoelement.callbackReturnValue = input;
-            };
-            this.on = (triggeredOnEvent, onAction) => {
-              videoelement.triggeredOnEvent = triggeredOnEvent;
-              onAction();
-            };
-            this.el_ = {
-              classList: {
-                contains: () => {},
-              },
-            };
-            this.id = () => 'testid';
-            this.isFullscreen = () => false;
-            this.action = action;
-            this.action();
-          },
-
-        };
-      };
-      window.videojs.players = {
-        video1: {
-          id_: 'video1',
-          paused: false,
-          pause: () => {
-            window.videojs.players.video1.paused = true;
-          },
-        },
-        video2: {
-          id_: 'video2',
-          paused: false,
-          pause: () => {
-            window.videojs.players.video2.paused = true;
-          },
-        },
-      };
-      window.videojs.getPlayers = function () {
-        return window.videojs.players;
-      };
       sinon.stub(Player.prototype, 'setup');
       player = new Player();
       player.videoelement = {
@@ -244,12 +193,12 @@ describe('Afterglow Player', () => {
     });
 
     it('should stop all other videos when playing', () => {
-      expect(window.videojs.players.video1.paused).to.be.false;
-      expect(window.videojs.players.video2.paused).to.be.false;
+      expect(videojs.players.video1.paused).to.be.false;
+      expect(videojs.players.video2.paused).to.be.false;
       player.init();
       expect(player.videoelement.node.triggeredOnEvent).to.equal('autoplay');
-      expect(window.videojs.players.video1.paused).to.be.true;
-      expect(window.videojs.players.video2.paused).to.be.true;
+      expect(videojs.players.video1.paused).to.be.true;
+      expect(videojs.players.video2.paused).to.be.true;
     });
   });
 

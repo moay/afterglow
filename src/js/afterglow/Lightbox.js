@@ -5,11 +5,12 @@
  */
 
 import Player from './Player';
+import EventBus from './EventBus';
 import Util from '../lib/Util';
 import DOMElement from '../lib/DOMElement';
+import Emitter from '../lib/Emitter';
 
-// For emitting and receiving events
-import Emitter from '../../../../vendor/Emitter/Emitter';
+require('../../less/components/lightbox.less');
 
 class Lightbox extends DOMElement {
   constructor() {
@@ -228,7 +229,7 @@ class Lightbox extends DOMElement {
    * @return void
    */
   close() {
-    window.afterglow.eventbus.dispatch(this.player.id, 'before-lightbox-close');
+    EventBus.dispatch(this.player.id, 'before-lightbox-close');
     this.player.destroy(true);
     this.node.parentNode.removeChild(this.node);
     this.emit('close');

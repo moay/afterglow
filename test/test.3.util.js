@@ -127,21 +127,4 @@ describe('Util', () => {
       expect(res).to.be.true;
     });
   });
-
-  describe('merge_objects()', () => {
-    it('should merge two objects properly', () => {
-      const object1 = { test1: true };
-      const object2 = { test2: true };
-      const merged = util.merge_objects(object1, object2);
-      expect(merged).to.eql({ test1: true, test2: true });
-    });
-    it('should work with one empty object', () => {
-      const object1 = { };
-      const object2 = { test2: true };
-      var merged = util.merge_objects(object1, object2);
-      expect(merged).to.eql({ test2: true });
-      var merged = util.merge_objects(object2, object1);
-      expect(merged).to.eql({ test2: true });
-    });
-  });
 });

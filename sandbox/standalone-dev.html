@@ -4,21 +4,21 @@
 	<title>afterglow development sandbox</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.3">
-	
+
 	<!-- STYLES -->
-	<link rel="stylesheet" type="text/css" href="../vendor/videojs/video-js.css">
-	<link rel="stylesheet/less" type="text/css" href="../src/less/skins/afterglow-default.less">
-	<link rel="stylesheet/less" type="text/css" href="../src/less/skins/afterglow-light.less">
-	<link rel="stylesheet/less" type="text/css" href="../src/less/skins/afterglow-dark.less">
-	<link rel="stylesheet/less" type="text/css" href="../src/less/components/lightbox.less">
+	<!--<link rel="stylesheet" type="text/css" href="../vendor/videojs/video-js.css">-->
+	<!--<link rel="stylesheet/less" type="text/css" href="../src/less/skins/afterglow-default.less">-->
+	<!--<link rel="stylesheet/less" type="text/css" href="../src/less/skins/afterglow-light.less">-->
+	<!--<link rel="stylesheet/less" type="text/css" href="../src/less/skins/afterglow-dark.less">-->
+	<!--<link rel="stylesheet/less" type="text/css" href="../src/less/components/lightbox.less">-->
 
 	<!-- SCRIPTS -->
-	<script src="js/less.min.js" type="text/javascript"></script>
-	<script type="text/javascript" src="../vendor/videojs/video.js"></script>
-	<script type="text/javascript" src="../vendor/videojs/plugins/Youtube.js"></script>
-	<script type="text/javascript" src="../vendor/videojs/plugins/videojs-vimeo.js"></script>
-	<script type="text/javascript" src="../vendor/videojs/plugins/videojs.hotkeys.js"></script>
-	<script type="text/javascript" src="../dist/tmp/afterglow-bundle.js"></script>
+	<!--<script src="js/less.min.js" type="text/javascript"></script>-->
+	<script src="/standalone.js"></script>
+	<!--<script type="text/javascript" src="../vendor/videojs/plugins/Youtube.js"></script>-->
+	<!--<script type="text/javascript" src="../vendor/videojs/plugins/videojs-vimeo.js"></script>-->
+	<!--<script type="text/javascript" src="../vendor/videojs/plugins/videojs.hotkeys.js"></script>-->
+	<!--<script type="text/javascript" src="../dist/tmp/afterglow-bundle.js"></script>-->
 
 	<style>
 		body{
@@ -37,25 +37,21 @@
 
 	<!-- LOCAL TEST -->
 	<h2>Local video, single source, with poster and bound play event</h2>
-	<video id="video2" class="afterglow" width="1920" height="1080" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" preload="none" src="http://afterglowplayer.com/sandbox/video/afterglow_local.mp4"></video>
+	<video id="video2" class="afterglow" width="1920" height="1080" poster="https://afterglowplayer.com/sandbox/v1/poster-sw.jpg" preload="none" src="https://afterglowplayer.com/sandbox/v1/afterglow_local_hd.mp4"></video>
 
 	<!-- LOCAL TEST -->
 	<h2>Local video with poster and resolution test, dark skin</h2>
-	<video id="video-subtitles" class="sublime" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-volume="0.7" data-skin="dark">
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4"/>
-		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local_hd.webm" type="video/webm" data-quality="hd" />
-		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
-		<source src="http://afterglowplayer.com/sandbox/video/OGV/afterglow_local_hd.ogv" type="video/ogv" data-quality="hd" />
-		<source src="http://afterglowplayer.com/sandbox/video/OGV/afterglow_local.ogv" type="video/ogv" />
-   		
+	<video id="video-subtitles" class="sublime" width="640" height="360" poster="https://afterglowplayer.com/sandbox/v1/poster-sw.jpg" data-volume="0.7" data-skin="dark">
+		<source src="https://afterglowplayer.com/sandbox/v1/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
+		<source src="https://afterglowplayer.com/sandbox/v1/afterglow_local.mp4" type="video/mp4"/>
+
    		<track kind="subtitles" src="text/subtitles-demo.vtt" srclang="en" label="English">
 	</video>
 
 	<h2>Local video with poster and resolution test light skin</h2>
-	<video id="video-subtitles" class="sublime" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-volume="0.7" data-skin="light">
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4"/>
+	<video id="video-subtitles2" class="sublime" width="640" height="360" poster="https://afterglowplayer.com/sandbox/v1/poster-sw.jpg" data-volume="0.7" data-skin="light">
+		<source src="https://afterglowplayer.com/sandbox/v1/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
+		<source src="https://afterglowplayer.com/sandbox/v1/afterglow_local.mp4" type="video/mp4"/>
    		<track kind="subtitles" src="text/subtitles-demo.vtt" srclang="en" label="English" default>
 	</video>
 
@@ -68,10 +64,9 @@
 	<!-- LOCAL TEST -->
 	<h2>Local video with poster opened in lightbox</h2>
 	<a href="#video3" class="afterglow">Open the lightbox</a>
-	<video id="video3" data-skin="dark" width="640" height="360" poster="http://afterglowplayer.com/sandbox/video/Snapshots/afterglow_local.jpg" data-skin="dark">
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local.mp4" type="video/mp4" />
-		<source src="http://afterglowplayer.com/sandbox/video/MP4/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
-		<source src="http://afterglowplayer.com/sandbox/video/WEBM/afterglow_local.webm" type="video/webm" />
+	<video id="video3" data-skin="dark" width="640" height="360" poster="https://afterglowplayer.com/sandbox/v1/poster-sw.jpg" data-skin="dark">
+		<source src="https://afterglowplayer.com/sandbox/v1/afterglow_local.mp4" type="video/mp4" />
+		<source src="https://afterglowplayer.com/sandbox/v1/afterglow_local_hd.mp4" type="video/mp4" data-quality="hd" />
 	</video>
 	<!-- LOCAL TEST -->
 	<h2>Youtube opened in lightbox</h2>
@@ -97,13 +92,13 @@
 				console.log('EVENT video1 (YT): ' + e.type);
 			});
 			afterglow.on('video-vimeo',eventname,function(e){
-				console.log('EVENT video1 (YT): ' + e.type);
+				console.log('EVENT (Vimeo): ' + e.type);
 			});
 			afterglow.on('videovimeol',eventname,function(e){
-				console.log('EVENT video1 (YT): ' + e.type);
+				console.log('EVENT (Vimeo Lightbox): ' + e.type);
 			});
 		}
-			
+
 	</script>
 </body>
 </html>

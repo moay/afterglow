@@ -10,9 +10,11 @@
   "jsdelivr": "dist/afterglow.min.js",
   "homepage": "http://afterglowplayer.com",
   "devDependencies": {
+    "base64-inline-loader": "^1.1.1",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^0.1.19",
     "coveralls": "^3.0.2",
+    "css-loader": "^1.0.0",
     "eslint": "^5.7.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
@@ -20,20 +22,29 @@
     "jquery": "^3.3.1",
     "jsdom": "12.2.0",
     "jsdom-global": "3.0.2",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
     "mocha": "^5.2.0",
     "mocha-jsdom": "^2.0.0",
     "mocha-webpack": "^2.0.0-beta.0",
     "path": "^0.12.7",
     "sinon": "^7.0.0",
     "sinon-chai": "^3.2.0",
+    "style-loader": "^0.23.1",
     "webpack": "^4.22.0",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.dev.js",
+    "dev": "webpack-dev-server --config webpack.config.dev.js --watch --https",
     "build": "webpack --config webpack.config.prod.js --mode=production",
     "test": "mocha-webpack"
+  },
+  "dependencies": {
+    "@vimeo/player": "^2.6.4",
+    "video.js": "^7.2.3",
+    "videojs-hotkeys": "^0.2.22",
+    "videojs-youtube": "^2.6.0"
   }
 }

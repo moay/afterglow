@@ -5,7 +5,8 @@
  */
 
 import Lightbox from './Lightbox';
-import Emitter from '../../../../vendor/Emitter/Emitter';
+import EventBus from './EventBus';
+import Emitter from '../lib/Emitter';
 import DOMElement from '../lib/DOMElement';
 
 class LightboxTrigger extends DOMElement {
@@ -61,13 +62,13 @@ class LightboxTrigger extends DOMElement {
     this.lightbox.passVideoElement(videoelement);
 
     this.emit('trigger');
-    window.afterglow.eventbus.dispatch(this.playerid, 'lightbox-launched');
+    EventBus.dispatch(this.playerid, 'lightbox-launched');
 
     this.lightbox.launch();
 
     // Pass event to afterglow core
     this.lightbox.on('close', () => {
-      window.afterglow.eventbus.dispatch(this.playerid, 'lightbox-closed');
+      EventBus.dispatch(this.playerid, 'lightbox-closed');
       this.emit('close');
     });
   }

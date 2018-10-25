@@ -4,7 +4,6 @@
  * @license MIT
  */
 
-
 class Util {
   /**
      * Checks wether or not the given video element should be converted into a video element
@@ -97,19 +96,6 @@ class Util {
     const Windows = () => navigator.userAgent.match(/IEMobile/i);
 
     return !!((Android() || BlackBerry() || iOS() || Opera() || Windows()));
-  }
-
-  /**
-     * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
-     * @param obj1
-     * @param obj2
-     * @returns obj3 a new object based on obj1 and obj2
-     */
-  merge_objects(obj1, obj2) {
-    const obj3 = {};
-    for (const attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-    for (const attrname in obj2) { obj3[attrname] = obj2[attrname]; }
-    return obj3;
   }
 
   /**

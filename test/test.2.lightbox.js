@@ -1,6 +1,6 @@
 import Player from '../src/js/afterglow/components/Player';
 import Lightbox from '../src/js/afterglow/components/Lightbox';
-import Eventbus from '../src/js/afterglow/components/Eventbus';
+import EventBus from '../src/js/afterglow/components/EventBus';
 import DOMElement from '../src/js/afterglow/lib/DOMElement';
 import Util from '../src/js/afterglow/lib/Util';
 
@@ -239,13 +239,10 @@ describe('Afterglow Lightbox', () => {
 
   describe('close()', () => {
     beforeEach(() => {
-      sinon.stub(Eventbus.prototype, 'dispatch');
+      sinon.stub(EventBus, 'dispatch');
       sinon.stub(Lightbox.prototype, 'build');
       sinon.stub(Lightbox.prototype, 'bindEmitter');
       sinon.stub(DOMElement.prototype, 'addClass');
-
-      window.afterglow = {};
-      window.afterglow.eventbus = new Eventbus();
 
       lightbox = new Lightbox();
       lightbox.player = {
@@ -267,7 +264,7 @@ describe('Afterglow Lightbox', () => {
       Lightbox.prototype.bindEmitter.restore();
       DOMElement.prototype.addClass.restore();
       Lightbox.prototype.build.restore();
-      Eventbus.prototype.dispatch.restore();
+      EventBus.dispatch.restore();
     });
 
     it('should properly trigger the destroy method on the player', () => {
@@ -282,7 +279,7 @@ describe('Afterglow Lightbox', () => {
 
     it('should emit the closing event', () => {
       lightbox.close();
-      assert(Eventbus.prototype.dispatch.calledOnce);
+      assert(EventBus.dispatch.calledOnce);
       expect(lightbox.emit).to.have.been.calledOnce;
       expect(lightbox.emit).to.have.been.calledWith('close');
     });

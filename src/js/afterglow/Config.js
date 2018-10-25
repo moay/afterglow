@@ -4,7 +4,6 @@
  * @license MIT
  */
 
-
 import Util from '../lib/Util';
 
 class Config {

@@ -1,10 +1,10 @@
 /**
  * afterglow - An easy to integrate HTML5 video player with lightbox support.
- * @link http://afterglowplayer.com
+ * @link http://afterglowthis.com
  * @license MIT
  */
-
-
+import videoJs from '../videojs/VideoJsWrapper';
+import Eventbus from './EventBus';
 import Config from './Config';
 import Util from '../lib/Util';
 
@@ -59,7 +59,8 @@ class Player {
     const { options } = this.config;
 
     // initiate videojs and do some post initiation stuff
-    this.videojs = window.videojs(videoelement, options).ready(function () {
+    this.videojs = videoJs(videoelement, options).ready(function initialize() {
+
       // Enable hotkeys
       this.hotkeys({
         enableFullscreen: true,
@@ -78,7 +79,7 @@ class Player {
 
       this.on('play', () => {
         // Trigger afterglow play event
-        window.afterglow.eventbus.dispatch(this.id(), 'play');
+        Eventbus.dispatch(this.id(), 'play');
 
         // Stop all other players if there are any on play
         for (const key in window.videojs.getPlayers()) {
@@ -99,40 +100,40 @@ class Player {
 
       // Trigger afterglow ended event
       this.on('pause', () => {
-        window.afterglow.eventbus.dispatch(this.id(), 'paused');
+        Eventbus.dispatch(this.id(), 'paused');
       });
 
       // Trigger afterglow ended event
       this.on('ended', () => {
-        window.afterglow.eventbus.dispatch(this.id(), 'ended');
+        Eventbus.dispatch(this.id(), 'ended');
       });
 
       // Trigger afterglow ended event
       this.on('volumechange', () => {
-        window.afterglow.eventbus.dispatch(this.id(), 'volume-changed');
+        Eventbus.dispatch(this.id(), 'volume-changed');
       });
 
       // Trigger afterglow fullscreen events
       this.on('fullscreenchange', () => {
         if (this.isFullscreen()) {
-          window.afterglow.eventbus.dispatch(this.id(), 'fullscreen-entered');
+          Eventbus.dispatch(this.id(), 'fullscreen-entered');
         } else {
-          window.afterglow.eventbus.dispatch(this.id(), 'fullscreen-left');
+          Eventbus.dispatch(this.id(), 'fullscreen-left');
         }
-        window.afterglow.eventbus.dispatch(this.id(), 'fullscreen-changed');
+        Eventbus.dispatch(this.id(), 'fullscreen-changed');
       });
 
       // Launch the callback if there is one
       if (typeof _callback === 'function') {
-        _callback(this);
+        _callback(player);
       }
 
       // Trigger afterglow ready event
-      window.afterglow.eventbus.dispatch(this.id(), 'ready');
+      Eventbus.dispatch(this.id(), 'ready');
 
       this.on('autoplay', () => {
         // Trigger afterglow play event
-        window.afterglow.eventbus.dispatch(this.id(), 'play');
+        Eventbus.dispatch(this.id(), 'play');
       });
     });
   }

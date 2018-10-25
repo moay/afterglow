@@ -29,6 +29,6 @@ class LightboxCloseButton extends VjsLBButtonClose {
 }
 
 
-(function () {
+(() => {
  	videojs.registerComponent('LightboxCloseButton', LightboxCloseButton);
-}());
+})();

@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-class Eventbus {
+class EventBus {
   constructor() {
     this.players = {};
   }
@@ -37,7 +37,6 @@ class Eventbus {
     if (!this.players[playerid]
       || !this.players[playerid].listeners[event]
       || this.players[playerid].listeners[event].indexOf(_callback) === -1) {
-      console.error('afterglow could not unbind your event because the _callback was not bound');
     } else {
       const index = this.players[playerid].listeners[event].indexOf(_callback);
       this.players[playerid].listeners[event].splice(index, 1);
@@ -65,4 +64,4 @@ class Eventbus {
   }
 }
 
-export default Eventbus;
+export default new EventBus();

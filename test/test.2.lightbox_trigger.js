@@ -1,6 +1,6 @@
 import LightboxTrigger from '../src/js/afterglow/components/LightboxTrigger';
 import Lightbox from '../src/js/afterglow/components/Lightbox';
-import Eventbus from '../src/js/afterglow/components/Eventbus';
+import EventBus from '../src/js/afterglow/components/EventBus';
 import Emitter from '../vendor/Emitter/Emitter';
 
 const chai = require('chai');
@@ -97,7 +97,7 @@ describe('Afterglow Lightbox Trigger', () => {
 
   describe('trigger()', () => {
     beforeEach(() => {
-      sinon.stub(Eventbus.prototype, 'dispatch');
+      sinon.stub(EventBus, 'dispatch');
       sinon.stub(LightboxTrigger.prototype, 'init');
       sinon.stub(Emitter.prototype, 'on');
       sinon.stub(Emitter.prototype, 'emit');
@@ -105,9 +105,6 @@ describe('Afterglow Lightbox Trigger', () => {
       sinon.stub(Lightbox.prototype, 'build').callsFake(() => { self.on = () => 'test'; });
       sinon.stub(Lightbox.prototype, 'passVideoElement').callsFake(input => input);
       sinon.stub(Lightbox.prototype, 'launch');
-
-      window.afterglow = {};
-      window.afterglow.eventbus = new Eventbus();
 
       lightboxtrigger.videoelement = {
         cloneNode: () => 'test',
@@ -122,7 +119,7 @@ describe('Afterglow Lightbox Trigger', () => {
       Lightbox.prototype.launch.restore();
       Emitter.prototype.on.restore();
       Emitter.prototype.emit.restore();
-      Eventbus.prototype.dispatch.restore();
+      EventBus.dispatch.restore();
     });
 
     it('should create a new Lightbox Element', () => {
@@ -132,7 +129,6 @@ describe('Afterglow Lightbox Trigger', () => {
 
     it('should pass a clone of the video element node to the lightbox', () => {
       sinon.spy(lightboxtrigger.videoelement, 'cloneNode');
-      let passedinput;
       lightboxtrigger.trigger();
       assert(Lightbox.prototype.passVideoElement.calledOnce);
       assert(lightboxtrigger.videoelement.cloneNode.calledOnce);
@@ -142,7 +138,7 @@ describe('Afterglow Lightbox Trigger', () => {
     it('should launch the lightbox properly', () => {
       lightboxtrigger.trigger();
       assert(Lightbox.prototype.launch.calledOnce);
-      assert(Eventbus.prototype.dispatch.calledOnce);
+      assert(EventBus.dispatch.calledOnce);
     });
 
     it('should trigger and bind the events', () => {
