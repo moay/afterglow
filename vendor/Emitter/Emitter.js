@@ -13,7 +13,7 @@ module.exports = Emitter;
 
 function Emitter(obj) {
   if (obj) return mixin(obj);
-};
+}
 
 /**
  * Mixin the emitter properties.
@@ -24,7 +24,7 @@ function Emitter(obj) {
  */
 
 function mixin(obj) {
-  for (var key in Emitter.prototype) {
+  for (const key in Emitter.prototype) {
     obj[key] = Emitter.prototype[key];
   }
   return obj;
@@ -39,10 +39,9 @@ function mixin(obj) {
  * @api public
  */
 
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
+Emitter.prototype.on = Emitter.prototype.addEventListener = function (event, fn) {
   this._callbacks = this._callbacks || {};
-  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+  (this._callbacks[`$${event}`] = this._callbacks[`$${event}`] || [])
     .push(fn);
   return this;
 };
@@ -57,7 +56,7 @@ Emitter.prototype.addEventListener = function(event, fn){
  * @api public
  */
 
-Emitter.prototype.once = function(event, fn){
+Emitter.prototype.once = function (event, fn) {
   function on() {
     this.off(event, on);
     fn.apply(this, arguments);
@@ -78,31 +77,28 @@ Emitter.prototype.once = function(event, fn){
  * @api public
  */
 
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
+Emitter.prototype.off = Emitter.prototype.removeListener = Emitter.prototype.removeAllListeners = Emitter.prototype.removeEventListener = function (event, fn) {
   this._callbacks = this._callbacks || {};
 
   // all
-  if (0 == arguments.length) {
+  if (arguments.length == 0) {
     this._callbacks = {};
     return this;
   }
 
   // specific event
-  var callbacks = this._callbacks['$' + event];
+  const callbacks = this._callbacks[`$${event}`];
   if (!callbacks) return this;
 
   // remove all handlers
-  if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
+  if (arguments.length == 1) {
+    delete this._callbacks[`$${event}`];
     return this;
   }
 
   // remove specific handler
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
+  let cb;
+  for (let i = 0; i < callbacks.length; i++) {
     cb = callbacks[i];
     if (cb === fn || cb.fn === fn) {
       callbacks.splice(i, 1);
@@ -120,14 +116,16 @@ Emitter.prototype.removeEventListener = function(event, fn){
  * @return {Emitter}
  */
 
-Emitter.prototype.emit = function(event){
+Emitter.prototype.emit = function (event) {
   this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
+  const args = [].slice.call(arguments, 1);
+
+
+  let callbacks = this._callbacks[`$${event}`];
 
   if (callbacks) {
     callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
+    for (let i = 0, len = callbacks.length; i < len; ++i) {
       callbacks[i].apply(this, args);
     }
   }
@@ -143,9 +141,9 @@ Emitter.prototype.emit = function(event){
  * @api public
  */
 
-Emitter.prototype.listeners = function(event){
+Emitter.prototype.listeners = function (event) {
   this._callbacks = this._callbacks || {};
-  return this._callbacks['$' + event] || [];
+  return this._callbacks[`$${event}`] || [];
 };
 
 /**
@@ -156,6 +154,6 @@ Emitter.prototype.listeners = function(event){
  * @api public
  */
 
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
+Emitter.prototype.hasListeners = function (event) {
+  return !!this.listeners(event).length;
 };

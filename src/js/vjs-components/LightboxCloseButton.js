@@ -1,4 +1,4 @@
-'use strict';
+
 
 const VjsLBButtonClose = videojs.getComponent('Button');
 
@@ -9,14 +9,13 @@ const VjsLBButtonClose = videojs.getComponent('Button');
  * @class LightboxCloseButton
 */
 class LightboxCloseButton extends VjsLBButtonClose {
-
  	constructor(player, options) {
  		super(player, options);
  		this.on('click', this.closeClick);
  		this.on('tap', this.closeClick);
  	}
 
- 	buildCSSClass(){
+ 	buildCSSClass() {
  		return 'vjs-lightbox-close-button vjs-button vjs-control';
  	}
 
@@ -24,14 +23,12 @@ class LightboxCloseButton extends VjsLBButtonClose {
  	 * This will close afterglow's lightbox and remove the player from the DOM
  	 * @return {void}
  	 */
- 	closeClick(){
+ 	closeClick() {
  		afterglow.closeLightbox();
  	}
 }
 
 
-(function(){
-
+(function () {
  	videojs.registerComponent('LightboxCloseButton', LightboxCloseButton);
-
-})();
+}());
