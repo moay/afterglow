@@ -113,6 +113,7 @@ class Config {
 
     this.videoelement.setAttribute('src', `https://vimeo.com/${this.getPlayerAttributeFromVideoElement('vimeo-id')}`);
     this.videoelement.setAttribute('type', 'video/vimeo');
+    this.videoelement.setAttribute('controls', 'no')
   }
 
   /**
