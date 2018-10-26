@@ -1,0 +1,572 @@
+.afterglow {
+  &__overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+
+    &-play .afterglow__overlay-button {
+      background: url('../svg/buttonplay.svg') no-repeat;
+      background-size: contain;
+      background-position: center;
+      height: 80px;
+      width: 80px;
+      margin-left: -5px;
+    }
+
+    &-loading {
+      width: 32px;
+      height: 32px;
+      border: 3px rgba(255,255,255,0.1) solid;
+      border-top: 3px rgba(255,255,255,.95) solid;
+      border-radius: 50%;
+      -webkit-animation: spCircRot 1.6s infinite linear;
+      animation: spCircRot 1.6s infinite linear;
+
+      &:before,
+      &:after{
+        content:none;
+        border:0px;
+      }
+    }
+  }
+
+  /* Start: CONTROL BAR */
+  &__controls {
+    bottom: 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    height: 40px;
+    left: 0;
+    list-style-type: none;
+    margin: 0;
+    padding: 0 10px;
+    position: absolute;
+    width: 100%;
+    z-index: 3;
+
+    &:not([style*='display: none']) {
+      background: rgba(255, 0, 0, 0.7);
+      background: -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+    }
+  }
+
+  &__button,
+  &__time,
+  &__time-rail {
+    font-size: 10px;
+    height: 40px;
+    line-height: 10px;
+    margin: 0;
+    width: 32px;
+  }
+
+  &__button > button {
+    background: transparent url('../svg/mejs-controls.svg');
+    border: 0;
+    cursor: pointer;
+    display: block;
+    font-size: 0;
+    height: 20px;
+    line-height: 0;
+    margin: 10px 6px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    text-decoration: none;
+    width: 20px;
+
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  &__container-keyboard-inactive {
+    *,
+    *:focus {
+      outline: none;
+    }
+  }
+
+  /* End: CONTROL BAR */
+
+  /* Start: Time (Current / Duration) */
+  &__time {
+    box-sizing: content-box;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    height: 24px;
+    overflow: hidden;
+    padding: 16px 6px 0;
+    text-align: center;
+    width: auto;
+  }
+
+  /* End: Time (Current / Duration) */
+
+  /* Start: Play/Pause/Stop */
+  &__play > button {
+    background-position: 0 0;
+  }
+
+  &__pause > button {
+    background-position: -20px 0;
+  }
+
+  &__replay > button {
+    background-position: -160px 0;
+  }
+
+  /* End: Play/Pause/Stop */
+
+  /* Start: Progress Bar */
+  &__time-rail {
+    direction: ltr;
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    height: 40px;
+    margin: 0 10px;
+    padding-top: 10px;
+    position: relative;
+  }
+
+  &__time-total,
+  &__time-buffering,
+  &__time-loaded,
+  &__time-current,
+  &__time-float,
+  &__time-hovered,
+  &__time-float-current,
+  &__time-float-corner,
+  &__time-marker {
+    border-radius: 2px;
+    cursor: pointer;
+    display: block;
+    height: 10px;
+    position: absolute;
+  }
+
+  &__time-total {
+    background: rgba(255, 255, 255, 0.3);
+    margin: 5px 0 0;
+    width: 100%;
+  }
+
+  &__time-buffering {
+    background: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.4) 75%, transparent 75%, transparent);
+    background: linear-gradient(-45deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.4) 75%, transparent 75%, transparent);
+    background-size: 15px 15px;
+    width: 100%;
+  }
+
+  &__time-loaded {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  &__time-current,
+  &__time-handle-content {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  &__time-hovered {
+    background: rgba(255, 255, 255, 0.5);
+    z-index: 10;
+  }
+
+  &__time-hovered.negative {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &__time-current,
+  &__time-buffering,
+  &__time-loaded,
+  &__time-hovered {
+    left: 0;
+    -webkit-transform: scaleX(0);
+    -ms-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transition: 0.15s ease-in all;
+    transition: 0.15s ease-in all;
+    width: 100%;
+  }
+
+  &__time-buffering {
+    -webkit-transform: scaleX(1);
+    -ms-transform: scaleX(1);
+    transform: scaleX(1);
+  }
+
+  &__time-hovered {
+    -webkit-transition: height 0.1s cubic-bezier(0.44, 0, 1, 1);
+    transition: height 0.1s cubic-bezier(0.44, 0, 1, 1);
+  }
+
+  &__time-hovered.no-hover {
+    -webkit-transform: scaleX(0) !important;
+    -ms-transform: scaleX(0) !important;
+    transform: scaleX(0) !important;
+  }
+
+  &__time-handle,
+  &__time-handle-content {
+    border: 4px solid transparent;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+    z-index: 11;
+  }
+
+  &__time-handle-content {
+    border: 4px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    height: 10px;
+    left: -7px;
+    top: -4px;
+    -webkit-transform: scale(0);
+    -ms-transform: scale(0);
+    transform: scale(0);
+    width: 10px;
+  }
+
+  &__time-rail:hover &__time-handle-content,
+  &__time-rail &__time-handle-content:focus,
+  &__time-rail &__time-handle-content:active {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  &__time-float {
+    background: #eee;
+    border: solid 1px #333;
+    bottom: 100%;
+    color: #111;
+    display: none;
+    height: 17px;
+    margin-bottom: 9px;
+    position: absolute;
+    text-align: center;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 36px;
+
+    &-current {
+      display: block;
+      left: 0;
+      margin: 2px;
+      text-align: center;
+      width: 30px;
+    }
+
+    &-corner {
+      border: solid 5px #eee;
+      border-color: #eee transparent transparent;
+      border-radius: 0;
+      display: block;
+      height: 0;
+      left: 50%;
+      line-height: 0;
+      position: absolute;
+      top: 100%;
+      -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+      transform: translateX(-50%);
+      width: 0;
+    }
+  }
+
+  &__long-video{
+    .afterglow__time-float {
+      margin-left: -23px;
+      width: 64px;
+
+      &-current {
+        width: 60px;
+      }
+    }
+  }
+
+  &__broadcast {
+    color: #fff;
+    height: 10px;
+    position: absolute;
+    top: 15px;
+    width: 100%;
+  }
+
+  /* End: Progress Bar */
+
+  /* Start: Fullscreen */
+  &__fullscreen-button > button {
+    background-position: -80px 0;
+  }
+
+  &__unfullscreen > button {
+    background-position: -100px 0;
+  }
+
+  /* End: Fullscreen */
+
+  /* Start: Mute/Volume */
+  &__mute > button {
+    background-position: -60px 0;
+  }
+
+  &__unmute > button {
+    background-position: -40px 0;
+  }
+
+  &__volume-button {
+    position: relative;
+  }
+
+  &__volume-button > &__volume-slider {
+    -webkit-backface-visibility: hidden;
+    background: rgba(50, 50, 50, 0.7);
+    border-radius: 0;
+    bottom: 100%;
+    display: none;
+    height: 115px;
+    left: 50%;
+    margin: 0;
+    position: absolute;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 25px;
+    z-index: 1;
+  }
+
+  &__volume-button:hover {
+    border-radius: 0 0 4px 4px;
+  }
+
+  &__volume-total {
+    background: rgba(255, 255, 255, 0.5);
+    height: 100px;
+    left: 50%;
+    margin: 0;
+    position: absolute;
+    top: 8px;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 2px;
+  }
+
+  &__volume-current {
+    background: rgba(255, 255, 255, 0.9);
+    left: 0;
+    margin: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  &__volume-handle {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 1px;
+    cursor: ns-resize;
+    height: 6px;
+    left: 50%;
+    position: absolute;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 16px;
+  }
+
+  &__horizontal-volume-slider {
+    display: block;
+    height: 36px;
+    position: relative;
+    vertical-align: middle;
+    width: 56px;
+  }
+
+  &__horizontal-volume-total {
+    background: rgba(50, 50, 50, 0.8);
+    border-radius: 2px;
+    font-size: 1px;
+    height: 8px;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 16px;
+    width: 50px;
+  }
+
+  &__horizontal-volume-current {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    font-size: 1px;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  &__horizontal-volume-handle {
+    display: none;
+  }
+
+  /* End: Mute/Volume */
+
+  /* Start: Track (Captions and Chapters) */
+  &__captions-button,
+  &__chapters-button {
+    position: relative;
+  }
+
+  &__captions-button > button {
+    background-position: -140px 0;
+  }
+
+  &__chapters-button > button {
+    background-position: -180px 0;
+  }
+
+  &__captions-button > &__captions-selector,
+  &__chapters-button > &__chapters-selector {
+    background: rgba(50, 50, 50, 0.7);
+    border: solid 1px transparent;
+    border-radius: 0;
+    bottom: 100%;
+    margin-right: -43px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    right: 50%;
+    visibility: visible;
+    width: 86px;
+  }
+
+  &__chapters-button > &__chapters-selector {
+    margin-right: -55px;
+    width: 110px;
+  }
+
+  &__captions-selector-list,
+  &__chapters-selector-list {
+    list-style-type: none !important;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  &__captions-selector-list-item,
+  &__chapters-selector-list-item {
+    color: #fff;
+    cursor: pointer;
+    display: block;
+    list-style-type: none !important;
+    margin: 0 0 6px;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  &__captions-selector-list-item:hover,
+  &__chapters-selector-list-item:hover {
+    background-color: rgb(200, 200, 200) !important;
+    background-color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  &__captions-selector-input,
+  &__chapters-selector-input {
+    clear: both;
+    float: left;
+    left: -1000px;
+    margin: 3px 3px 0 5px;
+    position: absolute;
+  }
+
+  &__captions-selector-label,
+  &__chapters-selector-label {
+    cursor: pointer;
+    float: left;
+    font-size: 10px;
+    line-height: 15px;
+    padding: 4px 10px 0;
+    width: 100%;
+  }
+
+  &__captions-selected,
+  &__chapters-selected {
+    color: rgba(33, 248, 248, 1);
+  }
+
+  &__captions-translations {
+    font-size: 10px;
+    margin: 0 0 5px;
+  }
+
+  &__captions-layer {
+    bottom: 0;
+    color: #fff;
+    font-size: 16px;
+    left: 0;
+    line-height: 20px;
+    position: absolute;
+    text-align: center;
+  }
+
+  &__captions-layer a {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  &__captions-layer[lang=ar] {
+    font-size: 20px;
+    font-weight: normal;
+  }
+
+  &__captions-position {
+    bottom: 15px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  &__captions-position-hover {
+    bottom: 35px;
+  }
+
+  &__captions-text,
+  &__captions-text * {
+    background: rgba(20, 20, 20, 0.5);
+    box-shadow: 5px 0 0 rgba(20, 20, 20, 0.5), -5px 0 0 rgba(20, 20, 20, 0.5);
+    padding: 0;
+    white-space: pre-wrap;
+  }
+
+  &__container.afterglow__hide-cues video::-webkit-media-text-track-container {
+    display: none;
+  }
+
+  /* End: Track (Captions and Chapters) */
+}
+
+@-webkit-keyframes spCircRot {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(359deg); }
+}
+
+@keyframes spCircRot {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(359deg); }
+}

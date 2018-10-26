@@ -1,0 +1,188 @@
+.afterglow {
+
+  /* Accessibility: hide screen reader texts (and prefer "top" for RTL languages).
+Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-how/ */
+  &__offscreen {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    -webkit-clip-path: inset(50%);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal;
+  }
+
+  &__container {
+    position: relative;
+
+    &:focus {
+      outline: none;
+    }
+
+    &-fullscreen {
+      bottom: 0;
+      left: 0;
+      overflow: hidden;
+      position: fixed;
+      right: 0;
+      top: 0;
+      z-index: 99999;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    video {
+      width: 100% !important;
+      height: 100% !important;
+
+      // To make the fading of the poster work
+      background-color: #000;
+
+      /* Hide native play button and control bar from iOS to favor plugin button */
+      &::-webkit-media-controls,
+      &::-webkit-media-controls-panel,
+      &::-webkit-media-controls-panel-container,
+      &::-webkit-media-controls-start-playback-button {
+        -webkit-appearance: none;
+        display: none !important;
+      }
+    }
+
+    iframe {
+      width: 100% !important;
+      height: 100% !important
+    }
+  }
+
+  &__fill-container {
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+  }
+
+  &__iframe-overlay {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+  }
+
+  &__fullscreen {
+    overflow: hidden !important;
+  }
+
+  /* Start: LAYERS */
+  &__background {
+    left: 0;
+    position: absolute;
+    top: 0;
+  }
+
+  &__mediaelement {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 0;
+
+    > div {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__poster {
+    width: 100%;
+    height: 100%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+
+    &-img {
+      border: 0;
+      padding: 0;
+    }
+  }
+
+  &__overlay {
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    top: 0;
+
+    &-play {
+      cursor: pointer;
+    }
+  }
+
+  &__layer {
+    z-index: 1;
+  }
+  /* End: LAYERS */
+
+  /* Start: Error */
+  &__overlay-error {
+    position: relative;
+
+    > img {
+      left: 0;
+      max-width: 100%;
+      position: absolute;
+      top: 0;
+      z-index: -1;
+    }
+  }
+
+  &__cannotplay {
+    position: relative;
+    color: #fff;
+    font-size: 0.8em;
+
+    a, p {
+      display: inline-block;
+      padding: 0 15px;
+      width: 100%;
+      color: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+  /* End: Error */
+
+  &--youtube,
+  &--vimeo {
+    video {
+      display: none;
+    }
+  }
+
+  &--vimeo {
+    .afterglow__controls {
+      display: none;
+    }
+  }
+}
