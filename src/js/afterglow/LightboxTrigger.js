@@ -38,7 +38,7 @@ class LightboxTrigger extends DOMElement {
    */
   prepare() {
     // Add major class
-    this.videoelement.addClass('afterglow-lightboxplayer');
+    this.videoelement.addClass('afterglow__lightbox-player');
     // Prepare the element
     this.videoelement.setAttribute('data-autoresize', 'fit');
 

@@ -15,7 +15,7 @@ require('../../less/components/lightbox.less');
 class Lightbox extends DOMElement {
   constructor() {
     super(document.createElement('div'));
-    this.addClass('afterglow-lightbox-wrapper');
+    this.addClass('afterglow__lightbox-wrapper');
     this.build();
     this.bindEmitter();
   }
@@ -40,7 +40,7 @@ class Lightbox extends DOMElement {
   buildCover() {
     let cover = document.createElement('div');
     cover = new DOMElement(cover);
-    cover.addClass('cover');
+    cover.addClass('afterglow__lightbox-cover');
     return cover;
   }
 
@@ -51,7 +51,7 @@ class Lightbox extends DOMElement {
   buildLightbox() {
     let lightbox = document.createElement('div');
     lightbox = new DOMElement(lightbox);
-    lightbox.addClass('afterglow-lightbox');
+    lightbox.addClass('afterglow__lightbox');
     return lightbox;
   }
 
@@ -88,40 +88,31 @@ class Lightbox extends DOMElement {
   launch(_callback) {
     const util = new Util();
     document.body.appendChild(this.node);
+    this.lightbox.addClass('afterglow__lightbox-wrapper--launched');
 
     this.player.init(() => {
-      // Prevent autoplay for mobile devices, won't work anyways...
-      if (!util.isMobile()) {
-        // If autoplay didn't work
-        if (this.player.videojs.paused()) {
-          this.player.videojs.posterImage.show();
-          this.player.videojs.bigPlayButton.show();
-        }
-      }
-
       // Adding autoclose functionality
-      if (this.lightbox.videoelement.getAttribute('data-autoclose') == 'true') {
-        this.player.videojs.on('ended', () => {
+      if (this.lightbox.videoelement.getAttribute('data-autoclose') === 'true') {
+        this.player.mediaelement.media.addEventListener('ended', () => {
           this.close();
         });
-      }
-      // Else show the poster frame on ended.
-      else {
-        this.player.videojs.on('ended', () => {
+      } else {
+        // Else show the poster frame on ended.
+        this.player.mediaelement.media.addEventListener('ended', () => {
           this.player.videojs.posterImage.show();
         });
       }
 
-      this.player.videojs.getChild('TopControlBar').addChild('LightboxCloseButton');
+      // this.player.videojs.getChild('TopControlBar').addChild('LightboxCloseButton');
     });
 
     // Stop all active players if there are any playing
-    Object.keys(window.videojs.getPlayers()).forEach(key => {
-      if (window.videojs.getPlayers()[key] !== null
-        && window.videojs.getPlayers()[key].id_ !== this.playerid) {
-        window.videojs.getPlayers()[key].pause();
-      }
-    });
+    // Object.keys(window.videojs.getPlayers()).forEach(key => {
+    //   if (window.videojs.getPlayers()[key] !== null
+    //     && window.videojs.getPlayers()[key].id_ !== this.playerid) {
+    //     window.videojs.getPlayers()[key].pause();
+    //   }
+    // });
 
     // resize the lightbox and make it autoresize
     this.resize();
@@ -164,8 +155,8 @@ class Lightbox extends DOMElement {
       }
     } else {
       // Youtube
-      if (document.querySelectorAll('div.afterglow-lightbox-wrapper .vjs-youtube').length == 1) {
-        const playerelement = document.querySelector('div.afterglow-lightbox-wrapper .vjs-youtube');
+      if (document.querySelectorAll('div.afterglow__lightbox-wrapper .vjs-youtube').length == 1) {
+        const playerelement = document.querySelector('div.afterglow__lightbox-wrapper .vjs-youtube');
         var ratio = playerelement.getAttribute('data-ratio');
         var sizes = this.calculateLightboxSizes(ratio);
       }
@@ -231,6 +222,7 @@ class Lightbox extends DOMElement {
   close() {
     EventBus.dispatch(this.player.id, 'before-lightbox-close');
     this.player.destroy(true);
+    this.lightbox.removeClass('afterglow__lightbox-wrapper--launched');
     this.node.parentNode.removeChild(this.node);
     this.emit('close');
   }

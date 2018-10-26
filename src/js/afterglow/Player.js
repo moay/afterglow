@@ -7,6 +7,7 @@ import MediaElement from '../mediaelement/MediaElementWrapper';
 import Config from './Config';
 import Util from '../lib/Util';
 import EventBus from './EventBus';
+import DOMElement from '../lib/DOMElement'
 
 class Player {
   constructor(videoelement) {
@@ -60,12 +61,13 @@ class Player {
     options.success = (mediaElement, node, instance) => {
       this.postInit(mediaElement, node, instance, _callback);
     };
-    new MediaElement(this.id, options);
+    new MediaElement(this.videoelement.node, options);
   }
 
   postInit(mediaElement, originalNode, instance, _callback) {
     this.mediaelement = instance;
     this.bindEvents(instance);
+    this.applyResponsiveScaling();
 
     // Launch the callback if there is one
     if (typeof _callback === 'function') {
@@ -92,7 +94,7 @@ class Player {
     // Check for IE9 - IE11
     const ie = this.util.ie().actualVersion;
     if (ie >= 8 && ie <= 11) { // @see afterglow-lib.js
-      this.videoelement.addClass('mejs-IE');
+      this.videoelement.addClass('afterglow-IE');
     }
   }
 
@@ -105,13 +107,17 @@ class Player {
     if (this.videoelement.getAttribute('data-overscale') === 'false') {
       this.videoelement.setAttribute('data-maxwidth', this.videoelement.getAttribute('width'));
     }
+  }
 
+  applyResponsiveScaling() {
     // Apply some responsive stylings
     if (this.videoelement.getAttribute('data-autoresize') !== 'none'
       && this.videoelement.getAttribute('data-autoresize') !== 'false') {
-      this.videoelement.addClass('mejs-responsive');
+      const container = new DOMElement(this.mediaelement.container);
+      container.addClass('afterglow__container--responsive');
+
       const ratio = this.calculateRatio();
-      this.videoelement.node.style.paddingTop = `${ratio * 100}%`;
+      container.node.style.paddingTop = `${ratio * 100}%`;
       this.videoelement.removeAttribute('height');
       this.videoelement.removeAttribute('width');
       this.videoelement.setAttribute('data-ratio', ratio);
@@ -123,22 +129,16 @@ class Player {
    * @return {void}
    */
   applyYoutubeClasses() {
-    this.videoelement.addClass('mejs-youtube');
-    this.videoelement.addClass('mejs-youtube-headstart');
+    this.videoelement.addClass('afterglow--youtube');
+    this.videoelement.addClass('afterglow--youtube-headstart');
 
     // Check for native playback
     if (document.querySelector('video').controls) {
-      this.videoelement.addClass('mejs-using-native-controls');
+      this.videoelement.addClass('afterglow-using-native-controls');
     }
     // Add iOS class for iOS.
     if (/iPad|iPhone|iPod|iOS/.test(navigator.platform)) {
-      this.videoelement.addClass('mejs-iOS');
-    }
-
-    // Check for IE9 - IE11
-    const ie = this.util.ie().actualVersion;
-    if (ie >= 8 && ie <= 11) { // @see afterglow-lib.js
-      this.videoelement.addClass('mejs-using-native-controls');
+      this.videoelement.addClass('afterglow--iOS');
     }
   }
 
@@ -147,7 +147,7 @@ class Player {
    * @return {void}
    */
   applyVimeoClasses() {
-    this.videoelement.addClass('mejs-vimeo');
+    this.videoelement.addClass('afterglow--vimeo');
   }
 
   /**
@@ -182,13 +182,13 @@ class Player {
    * @return {void}
    */
   destroy() {
-    if (!this.videojs.paused()) {
-      this.videojs.pause();
+    if (!this.mediaelement.media.paused) {
+      this.mediaelement.media.pause();
     }
-    if (this.videojs.isFullscreen()) {
-      this.videojs.exitFullscreen();
+    if (document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen();
     }
-    this.videojs.dispose();
+    this.mediaelement.remove();
     this.alive = false;
   }
 
@@ -206,10 +206,10 @@ class Player {
       EventBus.dispatch(this.id(), 'play');
 
       // // Remove youtube player class after 5 seconds if youtube player
-      // if (this.el_.classList.contains('mejs-youtube-headstart')) {
+      // if (this.el_.classList.contains('afterglow-youtube-headstart')) {
       //   const el = this.el_;
       //   setTimeout(() => {
-      //     el.classList.remove('mejs-youtube-headstart');
+      //     el.classList.remove('afterglow-youtube-headstart');
       //   }, 3000);
       // }
     });

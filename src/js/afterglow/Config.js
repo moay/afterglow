@@ -113,7 +113,7 @@ class Config {
 
     this.videoelement.setAttribute('src', `https://vimeo.com/${this.getPlayerAttributeFromVideoElement('vimeo-id')}`);
     this.videoelement.setAttribute('type', 'video/vimeo');
-    this.videoelement.setAttribute('controls', 'no')
+    this.videoelement.setAttribute('controls', 'no');
   }
 
   /**
@@ -121,15 +121,9 @@ class Config {
    * @return {string}
    */
   getSkinClass() {
-    let cssclass = 'vjs-afterglow-skin';
+    let cssclass = 'afterglow-skin-default';
     if (this.skin !== 'afterglow') {
-      cssclass += ` afterglow-skin-${this.skin}`;
-    }
-
-    // Fix for IE9. Somehow, this is necessary. Won't hurt anyone, so this hack is installed.
-    const util = new Util();
-    if (util.ie().actualVersion == 9) {
-      cssclass += ' ie9-is-bad';
+      cssclass = `afterglow-skin-${this.skin}`;
     }
 
     return cssclass;
