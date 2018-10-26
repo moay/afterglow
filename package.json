@@ -32,7 +32,9 @@
     "mocha": "^5.2.0",
     "mocha-jsdom": "^2.0.0",
     "mocha-webpack": "^2.0.0-beta.0",
+    "node-sass": "^4.9.4",
     "path": "^0.12.7",
+    "sass-loader": "^7.1.0",
     "sinon": "^7.0.0",
     "sinon-chai": "^3.2.0",
     "style-loader": "^0.23.1",
@@ -45,12 +47,13 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.dev.js --watch --https",
+    "dev": "webpack-dev-server --config webpack.config.dev.js --watch --https --port 9000",
     "build": "webpack --config webpack.config.prod.js --mode=production -p",
     "test": "mocha-webpack"
   },
   "dependencies": {
     "@vimeo/player": "^2.6.4",
+    "mediaelement": "^4.2.9",
     "video.js": "^7.2.3",
     "videojs-hotkeys": "^0.2.22",
     "videojs-youtube": "^2.6.0"

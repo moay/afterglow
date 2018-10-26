@@ -36,17 +36,19 @@ module.exports = {
         },
       },
     }, {
+      test: /\.scss$/,
+      use: [
+        'style-loader',
+        'css-loader',
+        'sass-loader',
+      ],
+    }, {
       test: /\.less$/,
-      use: [{
-        loader: 'style-loader',
-      }, {
-        loader: 'css-loader',
-      }, {
-        loader: 'less-loader',
-        options: {
-          strictMath: true,
-        },
-      }],
+      use: [
+        'style-loader',
+        'css-loader',
+        'less-loader',
+      ],
     }, {
       test: /\.css$/,
       use: [{

@@ -3,10 +3,10 @@
  * @link http://afterglowthis.com
  * @license MIT
  */
-import MediaElement from '../mediaelement/MediaElementWrapper';
+import MediaElement from '../mediaelement/MediaElementWrapper.js';
+import Eventbus from './EventBus';
 import Config from './Config';
 import Util from '../lib/Util';
-import EventBus from './EventBus';
 
 class Player {
   constructor(videoelement) {
@@ -20,7 +20,6 @@ class Player {
    */
   setup(videoelement) {
     this.videoelement = videoelement;
-    this.mediaelement = null;
     this.id = videoelement.getAttribute('id');
 
     // Prepare needed dependencies
@@ -56,21 +55,89 @@ class Player {
    * @return {void}
    */
   init(_callback) {
+    const videoelement = this.videoelement.node;
     const { options } = this.config;
-    options.success = (mediaElement, node, instance) => {
-      this.postInit(mediaElement, node, instance, _callback);
-    };
-    new MediaElement(this.id, options);
-  }
 
-  postInit(mediaElement, originalNode, instance, _callback) {
-    this.mediaelement = instance;
-    this.bindEvents(instance);
+    // initiate videojs and do some post initiation stuff
+    this.mediaelement =
 
-    // Launch the callback if there is one
-    if (typeof _callback === 'function') {
-      _callback(this);
-    }
+      videoJs(videoelement, options).ready(function initialize() {
+
+      // Enable hotkeys
+      this.hotkeys({
+        enableFullscreen: true,
+        enableNumbers: false,
+        enableVolumeScroll: false,
+      });
+
+      // Set initial volume if needed
+      if (videoelement.getAttribute('data-volume') !== null) {
+        const volume = parseFloat(videoelement.getAttribute('data-volume'));
+        this.volume(volume);
+      }
+
+      // Add TopControBar
+      this.addChild('TopControlBar');
+
+      this.on('play', () => {
+        // Trigger afterglow play event
+        Eventbus.dispatch(this.id(), 'play');
+
+        // Stop all other players if there are any on play
+        for (const key in window.videojs.getPlayers()) {
+          if (window.videojs.getPlayers()[key] !== null
+            && window.videojs.getPlayers()[key].id_ !== this.id_) {
+            window.videojs.getPlayers()[key].pause();
+          }
+        }
+
+        // Remove youtube player class after 5 seconds if youtube player
+        if (this.el_.classList.contains('vjs-youtube-headstart')) {
+          const el = this.el_;
+          setTimeout(() => {
+            el.classList.remove('vjs-youtube-headstart');
+          }, 3000);
+        }
+      });
+
+      // Trigger afterglow ended event
+      this.on('pause', () => {
+        Eventbus.dispatch(this.id(), 'paused');
+      });
+
+      // Trigger afterglow ended event
+      this.on('ended', () => {
+        Eventbus.dispatch(this.id(), 'ended');
+      });
+
+      // Trigger afterglow ended event
+      this.on('volumechange', () => {
+        Eventbus.dispatch(this.id(), 'volume-changed');
+      });
+
+      // Trigger afterglow fullscreen events
+      this.on('fullscreenchange', () => {
+        if (this.isFullscreen()) {
+          Eventbus.dispatch(this.id(), 'fullscreen-entered');
+        } else {
+          Eventbus.dispatch(this.id(), 'fullscreen-left');
+        }
+        Eventbus.dispatch(this.id(), 'fullscreen-changed');
+      });
+
+      // Launch the callback if there is one
+      if (typeof _callback === 'function') {
+        _callback(player);
+      }
+
+      // Trigger afterglow ready event
+      Eventbus.dispatch(this.id(), 'ready');
+
+      this.on('autoplay', () => {
+        // Trigger afterglow play event
+        Eventbus.dispatch(this.id(), 'play');
+      });
+    });
   }
 
   /**
@@ -79,6 +146,7 @@ class Player {
    */
   applyDefaultClasses() {
     // Add some classes
+    this.videoelement.addClass('video-js');
     this.videoelement.addClass('afterglow');
 
     const classNames = this.config.getSkinClass().split(' ');
@@ -92,7 +160,7 @@ class Player {
     // Check for IE9 - IE11
     const ie = this.util.ie().actualVersion;
     if (ie >= 8 && ie <= 11) { // @see afterglow-lib.js
-      this.videoelement.addClass('mejs-IE');
+      this.videoelement.addClass('vjs-IE');
     }
   }
 
@@ -109,7 +177,7 @@ class Player {
     // Apply some responsive stylings
     if (this.videoelement.getAttribute('data-autoresize') !== 'none'
       && this.videoelement.getAttribute('data-autoresize') !== 'false') {
-      this.videoelement.addClass('mejs-responsive');
+      this.videoelement.addClass('vjs-responsive');
       const ratio = this.calculateRatio();
       this.videoelement.node.style.paddingTop = `${ratio * 100}%`;
       this.videoelement.removeAttribute('height');
@@ -123,22 +191,22 @@ class Player {
    * @return {void}
    */
   applyYoutubeClasses() {
-    this.videoelement.addClass('mejs-youtube');
-    this.videoelement.addClass('mejs-youtube-headstart');
+    this.videoelement.addClass('vjs-youtube');
+    this.videoelement.addClass('vjs-youtube-headstart');
 
     // Check for native playback
     if (document.querySelector('video').controls) {
-      this.videoelement.addClass('mejs-using-native-controls');
+      this.videoelement.addClass('vjs-using-native-controls');
     }
     // Add iOS class for iOS.
     if (/iPad|iPhone|iPod|iOS/.test(navigator.platform)) {
-      this.videoelement.addClass('mejs-iOS');
+      this.videoelement.addClass('vjs-iOS');
     }
 
     // Check for IE9 - IE11
     const ie = this.util.ie().actualVersion;
     if (ie >= 8 && ie <= 11) { // @see afterglow-lib.js
-      this.videoelement.addClass('mejs-using-native-controls');
+      this.videoelement.addClass('vjs-using-native-controls');
     }
   }
 
@@ -147,7 +215,7 @@ class Player {
    * @return {void}
    */
   applyVimeoClasses() {
-    this.videoelement.addClass('mejs-vimeo');
+    this.videoelement.addClass('vjs-vimeo');
   }
 
   /**
@@ -190,62 +258,6 @@ class Player {
     }
     this.videojs.dispose();
     this.alive = false;
-  }
-
-  bindEvents(instance) {
-
-    // Set initial volume if needed
-    if (this.videoelement.getAttribute('data-volume') !== null) {
-      const volume = parseFloat(this.videoelement.getAttribute('data-volume'));
-      this.mediaelement.setVolume(volume);
-    }
-    return;
-
-    this.mediaelement.addEventListener('play', () => {
-      // Trigger afterglow play event
-      EventBus.dispatch(this.id(), 'play');
-
-      // // Remove youtube player class after 5 seconds if youtube player
-      // if (this.el_.classList.contains('mejs-youtube-headstart')) {
-      //   const el = this.el_;
-      //   setTimeout(() => {
-      //     el.classList.remove('mejs-youtube-headstart');
-      //   }, 3000);
-      // }
-    });
-
-    // Trigger afterglow ended event
-    instance.on('pause', () => {
-      EventBus.dispatch(this.id(), 'paused');
-    });
-
-    // Trigger afterglow ended event
-    instance.on('ended', () => {
-      EventBus.dispatch(this.id(), 'ended');
-    });
-
-    // Trigger afterglow ended event
-    instance.on('volumechange', () => {
-      EventBus.dispatch(this.id(), 'volume-changed');
-    });
-
-    // Trigger afterglow fullscreen events
-    instance.on('fullscreenchange', () => {
-      if (this.isFullscreen()) {
-        EventBus.dispatch(this.id(), 'fullscreen-entered');
-      } else {
-        EventBus.dispatch(this.id(), 'fullscreen-left');
-      }
-      EventBus.dispatch(this.id(), 'fullscreen-changed');
-    });
-
-    // Trigger afterglow ready event
-    EventBus.dispatch(this.id(), 'ready');
-
-    this.on('autoplay', () => {
-      // Trigger afterglow play event
-      EventBus.dispatch(this.id(), 'play');
-    });
   }
 
   // API METHODS

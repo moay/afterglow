@@ -9,19 +9,16 @@ import Player from './Player';
 import LightboxTrigger from './LightboxTrigger';
 import EventBus from './EventBus';
 import DOMElement from '../lib/DOMElement';
+import AfterglowController from './AfterglowController';
 
 
 class Afterglow {
   constructor() {
     /**
-     * Will hold the players in order to make them accessible
+     * Holds all of the controlling power of afterglow
+     * @type {AfterglowController}
      */
-    this.players = [];
-
-    /**
-     * Will hold the trigger elements which will launch lightbox players
-     */
-    this.lightboxtriggers = [];
+    this.controller = AfterglowController;
 
     /**
      * Will be true after initialization
@@ -32,12 +29,6 @@ class Afterglow {
      * Container for callbacks that have to be executed when afterglow is initalized
      */
     this.afterinit = [];
-
-    /**
-     * Indicated whether or not video js has been configured
-     * @type {boolean}
-     */
-    this.videoJsConfigured = false;
   }
 
   /**
@@ -45,14 +36,13 @@ class Afterglow {
    * @return void
    */
   init() {
-    this.configureVideoJS();
     this.initVideoElements();
     this.prepareLightboxVideos();
 
     this.initialized = true;
 
     // execute things to do when init done
-    for (let i = 0; i < this.afterinit.length; i++) {
+    for (let i = 0; i < this.afterinit.length; i += 1) {
       this.afterinit[i]();
     }
     this.afterinit = [];
@@ -67,11 +57,10 @@ class Afterglow {
     const players = document.querySelectorAll('video.afterglow,video.sublime');
 
     // Initialize players
-    for (let i = 0; i < players.length; i = i + 1) {
+    for (let i = 0; i < players.length; i += 1) {
       const videoelement = new DOMElement(players[i]);
       const player = new Player(videoelement);
-      player.init();
-      this.players.push(player);
+      this.controller.addPlayer(player);
     }
   }
 
@@ -84,21 +73,28 @@ class Afterglow {
     const lightboxtriggers = document.querySelectorAll('a.afterglow,a.sublime');
 
     // Initialize players launching in a lightbox
-    for (let i = 0; i < lightboxtriggers.length; i++) {
+    for (let i = 0; i < lightboxtriggers.length; i += 1) {
       const trigger = new LightboxTrigger(lightboxtriggers[i]);
-
-      this.bindLightboxTriggerEvents(trigger);
-
-      this.lightboxtriggers.push(trigger);
+      this.controller.addLightboxPlayer(trigger);
     }
+  }
+
+  addPlayer(idOrElement) {
+    let videoelement;
+    if (typeof idOrElement === 'string') {
+      videoelement = document.getElementById(idOrElement);
+    } else {
+      videoelement = idOrElement;
+    }
+    this.controller.addPlayer(new Player(videoelement));
   }
 
   /**
    * Binds an event for any given player
    *
-   * @param      string    playerid   The playerid
-   * @param      string    eventname  The eventname
-   * @param      mixed   _callback  The callback
+   * @param playerid
+   * @param eventname
+   * @param _callback
    */
   on(playerid, eventname, _callback) {
     if (!this.initialized) {
@@ -128,83 +124,32 @@ class Afterglow {
   }
 
   /**
-   * Binds some elements for lightbox triggers.
-   * @return void
-   * @param trigger
-   */
-  bindLightboxTriggerEvents(trigger) {
-    trigger.on('trigger', () => {
-      this.consolidatePlayers;
-    });
-    trigger.on('close', () => {
-      this.consolidatePlayers();
-    });
-  }
-
-  /**
    * Shortcut method to trigger a player's play method. Will launch lightboxes if needed.
    *
-   * @return void
    * @param playerid
+   * @return self
    */
   play(playerid) {
-    // Look out for regular player
-    for (let i = this.players.length - 1; i >= 0; i -= 1) {
-      if (this.players[i].id === playerid) {
-        this.players[i].getPlayer().play();
-      }
-    }
-    // Else try to trigger lightbox player
-    for (let i = this.lightboxtriggers.length - 1; i >= 0; i -= 1) {
-      if (this.lightboxtriggers[i].playerid === playerid) {
-        this.lightboxtriggers[i].trigger();
-      }
-    }
+    this.controller.play(playerid);
+    return this;
   }
 
   /**
    * Returns the the players object if it was initiated yet
-   * @param  string The player's id
+   * @param playerid
    * @return boolean false or object if found
    */
   getPlayer(playerid) {
-    // Try to get regular player
-    for (let i = this.players.length - 1; i >= 0; i -= 1) {
-      if (this.players[i].id === playerid) {
-        return this.players[i].getPlayer();
-      }
-    }
-    // Else try to find lightbox player
-    for (let i = this.lightboxtriggers.length - 1; i >= 0; i -= 1) {
-      if (this.lightboxtriggers[i].playerid === playerid) {
-        return this.lightboxtriggers[i].getPlayer();
-      }
-    }
-    return false;
+    return this.controller.getPlayer(playerid);
   }
 
   /**
    * Should destroy a player instance if it exists. Lightbox players should be just closed.
-   * @param  {string} playerid  The player's id
+   * @param playerid
    * @return void
    */
   destroyPlayer(playerid) {
-    // Look for regular players
-    for (let i = this.players.length - 1; i >= 0; i -= 1) {
-      if (this.players[i].id === playerid) {
-        this.players[i].destroy();
-        this.players.splice(i, 1);
-        return true;
-      }
-    }
-    // Else look for an active lightbox
-    for (let i = this.lightboxtriggers.length - 1; i >= 0; i -= 1) {
-      if (this.lightboxtriggers[i].playerid === playerid) {
-        this.closeLightbox();
-        return true;
-      }
-    }
-    return false;
+    this.controller.removePlayer(playerid);
   }
 
   /**
@@ -212,10 +157,7 @@ class Afterglow {
    * @return void
    */
   closeLightbox() {
-    for (let i = this.lightboxtriggers.length - 1; i >= 0; i -= 1) {
-      this.lightboxtriggers[i].closeLightbox();
-    }
-    this.consolidatePlayers();
+    this.controller.closeLightbox();
   }
 
   /**
@@ -223,24 +165,7 @@ class Afterglow {
    * @return {[type]} [description]
    */
   consolidatePlayers() {
-    for (let i = this.players.length - 1; i >= 0; i -= 1) {
-      if (this.players[i] !== undefined && !this.players[i].alive) {
-        delete this.players[i];
-
-        // Reset indexes
-        this.players = this.players.filter(() => true);
-      }
-    }
-  }
-
-  /**
-   * Run some configurations on video.js to make it work for us
-   * @return void
-   */
-  configureVideoJS() {
-    // Disable tracking
-    window.HELP_IMPROVE_VIDEOJS = false;
-    this.videoJsConfigured = true;
+    this.controller.consolidatePlayers();
   }
 }
 

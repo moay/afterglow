@@ -4,6 +4,8 @@
  * @license MIT
  */
 
+import AfterglowController from './AfterglowController';
+
 class EventBus {
   constructor() {
     this.players = {};
@@ -58,7 +60,7 @@ class EventBus {
       this.players[playerid].listeners[event][i]({
         type: event,
         playerid,
-        player: window.afterglow.getPlayer(playerid),
+        player: AfterglowController.getPlayer(playerid),
       });
     }
   }

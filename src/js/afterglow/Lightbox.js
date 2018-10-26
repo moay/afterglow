@@ -241,7 +241,7 @@ class Lightbox extends DOMElement {
    */
   getPlayer() {
     if (this.player !== undefined) {
-      return this.player.getPlayer();
+      return this.player;
     }
     return undefined;
   }
