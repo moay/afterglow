@@ -5,7 +5,6 @@
  */
 
 import Util from '../lib/Util';
-import EventBus from './EventBus';
 
 class Config {
   constructor(videoelement, skin = 'afterglow') {
@@ -56,6 +55,15 @@ class Config {
       videoVolume: 'horizontal',
       fakeNodeName: 'div',
       setDimensions: false,
+      features: [
+        'progress',
+        'current',
+        'playpause',
+        'tracks',
+        'volume',
+        'duration',
+      ],
+      enableProgressTooltip: false,
     };
   }
 

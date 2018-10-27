@@ -1,3 +1,16 @@
+$base-font-size: 22px;
+$touch-device-font-size: 15px;
+
+$main-font-color: #fff;
+
+$control-bg-color: #000;
+$control-bg-alpha: 0;
+
+$slider-bar-color: #fff;
+$slider-background-color: #fff;
+$slider-background-alpha: 0.1;
+
+
 .afterglow {
   &__overlay {
     width: 100%;
@@ -37,14 +50,14 @@
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    height: 40px;
+    height: 43px;
     left: 0;
     list-style-type: none;
     margin: 0;
-    padding: 0 10px;
     position: absolute;
-    width: 100%;
+    width: 90%;
     z-index: 3;
+    margin: 0 5% 10px;
 
     &:not([style*='display: none']) {
       background: rgba(255, 0, 0, 0.7);
@@ -56,9 +69,8 @@
   &__button,
   &__time,
   &__time-rail {
-    font-size: 10px;
+    font-size: $base-font-size;
     height: 40px;
-    line-height: 10px;
     margin: 0;
     width: 32px;
   }
@@ -124,15 +136,24 @@
 
   /* Start: Progress Bar */
   &__time-rail {
-    direction: ltr;
-    -webkit-box-flex: 1;
-    -webkit-flex-grow: 1;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    height: 40px;
-    margin: 0 10px;
-    padding-top: 10px;
-    position: relative;
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+    height: 5px;
+    top: -15px;
+    transition: all 0.3s ease-in-out;
+    border-radius: 10px;
+
+    &:hover {
+      top:-17px;
+      height:9px;
+      transition: all 0s;
+
+      @media (max-width: $breakpoint_medium) {
+        top:-16px;
+        height:7px;
+      }
+    }
   }
 
   &__time-total,
@@ -140,15 +161,22 @@
   &__time-loaded,
   &__time-current,
   &__time-float,
-  &__time-hovered,
   &__time-float-current,
   &__time-float-corner,
   &__time-marker {
-    border-radius: 2px;
+    outline: none;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
     cursor: pointer;
     display: block;
-    height: 10px;
     position: absolute;
+    height: 100%;
+    transition: all 0.3s ease-in-out;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   &__time-total {
@@ -158,8 +186,6 @@
   }
 
   &__time-buffering {
-    background: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.4) 75%, transparent 75%, transparent);
-    background: linear-gradient(-45deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.4) 75%, transparent 75%, transparent);
     background-size: 15px 15px;
     width: 100%;
   }
@@ -171,6 +197,7 @@
   &__time-current,
   &__time-handle-content {
     background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 10px #fff;
   }
 
   &__time-hovered {
@@ -217,34 +244,7 @@
 
   &__time-handle,
   &__time-handle-content {
-    border: 4px solid transparent;
-    cursor: pointer;
-    left: 0;
-    position: absolute;
-    -webkit-transform: translateX(0);
-    -ms-transform: translateX(0);
-    transform: translateX(0);
-    z-index: 11;
-  }
-
-  &__time-handle-content {
-    border: 4px solid rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    height: 10px;
-    left: -7px;
-    top: -4px;
-    -webkit-transform: scale(0);
-    -ms-transform: scale(0);
-    transform: scale(0);
-    width: 10px;
-  }
-
-  &__time-rail:hover &__time-handle-content,
-  &__time-rail &__time-handle-content:focus,
-  &__time-rail &__time-handle-content:active {
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
+    display: none;
   }
 
   &__time-float {

@@ -7,7 +7,7 @@ import MediaElement from '../mediaelement/MediaElementWrapper';
 import Config from './Config';
 import Util from '../lib/Util';
 import EventBus from './EventBus';
-import DOMElement from '../lib/DOMElement'
+import DOMElement from '../lib/DOMElement';
 
 class Player {
   constructor(videoelement) {
@@ -185,25 +185,25 @@ class Player {
     if (!this.mediaelement.media.paused) {
       this.mediaelement.media.pause();
     }
-    if (document.fullscreenElement && document.exitFullscreen) {
-      document.exitFullscreen();
+    if (mejs.Features.isFullScreen()) {
+      mejs.Features.exitFullscreen();
     }
     this.mediaelement.remove();
     this.alive = false;
   }
 
-  bindEvents(instance) {
-
+  bindEvents() {
     // Set initial volume if needed
     if (this.videoelement.getAttribute('data-volume') !== null) {
       const volume = parseFloat(this.videoelement.getAttribute('data-volume'));
       this.mediaelement.setVolume(volume);
     }
-    return;
 
-    this.mediaelement.addEventListener('play', () => {
+    this.mediaelement.media.addEventListener('play', () => {
       // Trigger afterglow play event
-      EventBus.dispatch(this.id(), 'play');
+      EventBus.dispatch(this.id, 'play');
+      const container = new DOMElement(this.mediaelement.container);
+      container.addClass('afterglow-started');
 
       // // Remove youtube player class after 5 seconds if youtube player
       // if (this.el_.classList.contains('afterglow-youtube-headstart')) {
@@ -215,36 +215,37 @@ class Player {
     });
 
     // Trigger afterglow ended event
-    instance.on('pause', () => {
-      EventBus.dispatch(this.id(), 'paused');
+    this.mediaelement.media.addEventListener('pause', () => {
+      EventBus.dispatch(this.id, 'paused');
     });
 
     // Trigger afterglow ended event
-    instance.on('ended', () => {
-      EventBus.dispatch(this.id(), 'ended');
+    this.mediaelement.media.addEventListener('ended', () => {
+      EventBus.dispatch(this.id, 'ended');
+      const container = new DOMElement(this.mediaelement.container);
+      container.removeClass('afterglow-started');
     });
 
     // Trigger afterglow ended event
-    instance.on('volumechange', () => {
-      EventBus.dispatch(this.id(), 'volume-changed');
+    this.mediaelement.media.addEventListener('volumechange', () => {
+      EventBus.dispatch(this.id, 'volume-changed');
     });
 
     // Trigger afterglow fullscreen events
-    instance.on('fullscreenchange', () => {
+    this.mediaelement.media.addEventListener('fullscreenchange', () => {
       if (this.isFullscreen()) {
-        EventBus.dispatch(this.id(), 'fullscreen-entered');
+        EventBus.dispatch(this.id, 'fullscreen-entered');
       } else {
-        EventBus.dispatch(this.id(), 'fullscreen-left');
+        EventBus.dispatch(this.id, 'fullscreen-left');
       }
-      EventBus.dispatch(this.id(), 'fullscreen-changed');
+      EventBus.dispatch(this.id, 'fullscreen-changed');
     });
 
     // Trigger afterglow ready event
-    EventBus.dispatch(this.id(), 'ready');
+    EventBus.dispatch(this.id, 'ready');
 
-    this.on('autoplay', () => {
-      // Trigger afterglow play event
-      EventBus.dispatch(this.id(), 'play');
+    EventBus.subscribe(this.id, 'autoplay', () => {
+      EventBus.dispatch(this.id, 'play');
     });
   }
 

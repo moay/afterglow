@@ -16,10 +16,6 @@
       &--launched {
         .afterglow__lightbox-player {
           display: block !important;
-
-          video {
-            display:block !important;
-          }
         }
       }
     }
@@ -50,5 +46,18 @@
 
   &.hidden {
     display:none;
+  }
+
+  &--youtube,
+  &--vimeo {
+    .afterglow__lightbox-wrapper--launched .afterglow__lightbox-player video {
+      display: none !important;
+    }
+  }
+
+  &--vimeo {
+    .afterglow__controls {
+      display: none;
+    }
   }
 }

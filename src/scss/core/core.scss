@@ -18,6 +18,8 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
 
   &__container {
     position: relative;
+    font-family: 'Open Sans';
+    font-weight: 300;
 
     &:focus {
       outline: none;
@@ -140,7 +142,7 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
   }
 
   &__layer {
-    z-index: 1;
+    z-index: 10;
   }
   /* End: LAYERS */
 
@@ -172,17 +174,4 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
     }
   }
   /* End: Error */
-
-  &--youtube,
-  &--vimeo {
-    video {
-      display: none;
-    }
-  }
-
-  &--vimeo {
-    .afterglow__controls {
-      display: none;
-    }
-  }
 }
