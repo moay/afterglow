@@ -140,15 +140,11 @@ $slider-background-alpha: 0.1;
     transition: all 0.3s ease-in-out;
     border-radius: 10px;
     overflow: hidden;
-    border-top: 1px solid rgba(0,0,0,0);
-    border-bottom: 1px solid rgba(0,0,0,0);
 
     &:hover {
       bottom: 43px;
       height:9px;
       transition: all 0s;
-      border-top: 0;
-      border-bottom: 0;
 
       @media (max-width: $breakpoint_medium) {
         bottom: 44px;
