@@ -7,6 +7,12 @@ afterglow is a tool to create fully responsive and totally awesome video players
 
 Learn more about the project on the project website: [http://afterglowplayer.com](http://afterglowplayer.com).
 
+## Version 2.0 is coming
+
+We are currently working on version 2, which will bring some bug fixes and some new features. As it is a complete rewrite and a change away from video.js, some things will change. We try to keep backwards compatibility, but minor things may change.
+
+If you are depending on api methods, you might want to wait for the new version. Adapting existing projects will be quite easy, though. 
+
 ## Documentation
 
 There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
