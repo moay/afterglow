@@ -235,32 +235,36 @@ class Player extends Api {
       // }
     });
 
-    // Trigger afterglow ended event
     this.mediaelement.media.addEventListener('pause', () => {
       EventBus.dispatch(this.id, 'paused');
     });
 
-    // Trigger afterglow ended event
     this.mediaelement.media.addEventListener('ended', () => {
       EventBus.dispatch(this.id, 'ended');
       const container = new DOMElement(this.mediaelement.container);
       container.removeClass('afterglow-started');
     });
 
-    // Trigger afterglow ended event
     this.mediaelement.media.addEventListener('volumechange', () => {
       EventBus.dispatch(this.id, 'volume-changed');
     });
 
     // Trigger afterglow fullscreen events
-    document.addEventListener('webkitfullscreenchange', (event) => {
-      this.handleFullscreenEvents(event);
+    const browserprefixes = ['webkit', 'fullscreenchange', 'ms', ''];
+    browserprefixes.forEach((prefix) => {
+      document.addEventListener(`${prefix}fullscreenchange`, (event) => {
+        this.handleFullscreenEvents(event);
+      });
     });
-    document.addEventListener('mozfullscreenchange', (event) => {
-      this.handleFullscreenEvents(event);
-    });
-    document.addEventListener('fullscreenchange', (event) => {
-      this.handleFullscreenEvents(event);
+
+    // Handle simple click somewhere in the video as play event
+    this.mediaelement.controls.addEventListener('click', (e) => {
+      if (e.target !== this.mediaelement.controls) {
+        return;
+      }
+      if (this.paused()) {
+        this.play();
+      } else this.pause();
     });
 
     // Trigger afterglow ready event
@@ -268,13 +272,6 @@ class Player extends Api {
 
     EventBus.subscribe(this.id, 'autoplay', () => {
       EventBus.dispatch(this.id, 'play');
-    });
-
-    this.mediaelement.controls.addEventListener('click', (e) => {
-      if (e.target !== this.mediaelement.controls) {
-        return;
-      }
-      this.paused() ? this.play() : this.pause();
     });
   }
 
