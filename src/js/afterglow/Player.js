@@ -3,14 +3,17 @@
  * @link http://afterglowthis.com
  * @license MIT
  */
+import Api from './PlayerApi';
 import MediaElement from '../mediaelement/MediaElementWrapper';
 import Config from './Config';
 import Util from '../lib/Util';
 import EventBus from './EventBus';
 import DOMElement from '../lib/DOMElement';
 
-class Player {
+class Player extends Api {
   constructor(videoelement) {
+    super(videoelement);
+
     // Passing to setup for testability
     this.setup(videoelement);
   }
@@ -249,52 +252,6 @@ class Player {
     EventBus.subscribe(this.id, 'autoplay', () => {
       EventBus.dispatch(this.id, 'play');
     });
-  }
-
-  // API METHODS
-
-  play() {
-
-  }
-
-  pause() {
-
-  }
-
-  paused() {
-
-  }
-
-  requestFullscreen() {
-
-  }
-
-  exitFullscreen() {
-
-  }
-
-  isFullscreen() {
-
-  }
-
-  volume() {
-
-  }
-
-  duration() {
-
-  }
-
-  currentTime() {
-
-  }
-
-  remainingTime() {
-
-  }
-
-  ended() {
-
   }
 
 }

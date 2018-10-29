@@ -45,10 +45,6 @@ $slider-background-alpha: 0.1;
     }
   }
 
-  *:focus {
-    outline: none !important;
-  }
-
   /* Start: CONTROL BAR */
   &__controls {
     bottom: 0;
@@ -58,9 +54,9 @@ $slider-background-alpha: 0.1;
     list-style-type: none;
     margin: 0;
     position: absolute;
-    width: 90%;
+    width: calc(100% - 60px);
     z-index: 3;
-    margin: 0 5% 10px;
+    margin: 0 30px 10px;
     text-align: center;
     justify-content: stretch;
   }
@@ -95,6 +91,7 @@ $slider-background-alpha: 0.1;
 
     &:focus {
       opacity: 1;
+      outline: none;
     }
     &:hover {
       opacity: 1;
