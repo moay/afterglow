@@ -40,9 +40,13 @@ $slider-background-alpha: 0.1;
       &:before,
       &:after{
         content:none;
-        border:0px;
+        border:0;
       }
     }
+  }
+
+  *:focus {
+    outline: none !important;
   }
 
   /* Start: CONTROL BAR */
@@ -420,7 +424,7 @@ $slider-background-alpha: 0.1;
     position: relative;
     vertical-align: middle;
     overflow: hidden;
-    transition: all .5s 2.4s ease-in-out;
+    transition: all .5s 1s ease-in-out;
     width: 10px;
     margin-right: 0;
     padding-left: 30px;
@@ -428,7 +432,7 @@ $slider-background-alpha: 0.1;
 
     &:hover {
       transition: all .2s 0s ease-in-out;
-      width: 150px;
+      width: 130px;
       padding-left: 10px;
       margin-left: -20px;
 
@@ -450,7 +454,7 @@ $slider-background-alpha: 0.1;
     top: 16px;
     width: 70px;
     opacity: 0;
-    transition: opacity .5s 2s;
+    transition: opacity .5s .8s;
   }
 
   &__horizontal-volume-current {
@@ -465,7 +469,7 @@ $slider-background-alpha: 0.1;
     top: 0;
     width: 100%;
     opacity: 0;
-    transition: opacity .5s 2s;
+    transition: opacity .5s .8s;
   }
 
   &__horizontal-volume-handle {

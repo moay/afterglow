@@ -181,14 +181,16 @@ class Player {
    * Destroys the player instance and disposes it.
    * @return {void}
    */
-  destroy() {
+  destroy(willBeDeleted) {
     if (!this.mediaelement.media.paused) {
       this.mediaelement.media.pause();
     }
     if (mejs.Features.isFullScreen()) {
       mejs.Features.exitFullscreen();
     }
-    this.mediaelement.remove();
+    if(!willBeDeleted) {
+      this.mediaelement.remove();
+    }
     this.alive = false;
   }
 

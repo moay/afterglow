@@ -64,6 +64,7 @@ class Config {
         'duration',
       ],
       enableProgressTooltip: false,
+      showPosterWhenEnded: true
     };
   }
 
@@ -114,7 +115,7 @@ class Config {
       this.options.youtube.imageQuality = 'maxresdefault';
     }
 
-    this.videoelement.setAttribute('src', `https://www.youtube-nocookies.com/watch?v=${this.getPlayerAttributeFromVideoElement('youtube-id')}`);
+    this.videoelement.setAttribute('src', `https://www.youtube.com/embed?v=${this.getPlayerAttributeFromVideoElement('youtube-id')}`);
     this.videoelement.setAttribute('type', 'video/youtube');
   }
 

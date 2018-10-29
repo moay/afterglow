@@ -22,6 +22,7 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
     position: relative;
     font-family: 'Kanit';
     font-weight: 100;
+    min-width: 0 !important;
 
     &:focus {
       outline: none;
