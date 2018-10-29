@@ -12,7 +12,7 @@ export default class PlayerApi {
   }
 
   requestFullscreen() {
-    return mejs.Features.requestFullScreen(this.mediaelement.media);
+    return mejs.Features.requestFullScreen(this.mediaelement.container);
   }
 
   exitFullscreen() {
@@ -20,7 +20,7 @@ export default class PlayerApi {
   }
 
   isFullscreen() {
-    return mejs.Features.isFullScreen();
+    return this.mediaelement.container.classList.contains('afterglow--fullscreen');
   }
 
   volume() {

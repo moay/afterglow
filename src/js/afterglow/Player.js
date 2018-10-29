@@ -9,6 +9,7 @@ import Config from './Config';
 import Util from '../lib/Util';
 import EventBus from './EventBus';
 import DOMElement from '../lib/DOMElement';
+import TopControlBar from './TopControlBar';
 
 class Player extends Api {
   constructor(videoelement) {
@@ -67,10 +68,18 @@ class Player extends Api {
     new MediaElement(this.videoelement.node, options);
   }
 
+  /**
+   * Initiates callback and binds events when the player has been created   *
+   * @param mediaElement
+   * @param originalNode
+   * @param instance
+   * @param _callback
+   */
   postInit(mediaElement, originalNode, instance, _callback) {
     this.mediaelement = instance;
     this.bindEvents(instance);
     this.applyResponsiveScaling();
+    this.buildTopControlBar();
 
     // Launch the callback if there is one
     if (typeof _callback === 'function') {
@@ -96,7 +105,7 @@ class Player extends Api {
 
     // Check for IE9 - IE11
     const ie = this.util.ie().actualVersion;
-    if (ie >= 8 && ie <= 11) { // @see afterglow-lib.js
+    if (ie >= 8 && ie <= 11) {
       this.videoelement.addClass('afterglow-IE');
     }
   }
@@ -113,7 +122,6 @@ class Player extends Api {
   }
 
   applyResponsiveScaling() {
-    // Apply some responsive stylings
     if (this.videoelement.getAttribute('data-autoresize') !== 'none'
       && this.videoelement.getAttribute('data-autoresize') !== 'false') {
       const container = new DOMElement(this.mediaelement.container);
@@ -154,6 +162,14 @@ class Player extends Api {
   }
 
   /**
+   * Appends the top control bar to the player ui
+   */
+  buildTopControlBar() {
+    const topControls = new TopControlBar(this);
+    this.mediaelement.controls.appendChild(topControls.node);
+  }
+
+  /**
    * Calculates the players ratio based on the given value or on width/height
    * @return float
    */
@@ -189,7 +205,7 @@ class Player extends Api {
       this.mediaelement.media.pause();
     }
     if (mejs.Features.isFullScreen()) {
-      mejs.Features.exitFullscreen();
+      mejs.Features.cancelFullScreen();
     }
     if(!willBeDeleted) {
       this.mediaelement.remove();
@@ -237,13 +253,14 @@ class Player extends Api {
     });
 
     // Trigger afterglow fullscreen events
-    this.mediaelement.media.addEventListener('fullscreenchange', () => {
-      if (this.isFullscreen()) {
-        EventBus.dispatch(this.id, 'fullscreen-entered');
-      } else {
-        EventBus.dispatch(this.id, 'fullscreen-left');
-      }
-      EventBus.dispatch(this.id, 'fullscreen-changed');
+    document.addEventListener('webkitfullscreenchange', (event) => {
+      this.handleFullscreenEvents(event);
+    });
+    document.addEventListener('mozfullscreenchange', (event) => {
+      this.handleFullscreenEvents(event);
+    });
+    document.addEventListener('fullscreenchange', (event) => {
+      this.handleFullscreenEvents(event);
     });
 
     // Trigger afterglow ready event
@@ -252,6 +269,28 @@ class Player extends Api {
     EventBus.subscribe(this.id, 'autoplay', () => {
       EventBus.dispatch(this.id, 'play');
     });
+
+    this.mediaelement.controls.addEventListener('click', (e) => {
+      if (e.target !== this.mediaelement.controls) {
+        return;
+      }
+      this.paused() ? this.play() : this.pause();
+    });
+  }
+
+  handleFullscreenEvents(event) {
+    if (event.target !== this.mediaelement.container) {
+      return;
+    }
+
+    if (!this.isFullscreen()) {
+      this.mediaelement.container.classList.add('afterglow--fullscreen');
+      EventBus.dispatch(this.id, 'fullscreen-entered');
+    } else {
+      this.mediaelement.container.classList.remove('afterglow--fullscreen');
+      EventBus.dispatch(this.id, 'fullscreen-left');
+    }
+    EventBus.dispatch(this.id, 'fullscreen-changed');
   }
 
 }
