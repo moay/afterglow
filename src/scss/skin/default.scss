@@ -1,4 +1,7 @@
-$base-font-size: 22px;
+@import '../shared/breakpoints';
+@import '../shared/fonts';
+
+$base-font-size: 21px;
 $touch-device-font-size: 15px;
 
 $main-font-color: #fff;
@@ -9,7 +12,6 @@ $control-bg-alpha: 0;
 $slider-bar-color: #fff;
 $slider-background-color: #fff;
 $slider-background-alpha: 0.1;
-
 
 .afterglow {
   &__overlay {
@@ -47,7 +49,7 @@ $slider-background-alpha: 0.1;
   &__controls {
     bottom: 0;
     display: none;
-    height: 40px;
+    height: 45px;
     left: 0;
     list-style-type: none;
     margin: 0;
@@ -55,39 +57,42 @@ $slider-background-alpha: 0.1;
     width: 90%;
     z-index: 3;
     margin: 0 5% 10px;
-
-    &:not([style*='display: none']) {
-      background: rgba(255, 0, 0, 0.7);
-      background: -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.35));
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
-    }
+    text-align: center;
+    justify-content: stretch;
   }
 
   &__button,
   &__time,
   &__time-rail {
     font-size: $base-font-size;
-    height: 40px;
     margin: 0;
-    width: 32px;
+    width: auto;
+    margin-right: 20px;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
   &__button > button {
-    background: transparent url('../svg/mejs-controls.svg');
+    background: transparent;
     border: 0;
     cursor: pointer;
     display: block;
     font-size: 0;
-    height: 20px;
-    line-height: 0;
+    height: 18px;
     margin: 10px 6px;
     overflow: hidden;
     padding: 0;
-    position: absolute;
+    position: relative;
     text-decoration: none;
-    width: 20px;
+    width: 18px;
+    opacity: .9;
 
     &:focus {
+      opacity: 1;
+    }
+    &:hover {
       opacity: 1;
     }
   }
@@ -105,28 +110,50 @@ $slider-background-alpha: 0.1;
   &__time {
     box-sizing: content-box;
     color: #fff;
-    font-size: 11px;
-    font-weight: bold;
-    height: 24px;
-    overflow: hidden;
-    padding: 16px 6px 0;
-    text-align: center;
-    width: auto;
+    font-size: $base-font-size;
+    padding-top: 3px;
+    float: left;
+    text-align: left;
+    width: 100%;
+    opacity: .9;
+
+    &.afterglow__duration-container {
+      float: right;
+      text-align: right;
+      width: auto;
+    }
   }
 
   /* End: Time (Current / Duration) */
 
+  &__play,
+  &__pause,
+  &__replay {
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    margin-left: -11px;
+    top: -1px;
+
+    > button {
+      height: 21px;
+      width: 21px;
+      background-size: contain !important;
+      margin: 10px 0;
+    }
+  }
+
   /* Start: Play/Pause/Stop */
   &__play > button {
-    background-position: 0 0;
+    background: transparent url('../svg/play_new.svg') center no-repeat;
   }
 
   &__pause > button {
-    background-position: -20px 0;
+    background: transparent url('../svg/pause.svg') center no-repeat;
   }
 
   &__replay > button {
-    background-position: -160px 0;
+    background: transparent url('../svg/play_new.svg') center no-repeat;
   }
 
   /* End: Play/Pause/Stop */
@@ -134,20 +161,20 @@ $slider-background-alpha: 0.1;
   /* Start: Progress Bar */
   &__time-rail {
     position: absolute;
-    bottom: 45px;
+    bottom: 48px;
     width: 100%;
     height: 5px;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.2s;
     border-radius: 10px;
     overflow: hidden;
 
     &:hover {
-      bottom: 43px;
+      bottom: 45px;
       height:9px;
       transition: all 0s;
 
       @media (max-width: $breakpoint_medium) {
-        bottom: 44px;
+        bottom: 46px;
         height:7px;
       }
     }
@@ -306,22 +333,26 @@ $slider-background-alpha: 0.1;
 
   /* Start: Fullscreen */
   &__fullscreen-button > button {
-    background-position: -80px 0;
+    background: transparent url('../svg/fullscreen-enter.svg') center no-repeat;
+    background-size: contain;
   }
 
   &__unfullscreen > button {
-    background-position: -100px 0;
+    background: transparent url('../svg/fullscreen-exit.svg') center no-repeat;
+    background-size: contain;
   }
 
   /* End: Fullscreen */
 
   /* Start: Mute/Volume */
   &__mute > button {
-    background-position: -60px 0;
+    background: transparent url('../svg/vol-full.svg') center no-repeat;
+    background-size: contain;
   }
 
   &__unmute > button {
-    background-position: -40px 0;
+    background: transparent url('../svg/vol-mute.svg') center no-repeat;
+    background-size: contain;
   }
 
   &__volume-button {
@@ -385,36 +416,54 @@ $slider-background-alpha: 0.1;
 
   &__horizontal-volume-slider {
     display: block;
-    height: 36px;
+    height: 40px;
     position: relative;
     vertical-align: middle;
-    width: 56px;
+    overflow: hidden;
+    transition: all .5s 2.4s ease-in-out;
+    width: 10px;
+    margin-right: 0;
+    padding-left: 30px;
+    margin-left: -40px;
+
+    &:hover {
+      transition: all .2s 0s ease-in-out;
+      width: 150px;
+
+      .afterglow__horizontal-volume-total,
+      .afterglow__horizontal-volume-current {
+        opacity: 1;
+        transition-delay: 0s;
+      }
+    }
   }
 
   &__horizontal-volume-total {
-    background: rgba(50, 50, 50, 0.8);
-    border-radius: 2px;
+    background: rgba(255, 255, 255, .3);
+    border-radius: 10px;
+    overflow: hidden;
     font-size: 1px;
-    height: 8px;
-    left: 0;
-    margin: 0;
-    padding: 0;
-    position: absolute;
+    height: 5px;
+    position: relative;
     top: 16px;
-    width: 50px;
+    width: 70px;
+    opacity: 0;
+    transition: opacity .5s 2s;
   }
 
   &__horizontal-volume-current {
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 2px;
+    background: rgba(255, 255, 255, .8);
+    border-radius: 10px;
     font-size: 1px;
     height: 100%;
     left: 0;
     margin: 0;
     padding: 0;
-    position: absolute;
+    position: relative;
     top: 0;
     width: 100%;
+    opacity: 0;
+    transition: opacity .5s 2s;
   }
 
   &__horizontal-volume-handle {
@@ -569,6 +618,17 @@ $slider-background-alpha: 0.1;
 
     .afterglow__overlay-play .afterglow__overlay-button {
       display: none;
+    }
+
+    &.afterglow--vimeo .afterglow__overlay-play {
+      display: none;
+    }
+  }
+
+  &--vimeo {
+    .afterglow__iframe-overlay,
+    .afterglow__controls {
+      display: none !important;
     }
   }
 }

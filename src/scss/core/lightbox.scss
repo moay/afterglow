@@ -48,12 +48,15 @@
     display:none;
   }
 
-  &--youtube,
-  &--vimeo {
-    .afterglow__lightbox-wrapper--launched .afterglow__lightbox-player video {
-      display: none !important;
+  &__lightbox-wrapper--launched {
+    .afterglow--youtube,
+    .afterglow--vimeo {
+       video {
+        display: none !important;
+      }
     }
   }
+
 
   &--vimeo {
     .afterglow__controls {

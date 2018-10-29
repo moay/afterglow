@@ -93,21 +93,26 @@ class Config {
       'youtube_iframe',
     ];
 
+    this.options.youtube = {
+      iv_load_policy: 3,
+      modestbranding: 1,
+      playsinline: 1,
+      rel: 0,
+      showinfo: 0,
+      nocookie: 1,
+    };
+
     const util = new Util();
     if (util.ie().actualVersion >= 8 && util.ie().actualVersion <= 11) {
-      this.options.youtube = {
-        ytControls: 2,
-        color: 'white',
-        modestbranding: 1,
-      };
-    } else {
-      this.options.youtube = {
-        iv_load_policy: 3,
-        modestbranding: 1,
-      };
+      this.options.youtube.ytControls = 2;
+      this.options.youtube.color = 'white';
     }
 
-    this.videoelement.setAttribute('src', `https://www.youtube.com/watch?v=${this.getPlayerAttributeFromVideoElement('youtube-id')}`);
+    if (this.videoelement.getAttribute('poster') === null) {
+      this.options.youtube.imageQuality = 'maxresdefault';
+    }
+
+    this.videoelement.setAttribute('src', `https://www.youtube-nocookies.com/watch?v=${this.getPlayerAttributeFromVideoElement('youtube-id')}`);
     this.videoelement.setAttribute('type', 'video/youtube');
   }
 
