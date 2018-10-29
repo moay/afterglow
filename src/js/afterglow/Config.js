@@ -106,6 +106,8 @@ class Config {
     if (util.ie().actualVersion >= 8 && util.ie().actualVersion <= 11) {
       this.options.youtube.ytControls = 2;
       this.options.youtube.color = 'white';
+    } else {
+      this.options.youtube.origin = `${location.protocol}://${location.hostname} ${location.port ? ':' + location.port : ''}`;
     }
 
     if (this.videoelement.getAttribute('poster') === null) {

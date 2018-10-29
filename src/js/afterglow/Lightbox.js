@@ -73,9 +73,9 @@ class Lightbox extends DOMElement {
     // This is not easily testable. But the constructor of DOMElement
     // is so simple that we rely on the UTs that exist for DOMElement.
     const domElement = new DOMElement(videoelement);
-    this.lightbox.appendDomElement(domElement, 'videoelement');
     this.lightbox.videoelement = domElement;
     this.lightbox.videoelement.setAttribute('autoplay', 'autoplay');
+    this.lightbox.appendDomElement(domElement, 'videoelement');
 
     this.player = new Player(this.lightbox.videoelement);
   }
@@ -136,6 +136,9 @@ class Lightbox extends DOMElement {
     if (typeof _callback === 'function') {
       _callback(this);
     }
+
+    // Triggering play in order to force autoplay
+    this.player.mediaelement.media.play();
   }
 
   /**

@@ -429,6 +429,8 @@ $slider-background-alpha: 0.1;
     &:hover {
       transition: all .2s 0s ease-in-out;
       width: 150px;
+      padding-left: 10px;
+      margin-left: -20px;
 
       .afterglow__horizontal-volume-total,
       .afterglow__horizontal-volume-current {

@@ -3,6 +3,8 @@ module.exports = {
     globals: {
         window: true,
         document: true,
-        navigator: true
+        navigator: true,
+        location: true,
+        mejs: true
     }
 };
