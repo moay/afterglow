@@ -1,10 +1,11 @@
 const path = require('path');
+const webpack = require('webpack')
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const BabiliPlugin = require('babili-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
+const header = require('./src/js/build/header');
 
 module.exports = {
   mode: 'production',
@@ -20,6 +21,7 @@ module.exports = {
     }),
     new BabiliPlugin({}, { comments: false }),
     // new BundleAnalyzerPlugin(),
+    new webpack.BannerPlugin({ banner: header }),
   ],
   output: {
     filename: 'afterglow.min.js',

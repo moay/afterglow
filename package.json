@@ -1,14 +1,14 @@
 {
   "name": "afterglowplayer",
   "description": "An easy to integrate HTML5 video player with lightbox support.",
-  "version": "2.0.0-alpha",
+  "version": "2.0.0-alpha1",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/moay/afterglow.git"
   },
   "jsdelivr": "dist/afterglow.min.js",
-  "homepage": "http://afterglowplayer.com",
+  "homepage": "https://afterglowplayer.com",
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
