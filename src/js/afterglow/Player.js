@@ -65,7 +65,7 @@ class Player extends Api {
     options.success = (mediaElement, node, instance) => {
       this.postInit(mediaElement, node, instance, _callback);
     };
-    new MediaElement(this.videoelement.node, options);
+    (() => new MediaElement(this.videoelement.node, options))();
   }
 
   /**
@@ -81,7 +81,6 @@ class Player extends Api {
     this.applyResponsiveScaling();
     this.buildTopControlBar();
 
-    // Launch the callback if there is one
     if (typeof _callback === 'function') {
       _callback(this);
     }
@@ -92,7 +91,6 @@ class Player extends Api {
    * @return {void}
    */
   applyDefaultClasses() {
-    // Add some classes
     this.videoelement.addClass('afterglow');
 
     const classNames = this.config.getSkinClass().split(' ');
@@ -100,13 +98,12 @@ class Player extends Api {
       this.videoelement.addClass(className);
     });
 
-    // Remove sublime stuff
     this.videoelement.removeClass('sublime');
 
     // Check for IE9 - IE11
     const ie = this.util.ie().actualVersion;
     if (ie >= 8 && ie <= 11) {
-      this.videoelement.addClass('afterglow-IE');
+      this.videoelement.addClass('afterglow--IE');
     }
   }
 
@@ -267,7 +264,6 @@ class Player extends Api {
       } else this.pause();
     });
 
-    // Trigger afterglow ready event
     EventBus.dispatch(this.id, 'ready');
 
     EventBus.subscribe(this.id, 'autoplay', () => {

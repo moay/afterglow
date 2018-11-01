@@ -702,6 +702,14 @@ $slider-background-alpha: 0.1;
         height: calc(100% - 40px);
         top: 40px;
       }
+
+      .afterglow__horizontal-volume-slider {
+        display: none !important;
+
+        &:hover {
+          display: none !important;
+        }
+      }
     }
   }
 }
