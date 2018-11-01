@@ -57,8 +57,13 @@ $slider-background-alpha: 0.1;
     z-index: 3;
     margin: 0 30px 0;
     padding-bottom: 20px;
+    padding-right: 0;
     text-align: center;
     justify-content: stretch;
+    transition-property: height, padding-right;
+    transition-duration: .3s;
+    transition-delay: .3s;
+    transition-timing-function: ease-in-out;
   }
 
   &__button,
@@ -67,7 +72,7 @@ $slider-background-alpha: 0.1;
     font-size: $base-font-size;
     margin: 0;
     width: auto;
-    margin-right: 20px;
+    margin-right: 10px;
     align-self: flex-end;
   }
 
@@ -167,12 +172,12 @@ $slider-background-alpha: 0.1;
     overflow: hidden;
 
     &:hover {
-      bottom: 55px;
+      bottom: 56px;
       height:9px;
       transition: all 0s;
 
       @media (max-width: $breakpoint_medium) {
-        bottom: 56px;
+        bottom: 57px;
         height:7px;
       }
     }
@@ -422,14 +427,15 @@ $slider-background-alpha: 0.1;
     width: 10px;
     margin-right: 0;
     padding-left: 30px;
-    margin-left: -40px;
+    margin-left: -30px;
     align-self: flex-end;
 
     &:hover {
       transition: all .2s 0s ease-in-out;
       width: 130px;
       padding-left: 10px;
-      margin-left: -20px;
+      margin-left: -10px;
+      margin-right: 10px;
 
       .afterglow__horizontal-volume-total,
       .afterglow__horizontal-volume-current {
@@ -657,7 +663,7 @@ $slider-background-alpha: 0.1;
   /* Special differences for playing state */
 
 
-  &-started {
+  &--started {
     .afterglow__controls{
       display: -webkit-box;
       display: -webkit-flex;
@@ -678,6 +684,24 @@ $slider-background-alpha: 0.1;
     .afterglow__iframe-overlay,
     .afterglow__controls {
       display: none !important;
+    }
+  }
+
+  &--youtube {
+    &-headstart,
+    &.afterglow--paused {
+      .afterglow__controls {
+        height: calc(100% - 40px);
+        transition-duration: .1s;
+        transition-delay: 0s;
+        padding-right: 115px;
+      }
+
+      .afterglow__overlay-play,
+      .afterglow__iframe-overlay{
+        height: calc(100% - 40px);
+        top: 40px;
+      }
     }
   }
 }

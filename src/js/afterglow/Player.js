@@ -220,28 +220,28 @@ class Player extends Api {
       this.mediaelement.setVolume(volume);
     }
 
+    const container = new DOMElement(this.mediaelement.container);
+
     this.mediaelement.media.addEventListener('play', () => {
       // Trigger afterglow play event
       EventBus.dispatch(this.id, 'play');
-      const container = new DOMElement(this.mediaelement.container);
-      container.addClass('afterglow-started');
+      container.addClass('afterglow--started');
+      container.removeClass('afterglow--paused');
 
-      // // Remove youtube player class after 5 seconds if youtube player
-      // if (this.el_.classList.contains('afterglow-youtube-headstart')) {
-      //   const el = this.el_;
-      //   setTimeout(() => {
-      //     el.classList.remove('afterglow-youtube-headstart');
-      //   }, 3000);
-      // }
+      if (container.hasClass('afterglow--youtube-headstart')) {
+        setTimeout(() => {
+          container.removeClass('afterglow--youtube-headstart');
+        }, 3000);
+      }
     });
 
     this.mediaelement.media.addEventListener('pause', () => {
       EventBus.dispatch(this.id, 'paused');
+      container.addClass('afterglow--paused');
     });
 
     this.mediaelement.media.addEventListener('ended', () => {
       EventBus.dispatch(this.id, 'ended');
-      const container = new DOMElement(this.mediaelement.container);
       container.removeClass('afterglow-started');
     });
 
