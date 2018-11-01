@@ -1,8 +1,11 @@
+/**
+ * afterglow - An easy to integrate HTML5 video player with lightbox support.
+ * @link http://afterglowplayer.com
+ * @license MIT
+ */
+
 import DOMElement from '../lib/DOMElement';
 
-/**
- * Button to enter and leave fullscreen
-*/
 export default class FullScreenButton extends DOMElement {
   constructor(player) {
     super(player);
@@ -16,9 +19,6 @@ export default class FullScreenButton extends DOMElement {
     this.addClass('afterglow__fullscreen-toggle');
   }
 
-  /**
-   * @param player
-   */
   bindEvents(player) {
     this.bind('click', () => {
       if (player.isFullscreen()) {

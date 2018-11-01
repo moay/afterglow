@@ -25,7 +25,6 @@ class Lightbox extends DOMElement {
    * @return {void}
    */
   build() {
-    // Prepare the lightbox elements
     const cover = this.buildCover();
     const lightbox = this.buildLightbox();
 
@@ -70,8 +69,6 @@ class Lightbox extends DOMElement {
    */
   passVideoElement(videoelement) {
     this.playerid = videoelement.getAttribute('id');
-    // This is not easily testable. But the constructor of DOMElement
-    // is so simple that we rely on the UTs that exist for DOMElement.
     const domElement = new DOMElement(videoelement);
     this.lightbox.videoelement = domElement;
     this.lightbox.videoelement.setAttribute('autoplay', 'autoplay');
@@ -91,48 +88,29 @@ class Lightbox extends DOMElement {
     this.lightbox.addClass('afterglow__lightbox-wrapper--launched');
 
     this.player.init(() => {
-      // Adding autoclose functionality
       if (this.lightbox.videoelement.getAttribute('data-autoclose') === 'true') {
         this.player.mediaelement.media.addEventListener('ended', () => {
           this.close();
         });
-      } else {
-        // Else show the poster frame on ended.
-        this.player.mediaelement.media.addEventListener('ended', () => {
-          this.player.videojs.posterImage.show();
-        });
       }
-
-      // this.player.videojs.getChild('TopControlBar').addChild('LightboxCloseButton');
     });
 
-    // Stop all active players if there are any playing
-    // Object.keys(window.videojs.getPlayers()).forEach(key => {
-    //   if (window.videojs.getPlayers()[key] !== null
-    //     && window.videojs.getPlayers()[key].id_ !== this.playerid) {
-    //     window.videojs.getPlayers()[key].pause();
-    //   }
-    // });
-
-    // resize the lightbox and make it autoresize
     this.resize();
     util.addEventListener(window, 'resize', () => {
       this.resize();
     });
 
-    // bind the closing event
     this.cover.bind('click', () => {
       this.close();
     });
 
     // bind the escape key
     util.addEventListener(window, 'keyup', (e) => {
-      if (e.keyCode == 27) {
+      if (e.keyCode === 27) {
         this.close();
       }
     });
 
-    // Launch the callback if there is one
     if (typeof _callback === 'function') {
       _callback(this);
     }
@@ -146,26 +124,17 @@ class Lightbox extends DOMElement {
    * @return void
    */
   resize() {
-    // Standard HTML5 player
-    if (this.lightbox.videoelement !== undefined) {
-      var ratio = this.lightbox.videoelement.getAttribute('data-ratio');
-      if (this.lightbox.videoelement.getAttribute('data-overscale') == 'false') {
-        // Calculate the new size of the player with maxwidth
-        var sizes = this.calculateLightboxSizes(ratio, parseInt(this.lightbox.videoelement.getAttribute('data-maxwidth')));
-      } else {
-        // Calculate the new size of the player without maxwidth
-        var sizes = this.calculateLightboxSizes(ratio);
-      }
-    } else {
-      // Youtube
-      if (document.querySelectorAll('div.afterglow__lightbox-wrapper .vjs-youtube').length == 1) {
-        const playerelement = document.querySelector('div.afterglow__lightbox-wrapper .vjs-youtube');
-        var ratio = playerelement.getAttribute('data-ratio');
-        var sizes = this.calculateLightboxSizes(ratio);
-      }
+    if (this.lightbox.videoelement === undefined) {
+      return;
     }
 
-    // Apply the height and width
+    const ratio = this.lightbox.videoelement.getAttribute('data-ratio');
+    let sizes = this.calculateLightboxSizes(ratio);
+
+    if (this.lightbox.videoelement.getAttribute('data-overscale') === 'false') {
+      sizes = this.calculateLightboxSizes(ratio, parseInt(this.lightbox.videoelement.getAttribute('data-maxwidth'), 10));
+    }
+
     this.node.style.width = sizes.width;
     this.node.style.height = sizes.height;
 
@@ -226,7 +195,9 @@ class Lightbox extends DOMElement {
     EventBus.dispatch(this.player.id, 'before-lightbox-close');
     this.player.destroy(true);
     this.lightbox.removeClass('afterglow__lightbox-wrapper--launched');
-    this.node.parentNode && this.node.parentNode.removeChild(this.node);
+    if (this.node.parentNode) {
+      this.node.parentNode.removeChild(this.node);
+    }
     this.emit('close');
   }
 

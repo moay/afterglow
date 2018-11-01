@@ -20,10 +20,8 @@ class LightboxTrigger extends DOMElement {
    * @return {void}
    */
   init() {
-    // Get the playerid
     this.playerid = this.node.getAttribute('href').replace('#', '');
 
-    // Get the videoelement for this trigger
     const videoelement = document.querySelector(`#${this.playerid}`);
     this.videoelement = new DOMElement(videoelement);
 
@@ -37,10 +35,7 @@ class LightboxTrigger extends DOMElement {
    * @return {void}
    */
   prepare() {
-    // Add major class
     this.videoelement.addClass('afterglow__lightbox-player');
-    // Prepare the element
-    this.videoelement.setAttribute('data-autoresize', 'fit');
 
     this.bind('click', (e) => {
       e.preventDefault();
@@ -66,7 +61,6 @@ class LightboxTrigger extends DOMElement {
 
     this.lightbox.launch();
 
-    // Pass event to afterglow core
     this.lightbox.on('close', () => {
       EventBus.dispatch(this.playerid, 'lightbox-closed');
       this.emit('close');

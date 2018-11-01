@@ -1,3 +1,9 @@
+/**
+ * afterglow - An easy to integrate HTML5 video player with lightbox support.
+ * @link http://afterglowplayer.com
+ * @license MIT
+ */
+
 import DOMElement from '../lib/DOMElement';
 import LightboxCloseButton from './LightboxCloseButton';
 import FullScreenButton from './FullScreenButton';

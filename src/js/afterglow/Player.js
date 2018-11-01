@@ -14,8 +14,6 @@ import TopControlBar from './TopControlBar';
 class Player extends Api {
   constructor(videoelement) {
     super(videoelement);
-
-    // Passing to setup for testability
     this.setup(videoelement);
   }
 
@@ -112,7 +110,6 @@ class Player extends Api {
    * @return {void}
    */
   applyParameters() {
-    // Make lightboxplayer not overscale
     if (this.videoelement.getAttribute('data-overscale') === 'false') {
       this.videoelement.setAttribute('data-maxwidth', this.videoelement.getAttribute('width'));
     }
@@ -140,11 +137,10 @@ class Player extends Api {
     this.videoelement.addClass('afterglow--youtube');
     this.videoelement.addClass('afterglow--youtube-headstart');
 
-    // Check for native playback
     if (document.querySelector('video').controls) {
       this.videoelement.addClass('afterglow-using-native-controls');
     }
-    // Add iOS class for iOS.
+
     if (/iPad|iPhone|iPod|iOS/.test(navigator.platform)) {
       this.videoelement.addClass('afterglow--iOS');
     }
@@ -211,7 +207,6 @@ class Player extends Api {
   }
 
   bindEvents() {
-    // Set initial volume if needed
     if (this.videoelement.getAttribute('data-volume') !== null) {
       const volume = parseFloat(this.videoelement.getAttribute('data-volume'));
       this.mediaelement.setVolume(volume);
@@ -220,7 +215,6 @@ class Player extends Api {
     const container = new DOMElement(this.mediaelement.container);
 
     this.mediaelement.media.addEventListener('play', () => {
-      // Trigger afterglow play event
       EventBus.dispatch(this.id, 'play');
       container.addClass('afterglow--started');
       container.removeClass('afterglow--paused');
@@ -246,9 +240,8 @@ class Player extends Api {
       EventBus.dispatch(this.id, 'volume-changed');
     });
 
-    // Trigger afterglow fullscreen events
-    const browserprefixes = ['webkit', 'fullscreenchange', 'ms', ''];
-    browserprefixes.forEach((prefix) => {
+    const browserPrefixes = ['webkit', 'fullscreenchange', 'ms', ''];
+    browserPrefixes.forEach((prefix) => {
       document.addEventListener(`${prefix}fullscreenchange`, (event) => {
         this.handleFullscreenEvents(event);
       });
