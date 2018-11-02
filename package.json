@@ -41,7 +41,7 @@
     "uglify-js": "^3.4.9",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.23.1",
-    "webpack-bundle-analyzer": "^3.0.3",npmn 
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
     "webpack-node-externals": "^1.7.2"
