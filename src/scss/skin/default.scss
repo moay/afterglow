@@ -479,6 +479,17 @@ $slider-background-alpha: 0.1;
 
   /* End: Mute/Volume */
 
+  &__hdtoggle-button {
+    margin-right: 14px;
+    background: transparent url('../svg/res-sd.svg') center no-repeat;
+    background-size: contain;
+
+    &--hd{
+      background-image: url('../svg/res-hd.svg');
+    }
+  }
+
+
   /* Start: Track (Captions and Chapters) */
   &__captions-button,
   &__chapters-button {

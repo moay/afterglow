@@ -1,5 +1,3 @@
-'use strict';
-
 mejs.i18n.en['mejs.afterglow-resolution-toggle'] = 'HD';
 
 Object.assign(mejs.MepDefaults, {
@@ -12,7 +10,9 @@ Object.assign(MediaElementPlayer.prototype, {
   /**
    * Feature constructor.
    *
-   * Always has to be prefixed with `build` and the name that will be used in MepDefaults.features list
+   * Always has to be prefixed with `build` and the name that will be used
+   * in MepDefaults.features list
+   *
    * @param {MediaElementPlayer} player
    * @param {HTMLElement} controls
    * @param {HTMLElement} layers
@@ -44,29 +44,27 @@ Object.assign(MediaElementPlayer.prototype, {
 
     this.cleanhdtoggle(player);
 
-    player.hdtoggleButton = document.createElement('div');
-    player.hdtoggleButton.className = `${this.options.classPrefix}button ${this.options.classPrefix}hdtoggle-button ${this.options.classPrefix}hdtoggle-button--${this.options.currentQuality}`;
-    player.hdtoggleButton.innerHTML = `<button type="button" aria-controls="${this.id}" title="HD" ` +
-      `aria-label="HD" tabindex="0"></button>` +
-      `</div>`;
+    this.hdtoggleButton = document.createElement('div');
+    this.hdtoggleButton.className = `${this.options.classPrefix}button ${this.options.classPrefix}hdtoggle-button ${this.options.classPrefix}hdtoggle-button--${this.options.currentQuality}`;
+    this.hdtoggleButton.innerHTML = `<button type="button" aria-controls="${this.id}" title="HD" aria-label="HD" tabindex="0"></button></div>`;
 
     this.addControlElement(player.hdtoggleButton, 'qualities');
 
     player.hdtoggleButton.addEventListener('click', () => {
-      const paused = player.paused;
+      const { paused } = player;
       const currentTime = player.getCurrentTime();
       const currentSource = player.getSrc();
 
       let nextSrc = null;
-      let nextQuality;
+      let nextQuality = this.options.currentQuality;
       let videoType;
       this.options.sources.forEach((source) => {
-        if(source.src === currentSource) {
+        if (source.src === currentSource) {
           videoType = source.type;
         }
       });
       this.options.sources.forEach((source) => {
-        if(source.src !== currentSource && source.type === videoType) {
+        if (source.src !== currentSource && source.type === videoType) {
           nextSrc = source.src;
           nextQuality = source.quality;
         }
@@ -77,10 +75,11 @@ Object.assign(MediaElementPlayer.prototype, {
 
       player.setSrc(nextSrc);
       player.setCurrentTime(currentTime);
+      this.hdtoggleButton.classList.remove(`afterglow__hdtoggle-button--${this.options.currentQuality}`);
+      this.hdtoggleButton.classList.add(`afterglow__hdtoggle-button--${nextQuality}`);
+      this.options.currentQuality = nextQuality;
       if (!paused) player.play();
     });
-
-    return;
   },
 
   /**
