@@ -481,11 +481,22 @@ $slider-background-alpha: 0.1;
 
   &__hdtoggle-button {
     margin-right: 14px;
-    background: transparent url('../svg/res-sd.svg') center no-repeat;
+    background: transparent url('../svg/res-hd.svg') center no-repeat;
     background-size: contain;
+    opacity: .3;
+    transition: opacity 0.2s;
+
+    &:hover{
+      opacity: .4;
+      transition: opacity 0s;
+    }
 
     &--hd{
-      background-image: url('../svg/res-hd.svg');
+      opacity: .9;
+
+      &:hover{
+        opacity: 1;
+      }
     }
   }
 
@@ -712,6 +723,10 @@ $slider-background-alpha: 0.1;
       .afterglow__iframe-overlay{
         height: calc(100% - 40px);
         top: 40px;
+
+        .afterglow__overlay-button {
+          margin-top: -40px;
+        }
       }
 
       .afterglow__horizontal-volume-slider {
