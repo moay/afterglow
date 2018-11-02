@@ -61,6 +61,7 @@ class Config {
         'playpause',
         'tracks',
         'volume',
+        'hdtoggle',
         'duration',
       ],
       enableProgressTooltip: false,
