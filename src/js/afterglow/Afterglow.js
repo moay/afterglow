@@ -41,7 +41,6 @@ class Afterglow {
 
     this.initialized = true;
 
-    // execute things to do when init done
     for (let i = 0; i < this.afterinit.length; i += 1) {
       this.afterinit[i]();
     }
@@ -53,15 +52,11 @@ class Afterglow {
    * @return void
    */
   initVideoElements() {
-    // Get players including sublime fallback
     const players = document.querySelectorAll('video.afterglow,video.sublime');
-
-    // Initialize players
-    for (let i = 0; i < players.length; i += 1) {
-      const videoelement = new DOMElement(players[i]);
-      const player = new Player(videoelement);
+    players.forEach((playerNode) => {
+      const player = new Player(new DOMElement(playerNode));
       this.controller.addPlayer(player);
-    }
+    });
   }
 
   /**
@@ -69,22 +64,20 @@ class Afterglow {
    * @return void
    */
   prepareLightboxVideos() {
-    // Get lightboxplayers including sublime fallback
-    const lightboxtriggers = document.querySelectorAll('a.afterglow,a.sublime');
-
-    // Initialize players launching in a lightbox
-    for (let i = 0; i < lightboxtriggers.length; i += 1) {
-      const trigger = new LightboxTrigger(lightboxtriggers[i]);
-      this.controller.addLightboxPlayer(trigger);
-    }
+    const lightboxTriggers = document.querySelectorAll('a.afterglow,a.sublime');
+    lightboxTriggers.forEach((triggerNode) => {
+      const trigger = new LightboxTrigger(triggerNode);
+      return this.controller.addLightboxPlayer(trigger);
+    });
   }
 
   addPlayer(idOrElement) {
-    let videoelement;
+    let videoelement = idOrElement;
     if (typeof idOrElement === 'string') {
       videoelement = document.getElementById(idOrElement);
-    } else {
-      videoelement = idOrElement;
+    }
+    if (!(videoelement instanceof DOMElement)) {
+      videoelement = new DOMElement(videoelement);
     }
     this.controller.addPlayer(new Player(videoelement));
   }

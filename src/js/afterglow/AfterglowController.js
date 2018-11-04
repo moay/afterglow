@@ -14,36 +14,21 @@ class AfterglowController {
      * Will hold the trigger elements which will launch lightbox players
      */
     this.lightboxtriggers = [];
-
-    /**
-     * Container for callbacks that have to be executed when afterglow is initalized
-     */
-    this.afterinit = [];
-  }
-
-  /**
-   * Initiate all players that were found and need to be initiated
-   * @return void
-   */
-  init() {
-    this.initVideoElements();
-    this.prepareLightboxVideos();
-
-    this.initialized = true;
-
-    // execute things to do when init done
-    for (let i = 0; i < this.afterinit.length; i++) {
-      this.afterinit[i]();
-    }
-    this.afterinit = [];
   }
 
   addPlayer(player) {
+    if (this.getPlayer(player.id) !== undefined) {
+      return;
+    }
     player.init();
     this.players.push(player);
   }
 
   addLightboxPlayer(trigger) {
+    if (this.getPlayer(trigger.id) !== undefined) {
+      return;
+    }
+    trigger.init();
     this.bindLightboxTriggerEvents(trigger);
     this.lightboxtriggers.push(trigger);
   }
@@ -55,7 +40,7 @@ class AfterglowController {
    */
   bindLightboxTriggerEvents(trigger) {
     trigger.on('trigger', () => {
-      this.consolidatePlayers;
+      this.consolidatePlayers();
     });
     trigger.on('close', () => {
       this.consolidatePlayers();
@@ -101,7 +86,7 @@ class AfterglowController {
         return this.lightboxtriggers[i].getPlayer();
       }
     }
-    return false;
+    return undefined;
   }
 
   /**

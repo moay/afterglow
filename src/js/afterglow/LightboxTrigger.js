@@ -12,7 +12,14 @@ import DOMElement from '../lib/DOMElement';
 class LightboxTrigger extends DOMElement {
   constructor(node) {
     super(node);
-    this.init();
+    this.setup();
+  }
+
+  setup() {
+    this.playerid = this.node.getAttribute('href').replace('#', '');
+
+    const videoelement = document.querySelector(`#${this.playerid}`);
+    this.videoelement = new DOMElement(videoelement);
   }
 
   /**
@@ -20,11 +27,6 @@ class LightboxTrigger extends DOMElement {
    * @return {void}
    */
   init() {
-    this.playerid = this.node.getAttribute('href').replace('#', '');
-
-    const videoelement = document.querySelector(`#${this.playerid}`);
-    this.videoelement = new DOMElement(videoelement);
-
     this.prepare();
 
     Emitter(this);
