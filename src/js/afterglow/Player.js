@@ -167,7 +167,7 @@ class Player extends Api {
    * @return float
    */
   calculateRatio() {
-    let ratio = 0;
+    let ratio = 9 / 16;
     if (this.videoelement.getAttribute('data-ratio')) {
       ratio = this.videoelement.getAttribute('data-ratio');
     } else if (!this.videoelement.getAttribute('height') || !this.videoelement.getAttribute('width')) {
