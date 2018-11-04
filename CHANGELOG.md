@@ -5,6 +5,6 @@
 - Rewritten UI for better skinnability more solid rendering
 - New Features: Support for Facebook (tbd) and HLS (tbd)
 - API improvements: 
-
     - New method afterglow.addPlayer, supports player id or DOM node of <video> element.
     - Possibility to adress players directly. `var myPlayer = afterglow.getPlayer('myId'); myPlayer.on('play', function() {alert('play')});`
+- Added a contextmenu with a link to afterglow. The contextmenu can be disabled without any problem.

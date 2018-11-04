@@ -10,6 +10,7 @@ import Util from '../lib/Util';
 import EventBus from './EventBus';
 import DOMElement from '../lib/DOMElement';
 import TopControlBar from './TopControlBar';
+import ContextMenu from './ContexMenu';
 
 class Player extends Api {
   constructor(videoelement) {
@@ -45,6 +46,10 @@ class Player extends Api {
   prepareMediaElement() {
     this.applyDefaultClasses();
     this.applyParameters();
+
+    if (this.videoelement.getAttribute('data-contextmenu') !== 'false') {
+      this.contextMenu = new ContextMenu();
+    }
 
     if (this.util.isYoutubePlayer(this.videoelement)) {
       this.applyYoutubeClasses();
@@ -256,6 +261,15 @@ class Player extends Api {
         this.play();
       } else this.pause();
     });
+
+    if (this.contextMenu instanceof ContextMenu) {
+      container.appendChild(this.contextMenu.node);
+      this.mediaelement.container.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        this.mediaelement.media.pause();
+        this.contextMenu.open();
+      });
+    }
 
     EventBus.dispatch(this.id, 'ready');
 
