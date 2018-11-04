@@ -692,7 +692,7 @@ $slider-background-alpha: 0.1;
     &-content {
       width: auto;
       height: auto;
-      background-color: #fff;
+      background-color: rgba(0,0,0,.8);
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
       border-radius: 3px;
@@ -706,7 +706,7 @@ $slider-background-alpha: 0.1;
 
       a {
         text-decoration: none;
-        color: #000;
+        color: #fff;
       }
     }
 
