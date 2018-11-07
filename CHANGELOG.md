@@ -8,3 +8,4 @@
     - New method afterglow.addPlayer, supports player id or DOM node of <video> element.
     - Possibility to adress players directly. `var myPlayer = afterglow.getPlayer('myId'); myPlayer.on('play', function() {alert('play')});`
 - Added a contextmenu with a link to afterglow. The contextmenu can be disabled without any problem.
+- Basic HLS support is there. Its not very stable yet, but feel free to play around with it.
