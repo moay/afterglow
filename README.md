@@ -13,6 +13,10 @@ We are currently working on version 2, which will bring some bug fixes and some 
 
 If you are depending on api methods, you might want to wait for the new version. Adapting existing projects will be quite easy, though. 
 
+### Alpha version available
+
+Want to get crazy? Here's an alpha release for testing: https://github.com/moay/afterglow/releases/tag/2.0.0-alpha6 (or, if you like the CDN: https://cdn.jsdelivr.net/gh/moay/afterglow@3acd86bc1c3e1f4583c926b5f8e5cc2baf369d50/dist/afterglow.min.js). Feedback welcome.
+
 ## Documentation
 
 There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
