@@ -118,6 +118,21 @@ class Player extends Api {
     if (this.videoelement.getAttribute('data-overscale') === 'false') {
       this.videoelement.setAttribute('data-maxwidth', this.videoelement.getAttribute('width'));
     }
+
+    const sources = this.videoelement.node.childNodes;
+    if (sources.length > 0) {
+      sources.forEach((source) => {
+        if (
+          source.tagName === 'SOURCE' && source.hasAttribute('src') && !source.hasAttribute('type')
+        ) {
+          ['mp4', 'webm', 'ogg'].forEach((type) => {
+            if (source.src.substr(source.src.length - type.length) === `.${type}`) {
+              source.setAttribute('type', `video/${type}`);
+            }
+          });
+        }
+      });
+    }
   }
 
   applyResponsiveScaling() {
