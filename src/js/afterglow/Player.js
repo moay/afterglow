@@ -10,7 +10,7 @@ import Util from '../lib/Util';
 import EventBus from './EventBus';
 import DOMElement from '../lib/DOMElement';
 import TopControlBar from './TopControlBar';
-import ContextMenu from './ContexMenu';
+import ContextMenu from './ContextMenu';
 
 class Player extends Api {
   constructor(videoelement) {
