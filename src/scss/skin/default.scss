@@ -106,7 +106,6 @@ $slider-background-alpha: 0.1;
       outline: none;
     }
   }
-
   /* End: CONTROL BAR */
 
   /* Start: Time (Current / Duration) */
@@ -507,6 +506,10 @@ $slider-background-alpha: 0.1;
     position: relative;
   }
 
+  &__captions-button {
+    background: transparent url('../svg/captions.svg') center no-repeat;
+  }
+
   &__captions-button > button {
     background-position: -140px 0;
   }
@@ -573,15 +576,17 @@ $slider-background-alpha: 0.1;
   &__chapters-selector-label {
     cursor: pointer;
     float: left;
-    font-size: 10px;
+    font-size: 12px;
     line-height: 15px;
     padding: 4px 10px 0;
     width: 100%;
+    color: #ccc;
   }
 
   &__captions-selected,
   &__chapters-selected {
-    color: rgba(33, 248, 248, 1);
+    color: #fff;
+    font-weight: bold;
   }
 
   &__captions-translations {
@@ -597,6 +602,7 @@ $slider-background-alpha: 0.1;
     line-height: 20px;
     position: absolute;
     text-align: center;
+    width: 100%;
   }
 
   &__captions-layer a {
@@ -610,14 +616,16 @@ $slider-background-alpha: 0.1;
   }
 
   &__captions-position {
-    bottom: 15px;
+    bottom: 35px;
+    transition: bottom .2s;
     left: 0;
     position: absolute;
     width: 100%;
   }
 
   &__captions-position-hover {
-    bottom: 35px;
+    bottom: 95px;
+    transition: bottom .1s;
   }
 
   &__captions-text,
@@ -626,6 +634,7 @@ $slider-background-alpha: 0.1;
     box-shadow: 5px 0 0 rgba(20, 20, 20, 0.5), -5px 0 0 rgba(20, 20, 20, 0.5);
     padding: 0;
     white-space: pre-wrap;
+    border-radius: 3px;
   }
 
   &__container.afterglow__hide-cues video::-webkit-media-text-track-container {
@@ -736,26 +745,25 @@ $slider-background-alpha: 0.1;
 
   /* Special differences for playing state */
   &--started {
-    .afterglow__controls{
-      display: -webkit-box;
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-    }
-
-    .afterglow__overlay-play .afterglow__overlay-button {
-      display: none;
-    }
-
-    &.afterglow--vimeo .afterglow__overlay-play {
-      display: none;
+    .afterglow {
+      &__controls {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+      }
     }
   }
 
   &--vimeo {
     .afterglow__iframe-overlay,
+    .afterglow__poster,
     .afterglow__controls {
       display: none !important;
+    }
+
+    iframe {
+      display: block;
     }
   }
 

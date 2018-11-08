@@ -72,7 +72,6 @@ Object.assign(MediaElementPlayer.prototype, {
       if (!nextSrc === null || nextSrc === currentSource) {
         return;
       }
-
       player.setSrc(nextSrc);
       player.setCurrentTime(currentTime);
       this.hdtoggleButton.classList.remove(`afterglow__hdtoggle-button--${this.options.currentQuality}`);

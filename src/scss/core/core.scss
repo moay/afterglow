@@ -61,7 +61,8 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
 
     iframe {
       width: 100% !important;
-      height: 100% !important
+      height: 100% !important;
+      display: none;
     }
   }
 
@@ -98,6 +99,7 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
     top: 0;
     width: 100%;
     z-index: 0;
+    background-color: #000;
 
     > div {
       width: 100%;
@@ -115,6 +117,8 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
     position: absolute;
     top: 0;
     z-index: 1;
+    opacity: 1;
+    transition: opacity .4s ease-in-out;
 
     &-img {
       border: 0;
@@ -177,4 +181,29 @@ Reference: http://blog.rrwd.nl/2015/04/04/the-screen-reader-text-class-why-and-h
     }
   }
   /* End: Error */
+
+
+  /* Special differences for playing state */
+  &--started {
+    .afterglow {
+      &__poster {
+        background-image: none !important;
+        display: none !important;
+      }
+
+      &__overlay-play .afterglow__overlay-button {
+        display: none;
+      }
+
+      &--vimeo .afterglow__overlay-play {
+        display: none;
+      }
+    }
+  }
+
+  &:hover {
+    .afterglow__poster {
+      opacity: .7;
+    }
+  }
 }

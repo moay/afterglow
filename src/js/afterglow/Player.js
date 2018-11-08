@@ -253,7 +253,7 @@ class Player extends Api {
 
     this.mediaelement.media.addEventListener('ended', () => {
       EventBus.dispatch(this.id, 'ended');
-      container.removeClass('afterglow-started');
+      container.removeClass('afterglow--started');
     });
 
     this.mediaelement.media.addEventListener('volumechange', () => {
