@@ -146,6 +146,17 @@ $slider-background-alpha: 0.1;
       background-size: contain !important;
       margin: 10px 0;
     }
+
+    @media screen and (max-width: $breakpoint-medium) {
+      left: 80px;
+      bottom: 17px;
+
+      > button {
+        height: 17px;
+        width: 17px;
+      }
+    }
+
   }
 
   /* Start: Play/Pause/Stop */
@@ -432,6 +443,10 @@ $slider-background-alpha: 0.1;
     margin-left: -30px;
     align-self: flex-end;
 
+    @media screen and (max-width: $breakpoint-small) {
+      display: none !important;
+    }
+
     &:hover {
       transition: all .2s 0s ease-in-out;
       width: 130px;
@@ -458,6 +473,10 @@ $slider-background-alpha: 0.1;
     width: 70px;
     opacity: 0;
     transition: opacity .5s .8s;
+
+    @media screen and (max-width: $breakpoint-small) {
+      display: none;
+    }
   }
 
   &__horizontal-volume-current {
@@ -507,6 +526,10 @@ $slider-background-alpha: 0.1;
   &__captions-button,
   &__chapters-button {
     position: relative;
+
+    @media screen and (max-width: $breakpoint-small) {
+      display: none;
+    }
   }
 
   &__captions-button {
