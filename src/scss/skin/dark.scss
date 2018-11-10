@@ -1,0 +1,72 @@
+.afterglow-skin-dark {
+  .afterglow {
+    &__controls {
+      padding-bottom: 17px;
+
+      &::before {
+        display: block;
+        content: ' ';
+        background-color: #000;
+        width: calc(100% + 60px);
+        height: 58px;
+        position: absolute;
+        bottom: 0;
+        left: -30px;
+        opacity: .8;
+        transition: opacity .2s;
+      }
+    }
+
+    &__time-rail {
+      width: calc(100% + 60px);
+      left: -30px;
+      border-radius: 0;
+
+      > * {
+        border-radius: 0;
+      }
+    }
+
+    &__top-control-bar {
+      .afterglow__button {
+        background-color: rgba(0,0,0,0.8);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 18px 18px !important;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        overflow: visible;
+      }
+    }
+
+    &__play,
+    &__pause,
+    &__stop {
+      bottom: 11px;
+    }
+  }
+
+  &.afterglow--youtube {
+    &-headstart,
+    &.afterglow--paused {
+      .afterglow__controls {
+        padding-right: 0;
+
+        &::before {
+          opacity: 1;
+        }
+      }
+
+      .afterglow__overlay-play,
+      .afterglow__iframe-overlay{
+        height: calc(100% - 40px);
+        top: 40px;
+
+        .afterglow__overlay-button {
+          margin-top: -40px;
+        }
+      }
+    }
+  }
+}

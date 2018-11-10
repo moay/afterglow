@@ -14,6 +14,8 @@ $slider-background-color: #fff;
 $slider-background-alpha: 0.1;
 
 .afterglow {
+  overflow: hidden;
+
   &__overlay {
     width: 100%;
     height: 100%;
@@ -169,6 +171,7 @@ $slider-background-alpha: 0.1;
     transition: all 0.2s;
     border-radius: 10px;
     overflow: hidden;
+    margin-right: 0;
 
     &:hover {
       bottom: 56px;
@@ -752,6 +755,10 @@ $slider-background-alpha: 0.1;
         display: -ms-flexbox;
         display: flex;
       }
+    }
+
+    iframe {
+      display: block;
     }
   }
 

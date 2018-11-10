@@ -9,3 +9,4 @@
     - Possibility to adress players directly. `var myPlayer = afterglow.getPlayer('myId'); myPlayer.on('play', function() {alert('play')});`
 - Added a contextmenu with a link to afterglow. The contextmenu can be disabled without any problem.
 - Basic HLS support is there. Its not very stable yet, but feel free to play around with it.
+- Light theme has been removed from the core. Maybe added later again.

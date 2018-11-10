@@ -10,8 +10,6 @@ import Util from '../lib/Util';
 import DOMElement from '../lib/DOMElement';
 import Emitter from '../lib/Emitter';
 
-require('../../less/components/lightbox.less');
-
 class Lightbox extends DOMElement {
   constructor() {
     super(document.createElement('div'));
