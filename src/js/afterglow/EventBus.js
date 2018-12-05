@@ -46,7 +46,7 @@ class EventBus {
   }
 
   /**
-   * Dispatches an event and executes all bound callbacks
+   * Dispatches an event and triggers all bound callbacks
    *
    * @param playerid
    * @param event
@@ -57,12 +57,23 @@ class EventBus {
       return;
     }
     for (let i = 0; i < this.players[playerid].listeners[event].length; i += 1) {
-      this.players[playerid].listeners[event][i]({
-        type: event,
-        playerid,
-        player: AfterglowController.getPlayer(playerid),
-      });
+      this.execute(this.players[playerid].listeners[event][i], event, playerid);
     }
+  }
+
+  /**
+   * Executes the actual callback functions
+   *
+   * @param callback
+   * @param event
+   * @param playerid
+   */
+  execute(callback, event, playerid) {
+    callback({
+      type: event,
+      playerid,
+      player: AfterglowController.getPlayer(playerid),
+    });
   }
 }
 

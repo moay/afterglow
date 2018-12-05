@@ -96,6 +96,9 @@ class Afterglow {
       });
     } else {
       EventBus.subscribe(playerid, eventname, _callback);
+      if (eventname === 'ready' && this.getPlayer(playerid) && this.getPlayer(playerid).alive) {
+        EventBus.execute(_callback, 'ready', playerid);
+      }
     }
   }
 

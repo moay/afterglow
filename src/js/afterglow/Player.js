@@ -137,6 +137,9 @@ class Player extends Api {
     }
   }
 
+  /**
+   * Applies responsive scaling based on useful defaults or provided options to the player element
+   */
   applyResponsiveScaling() {
     if (this.videoelement.getAttribute('data-autoresize') !== 'none'
       && this.videoelement.getAttribute('data-autoresize') !== 'false') {
@@ -144,11 +147,23 @@ class Player extends Api {
       container.addClass('afterglow__container--responsive');
 
       const ratio = this.calculateRatio();
-      container.node.style.paddingTop = `${ratio * 100}%`;
-      this.videoelement.removeAttribute('height');
-      this.videoelement.removeAttribute('width');
-      this.videoelement.setAttribute('data-ratio', ratio);
+      this.setAspectRatio(ratio);
     }
+  }
+
+  /**
+   * Applies an aspect ratio to the player element.
+   *
+   * Usage: player.setAspectRatio(16/9);
+   */
+  setAspectRatio(providedRatio) {
+    const ratio = 1/providedRatio;
+    const container = new DOMElement(this.mediaelement.container);
+
+    container.node.style.paddingTop = `${ratio * 100}%`;
+    this.videoelement.removeAttribute('height');
+    this.videoelement.removeAttribute('width');
+    this.videoelement.setAttribute('data-ratio', ratio);
   }
 
   /**
@@ -200,12 +215,10 @@ class Player extends Api {
     let ratio = 9 / 16;
     if (this.videoelement.getAttribute('data-ratio')) {
       ratio = this.videoelement.getAttribute('data-ratio');
-    } else if (!this.videoelement.getAttribute('height') || !this.videoelement.getAttribute('width')) {
-      return ratio;
-    } else {
+    } else if (this.videoelement.hasAttribute('height') && this.videoelement.hasAttribute('width')) {
       ratio = this.videoelement.getAttribute('height') / this.videoelement.getAttribute('width');
     }
-    return parseFloat(ratio);
+    return parseFloat(1/ratio);
   }
 
   /**

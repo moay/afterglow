@@ -73,6 +73,11 @@
 <video id="videovimeol" width="1920" height="1080" data-vimeo-id="191169455"  data-skin="dark" ></video>
 
 <script>
+
+  afterglow.on('video2', 'ready', function(e){
+    e.player.setAspectRatio(21/9);
+  });
+
   var events = ['play', 'paused', 'ended', 'volume-changed', 'ready', 'lightbox-launched', 'lightbox-closed', 'fullscreen-entered', 'fullscreen-left', 'fullscreen-changed'];
   for (var i = 0; i < events.length; i++) {
     var eventname = events[i];
