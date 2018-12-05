@@ -47,6 +47,10 @@
 <h2>Vimeo video</h2>
 <video id="video-vimeo" class="afterglow" width="1920" height="1080" data-vimeo-id="233970493"> </video>
 
+<!-- Facebook TEST -->
+<h2>Facebook video</h2>
+<video id="facebook-video" class="afterglow" data-contextmenu="false" data-facebook-url="https://www.facebook.com/minionsDE/videos/1389075857814334/"> </video>
+
 <!-- HLS TEST -->
 <h2>Live HLS video</h2>
 <video id="hls-vimeo" class="afterglow" src="//nmxlive.akamaized.net/hls/live/529965/Live_1/index.m3u8"> </video>
@@ -84,6 +88,9 @@
     });
     afterglow.on('video-vimeo',eventname,function(e){
       console.log('EVENT (Vimeo): ' + e.type);
+    });
+    afterglow.on('facebook-video',eventname,function(e){
+      console.log('EVENT (Faceboook): ' + e.type);
     });
     afterglow.on('videovimeol',eventname,function(e){
       console.log('EVENT (Vimeo Lightbox): ' + e.type);

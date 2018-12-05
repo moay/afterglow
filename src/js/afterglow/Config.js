@@ -38,6 +38,10 @@ class Config {
       if (util.isVimeoPlayer(this.videoelement)) {
         this.setVimeoOptions();
       }
+      // Initialize facebook if the current player is a facebook player
+      if (util.isFacebookPlayer(this.videoelement)) {
+        this.setFacebookOptions();
+      }
     }
   }
 
@@ -131,6 +135,19 @@ class Config {
     this.videoelement.setAttribute('src', `https://vimeo.com/${this.getPlayerAttributeFromVideoElement('vimeo-id')}`);
     this.videoelement.setAttribute('type', 'video/vimeo');
     this.videoelement.setAttribute('controls', 'no');
+  }
+
+
+  /**
+   * Sets options needed for facebook to work and replaces the sources with the correct facebook url
+   */
+  setFacebookOptions() {
+    this.options.renderers = [
+      'facebook',
+    ];
+
+    this.videoelement.setAttribute('src', this.getPlayerAttributeFromVideoElement('facebook-url'));
+    this.videoelement.setAttribute('type', 'video/x-facebook');
   }
 
   /**

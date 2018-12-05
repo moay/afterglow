@@ -785,15 +785,21 @@ $slider-background-alpha: 0.1;
     }
   }
 
-  &--vimeo {
-    .afterglow__iframe-overlay,
-    .afterglow__poster,
-    .afterglow__controls {
-      display: none !important;
-    }
-
+  &--vimeo,
+  &--facebook {
     iframe {
       display: block;
+      margin: 0 auto;
+    }
+  }
+
+  &--facebook {
+    .fb-video {
+      height: 100%;
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      flex-direction: column;
     }
   }
 

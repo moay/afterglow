@@ -24,12 +24,21 @@ class Util {
   }
 
   /**
-     * Checks wether or not the given video element is a vimeo player
+     * Checks whether or not the given video element is a vimeo player
      * @param  videoelement DOMElement|Dom node
      * @return {Boolean}
      */
   isVimeoPlayer(videoelement) {
     return videoelement.hasAttribute('data-vimeo-id');
+  }
+
+  /**
+   * Checks whether or not the given video element is a facebook player
+   * @param  videoelement DOMElement|Dom node
+   * @return {Boolean}
+   */
+  isFacebookPlayer(videoelement) {
+    return videoelement.hasAttribute('data-facebook-url');
   }
 
   /**

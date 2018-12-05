@@ -55,6 +55,8 @@ class Player extends Api {
       this.applyYoutubeClasses();
     } else if (this.util.isVimeoPlayer(this.videoelement)) {
       this.applyVimeoClasses();
+    } else if (this.util.isFacebookPlayer(this.videoelement)) {
+      this.applyFacebookClasses();
     }
   }
 
@@ -172,6 +174,14 @@ class Player extends Api {
    */
   applyVimeoClasses() {
     this.videoelement.addClass('afterglow--vimeo');
+  }
+
+  /**
+   * Applies all needed classes to the videoelement in order to provide proper facebook playback
+   * @return {void}
+   */
+  applyFacebookClasses() {
+    this.videoelement.addClass('afterglow--facebook');
   }
 
   /**
