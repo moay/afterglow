@@ -3,7 +3,7 @@
 - Complete rewrite and change of video engine (from videojs to mediaelement)
 - Rewritten to make afterglow work with module loaders. Todo: Documentation
 - Rewritten UI for better skinnability more solid rendering
-- New Features: Support for Facebook (tbd) and HLS (tbd)
+- New Features: Support for Facebook ('data-facebook-url') and HLS (to be improved)
 - API improvements: 
     - New method afterglow.addPlayer, supports player id or DOM node of <video> element.
     - Possibility to adress players directly. `var myPlayer = afterglow.getPlayer('myId'); myPlayer.on('play', function() {alert('play')});`
