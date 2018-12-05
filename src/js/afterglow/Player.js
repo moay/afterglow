@@ -1,6 +1,6 @@
 /**
  * afterglow - An easy to integrate HTML5 video player with lightbox support.
- * @link http://afterglowthis.com
+ * @link http://afterglowplayer.com
  * @license MIT
  */
 import Api from './PlayerApi';

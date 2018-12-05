@@ -115,6 +115,9 @@ class Lightbox extends DOMElement {
 
     // Triggering play in order to force autoplay
     this.player.mediaelement.media.play();
+
+    // Add autofocus of the control bar
+    this.player.mediaelement.container.focus();
   }
 
   /**
