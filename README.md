@@ -15,7 +15,7 @@ If you are depending on api methods, you might want to wait for the new version.
 
 ### Alpha version available
 
-Want to get crazy? [Here](https://github.com/moay/afterglow/releases/tag/2.0.0-alpha6)'s an alpha release for testing (or [here](https://cdn.jsdelivr.net/gh/moay/afterglow@3acd86bc1c3e1f4583c926b5f8e5cc2baf369d50/dist/afterglow.min.js), if you like the CDN). Feedback welcome.
+Want to get crazy? [Here](https://github.com/moay/afterglow/releases/tag/2.0.0-alpha11)'s an alpha release for testing (or [here](https://cdn.jsdelivr.net/gh/moay/afterglow@2d35f1ba15c8271d98ed3390c348b28284222045/dist/afterglow.min.js), if you like the CDN). Feedback welcome.
 
 ## Documentation
 
