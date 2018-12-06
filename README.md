@@ -36,6 +36,18 @@ Our resolution switching component is based on videojs-resolutions by vidcaster 
 
 Thanks for your great work, guys!
 
+## Thank you!
+
+![browserstack](https://afterglowplayer.com/images/browserstack.png)
+
+We want to thank the people at [browserstack](https://browserstack.com) who provide us with a free account for browser testing.
+
+The [afterglow documentation](http://docs.afterglowplayer.com) would not be that cool without [readme.io](http://readme.io), who also sponsor the project with a free account.
+
+![jsDelivr](https://afterglowplayer.com/images/jsdelivr-logo.png)
+
+Finally, a big thank you to the team behind [jsDelivr](http://jsdelivr.com) for hosting afterglow reliably.  
+
 ## Copyright and License
 
 Copyright moay under the [MIT license](LICENSE.md).
