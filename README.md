@@ -1,7 +1,7 @@
 # DEPRECATED
 Sadly, the development of afterglow has been pretty stale for some time now. There are currently no plans for further developement regarding this project, so it has to be considered deprecated.
 
-We strongly recommend using [Plyr](https://github.com/sampotts/plyr) instead. If youneed a lightbox player, consider [GLightbox](https://github.com/biati-digital/glightbox) which integrates with Plyr.
+We strongly recommend using [Plyr](https://github.com/sampotts/plyr) instead. If you need a lightbox player, consider [GLightbox](https://github.com/biati-digital/glightbox) which integrates with Plyr.
 
 ---
 [![GitHub version](https://badge.fury.io/gh/moay%2Fafterglow.svg)](http://badge.fury.io/gh/moay%2Fafterglow) [![Build status](https://travis-ci.org/moay/afterglow.svg?branch=master)](https://travis-ci.org/moay/afterglow) [![Coverage Status](https://coveralls.io/repos/moay/afterglow/badge.svg?branch=master&service=github)](https://coveralls.io/github/moay/afterglow?branch=master)
