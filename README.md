@@ -1,5 +1,10 @@
 [![GitHub version](https://badge.fury.io/gh/moay%2Fafterglow.svg)](http://badge.fury.io/gh/moay%2Fafterglow) [![Build status](https://travis-ci.org/moay/afterglow.svg?branch=master)](https://travis-ci.org/moay/afterglow) [![Coverage Status](https://coveralls.io/repos/moay/afterglow/badge.svg?branch=master&service=github)](https://coveralls.io/github/moay/afterglow?branch=master)
 
+# DEPRECATED
+Sadly, the development of afterglow has been pretty stale for some time now. There are currently not plans for further developements regarding this project, so it has to be considered deprecated.
+
+We strongly recommend using [Plyr](https://github.com/sampotts/plyr) instead. If youneed a lightbox player, consider [GLightbox](https://github.com/biati-digital/glightbox) which integrates with Plyr.
+
 
 # afterglow
 
@@ -7,19 +12,9 @@ afterglow is a tool to create fully responsive and totally awesome video players
 
 Learn more about the project on the project website: [http://afterglowplayer.com](http://afterglowplayer.com).
 
-## Version 2.0 is coming
-
-We are currently working on version 2, which will bring some bug fixes and some new features. As it is a complete rewrite and a change away from video.js, some things will change. We try to keep backwards compatibility, but minor things may change.
-
-If you are depending on api methods, you might want to wait for the new version. Adapting existing projects will be quite easy, though. 
-
-### Alpha version available
-
-Want to get crazy? [Here](https://github.com/moay/afterglow/releases/tag/2.0.0-alpha11)'s an alpha release for testing (or [here](https://cdn.jsdelivr.net/gh/moay/afterglow@2d35f1ba15c8271d98ed3390c348b28284222045/dist/afterglow.min.js), if you like the CDN). Feedback welcome.
-
 ## Documentation
 
-There is a full documentation available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
+Documentation is still available here: [docs.afterglowplayer.com](http://docs.afterglowplayer.com).
 
 ## Credits
 
